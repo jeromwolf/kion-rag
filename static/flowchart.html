@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>처리 흐름도 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --secondary: #00A651;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+        }
+
+        /* Flowchart Styles */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .flow-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flow-node {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            min-width: 200px;
+            position: relative;
+            border-left: 4px solid var(--primary);
+        }
+
+        .flow-node.start {
+            background: linear-gradient(135deg, var(--primary), #0052a3);
+            color: white;
+            border-left: none;
+            border-radius: 30px;
+        }
+
+        .flow-node.end {
+            background: linear-gradient(135deg, var(--secondary), #008841);
+            color: white;
+            border-left: none;
+            border-radius: 30px;
+        }
+
+        .flow-node.decision {
+            background: #FFF3E0;
+            border-left-color: #FF9800;
+            transform: rotate(0deg);
+        }
+
+        .flow-node.process {
+            border-left-color: #9C27B0;
+        }
+
+        .flow-node.data {
+            border-left-color: #2196F3;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .node-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .node-title {
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .node-desc {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .flow-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 0;
+            color: var(--gray);
+        }
+
+        .flow-arrow svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .flow-arrow.horizontal {
+            flex-direction: row;
+            padding: 0 15px;
+        }
+
+        .flow-arrow.horizontal svg {
+            transform: rotate(-90deg);
+        }
+
+        .arrow-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin: 5px 0;
+        }
+
+        /* Branch */
+        .flow-branch {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .branch-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .branch-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Detail Section */
+        .detail-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .detail-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .detail-card {
+            background: var(--bg-light);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .detail-card h4 {
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .detail-card p {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .detail-card code {
+            display: block;
+            background: var(--white);
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Monaco', monospace;
+            overflow-x: auto;
+        }
+
+        .example-box {
+            background: #f8f9fa;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .example-box .label {
+            font-size: 11px;
+            color: var(--gray);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .example-box .content {
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 2px;
+        }
+
+        .tag.green { background: var(--secondary); }
+        .tag.orange { background: #FF9800; }
+        .tag.purple { background: #9C27B0; }
+
+        @media (max-width: 768px) {
+            .flow-branch {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/static/architecture.html">아키텍처</a>
+                <a href="/static/flowchart.html" class="active">처리 흐름</a>
+                <a href="/docs" target="_blank">API 문서</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>처리 흐름도</h1>
+            <p>사용자 쿼리부터 추천 결과까지의 상세 처리 과정</p>
+        </div>
+
+        <div class="flowchart">
+            <!-- Start -->
+            <div class="flow-row">
+                <div class="flow-node start">
+                    <div class="node-icon">💬</div>
+                    <div class="node-title">사용자 쿼리 입력</div>
+                    <div class="node-desc">"6인치 GaN MOCVD 장비 추천해줘"</div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+            </div>
+
+            <!-- Query Parser -->
+            <div class="flow-row">
+                <div class="flow-node process">
+                    <div class="node-icon">🔍</div>
+                    <div class="node-title">Query Parser</div>
+                    <div class="node-desc">자연어 → 구조화된 조건 추출</div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                <span class="arrow-label">ParsedQuery 객체</span>
+            </div>
+
+            <!-- Parsed Results -->
+            <div class="flow-row">
+                <div class="flow-node data">
+                    <div class="node-icon">📋</div>
+                    <div class="node-title">파싱 결과</div>
+                    <div class="node-desc">wafer: 6inch, material: GaN, category: 증착</div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+            </div>
+
+            <!-- RAG Search -->
+            <div class="flow-row">
+                <div class="flow-node process">
+                    <div class="node-icon">📚</div>
+                    <div class="node-title">RAG 벡터 검색</div>
+                    <div class="node-desc">ChromaDB 유사도 검색 (top_k * 2)</div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                <span class="arrow-label">후보 장비 6개</span>
+            </div>
+
+            <!-- Filter & Rerank -->
+            <div class="flow-row">
+                <div class="flow-node decision">
+                    <div class="node-icon">🎯</div>
+                    <div class="node-title">필터 & 리랭킹</div>
+                    <div class="node-desc">하드 조건 필터 + 점수 재계산</div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                <span class="arrow-label">필터 통과 장비 3개</span>
+            </div>
+
+            <!-- LLM -->
+            <div class="flow-row">
+                <div class="flow-node process">
+                    <div class="node-icon">🤖</div>
+                    <div class="node-title">LLM 추천 생성</div>
+                    <div class="node-desc">Ollama (Qwen2.5) 스트리밍 응답</div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+            </div>
+
+            <!-- Branch: Response Types -->
+            <div class="flow-branch">
+                <div class="branch-item">
+                    <span class="branch-label">장비 정보</span>
+                    <div class="flow-node data">
+                        <div class="node-icon">📦</div>
+                        <div class="node-title">Equipment Cards</div>
+                        <div class="node-desc">ID, 이름, 점수, 스펙</div>
+                    </div>
+                </div>
+                <div class="branch-item">
+                    <span class="branch-label">AI 설명</span>
+                    <div class="flow-node data">
+                        <div class="node-icon">📝</div>
+                        <div class="node-title">Explanation</div>
+                        <div class="node-desc">추천 이유, 비교 분석</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                <span class="arrow-label">SSE 스트리밍</span>
+            </div>
+
+            <!-- End -->
+            <div class="flow-row">
+                <div class="flow-node end">
+                    <div class="node-icon">✅</div>
+                    <div class="node-title">결과 출력</div>
+                    <div class="node-desc">챗봇 UI에 실시간 표시</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Sections -->
+        <div class="detail-section">
+            <div class="detail-title">🔍 Query Parser 상세</div>
+            <div class="detail-grid">
+                <div class="detail-card">
+                    <h4>웨이퍼 사이즈 추출</h4>
+                    <p>inch/mm 표기 모두 인식하여 정규화</p>
+                    <code>"6인치" → "6 inch"<br>"200mm" → "8 inch"</code>
+                </div>
+                <div class="detail-card">
+                    <h4>온도 조건 추출</h4>
+                    <p>범위, 이상/이하, 고온/저온 키워드 인식</p>
+                    <code>"400도 이상" → temp_min: 400<br>"고온" → temp_min: 500</code>
+                </div>
+                <div class="detail-card">
+                    <h4>재료 추출</h4>
+                    <p>75개 재료 매핑 (한글/영문)</p>
+                    <code>"갈륨비소" → "GaAs"<br>"실리콘" → "Si"</code>
+                </div>
+                <div class="detail-card">
+                    <h4>카테고리 추출</h4>
+                    <p>73개 키워드 → 10개 카테고리</p>
+                    <code>"MOCVD" → "증착"<br>"ICP 식각" → "식각"</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-title">🎯 필터 & 리랭킹 상세</div>
+            <div class="detail-grid">
+                <div class="detail-card">
+                    <h4>하드 필터 조건</h4>
+                    <div class="example-box">
+                        <div class="label">필터 항목</div>
+                        <div class="content">
+                            <span class="tag">웨이퍼 사이즈</span>
+                            <span class="tag green">온도 범위</span>
+                            <span class="tag orange">지원 재료</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="detail-card">
+                    <h4>점수 계산</h4>
+                    <code>combined_score = <br>  vector_score * 0.4 +<br>  filter_score * 0.6</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="detail-title">🤖 LLM 프롬프트 구조</div>
+            <div class="detail-card">
+                <h4>시스템 프롬프트 (prompts/recommendation_stream.txt)</h4>
+                <div class="example-box">
+                    <div class="label">포맷 지시</div>
+                    <div class="content" style="font-size: 13px;">
+                        1. **[장비ID]** 장비명 - 특징 설명<br>
+                        2. **[장비ID]** 장비명 - 특징 설명<br>
+                        3. **[장비ID]** 장비명 - 특징 설명<br><br>
+                        따라서 **[최적 장비ID]** 장비명를 추천드립니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 40px; color: var(--gray); font-size: 14px;">
+        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
+    </footer>
+</body>
+</html>

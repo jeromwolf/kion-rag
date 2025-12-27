@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시스템 아키텍처 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #00A651;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        /* Architecture Diagram */
+        .architecture {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .layer {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .component {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .component:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .component.frontend {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+        }
+
+        .component.api {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+        }
+
+        .component.core {
+            border-color: #9C27B0;
+            background: linear-gradient(135deg, #F3E5F5, #E1BEE7);
+        }
+
+        .component.data {
+            border-color: #FF9800;
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+        }
+
+        .component.external {
+            border-color: #607D8B;
+            background: linear-gradient(135deg, #ECEFF1, #CFD8DC);
+        }
+
+        .component-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .component-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .component-desc {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--gray);
+        }
+
+        .arrow svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .arrow-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .layer-label {
+            position: absolute;
+            left: -100px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Flow Diagram */
+        .flow-container {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .flow-number {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .flow-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .flow-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .flow-desc {
+            font-size: 11px;
+            color: var(--gray);
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .flow-arrow {
+            color: var(--primary);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        /* Tech Stack */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tech-card h3 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tech-list li:last-child {
+            border-bottom: none;
+        }
+
+        .tech-list .tech-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .tech-list .tech-version {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        /* Data Flow Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        .data-table td {
+            font-size: 14px;
+        }
+
+        .data-table code {
+            background: #f1f3f4;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .layer {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .flow {
+                flex-direction: column;
+            }
+
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+
+            .layer-label {
+                position: static;
+                transform: none;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/static/architecture.html" class="active">아키텍처</a>
+                <a href="/static/flowchart.html">처리 흐름</a>
+                <a href="/docs" target="_blank">API 문서</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>시스템 아키텍처</h1>
+            <p>KION RAG 장비 추천 시스템의 전체 구조</p>
+        </div>
+
+        <!-- Main Architecture -->
+        <div class="architecture">
+            <h2 class="section-title">전체 아키텍처</h2>
+            <div class="diagram">
+                <!-- Frontend Layer -->
+                <div class="layer">
+                    <div class="component frontend">
+                        <div class="component-icon">🌐</div>
+                        <div class="component-name">Web UI</div>
+                        <div class="component-desc">index.html<br>채팅 위젯</div>
+                    </div>
+                    <div class="component frontend">
+                        <div class="component-icon">📱</div>
+                        <div class="component-name">Reservation</div>
+                        <div class="component-desc">reservation.html<br>예약 페이지</div>
+                    </div>
+                </div>
+
+                <div class="arrow">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    </svg>
+                    <span class="arrow-label">HTTP / SSE</span>
+                </div>
+
+                <!-- API Layer -->
+                <div class="layer">
+                    <div class="component api">
+                        <div class="component-icon">⚡</div>
+                        <div class="component-name">FastAPI</div>
+                        <div class="component-desc">main.py<br>REST API 서버</div>
+                    </div>
+                </div>
+
+                <div class="arrow">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    </svg>
+                </div>
+
+                <!-- Core Layer -->
+                <div class="layer">
+                    <div class="component core">
+                        <div class="component-icon">🔍</div>
+                        <div class="component-name">Query Parser</div>
+                        <div class="component-desc">query_parser.py<br>자연어 파싱</div>
+                    </div>
+                    <div class="component core">
+                        <div class="component-icon">📚</div>
+                        <div class="component-name">RAG Pipeline</div>
+                        <div class="component-desc">rag.py<br>벡터 검색</div>
+                    </div>
+                    <div class="component core">
+                        <div class="component-icon">🎯</div>
+                        <div class="component-name">Filters</div>
+                        <div class="component-desc">filters.py<br>리랭킹</div>
+                    </div>
+                    <div class="component core">
+                        <div class="component-icon">🤖</div>
+                        <div class="component-name">LLM Service</div>
+                        <div class="component-desc">llm.py<br>추천 생성</div>
+                    </div>
+                </div>
+
+                <div class="arrow">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    </svg>
+                </div>
+
+                <!-- Data Layer -->
+                <div class="layer">
+                    <div class="component data">
+                        <div class="component-icon">🗄️</div>
+                        <div class="component-name">ChromaDB</div>
+                        <div class="component-desc">벡터 데이터베이스<br>100개 장비</div>
+                    </div>
+                    <div class="component data">
+                        <div class="component-icon">📋</div>
+                        <div class="component-name">Filter Rules</div>
+                        <div class="component-desc">filter_rules.json<br>필터 규칙</div>
+                    </div>
+                    <div class="component data">
+                        <div class="component-icon">💬</div>
+                        <div class="component-name">Prompts</div>
+                        <div class="component-desc">prompts/<br>프롬프트 템플릿</div>
+                    </div>
+                </div>
+
+                <div class="arrow">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                    </svg>
+                </div>
+
+                <!-- External Layer -->
+                <div class="layer">
+                    <div class="component external">
+                        <div class="component-icon">🧠</div>
+                        <div class="component-name">Ollama</div>
+                        <div class="component-desc">Qwen2.5:7b<br>LLM 엔진</div>
+                    </div>
+                    <div class="component external">
+                        <div class="component-icon">📐</div>
+                        <div class="component-name">Embedding</div>
+                        <div class="component-desc">nomic-embed-text<br>임베딩 모델</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Flow -->
+        <div class="flow-container">
+            <h2 class="section-title">데이터 처리 흐름</h2>
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-number">1</div>
+                    <div class="flow-icon">💬</div>
+                    <div class="flow-title">사용자 입력</div>
+                    <div class="flow-desc">자연어 쿼리</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">2</div>
+                    <div class="flow-icon">🔍</div>
+                    <div class="flow-title">쿼리 파싱</div>
+                    <div class="flow-desc">조건 추출</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">3</div>
+                    <div class="flow-icon">🔎</div>
+                    <div class="flow-title">벡터 검색</div>
+                    <div class="flow-desc">유사 장비 탐색</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">4</div>
+                    <div class="flow-icon">🎯</div>
+                    <div class="flow-title">필터 & 리랭킹</div>
+                    <div class="flow-desc">조건 필터링</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">5</div>
+                    <div class="flow-icon">🤖</div>
+                    <div class="flow-title">LLM 추천</div>
+                    <div class="flow-desc">설명 생성</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-number">6</div>
+                    <div class="flow-icon">📤</div>
+                    <div class="flow-title">응답 전송</div>
+                    <div class="flow-desc">스트리밍</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <h2 class="section-title">기술 스택</h2>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>⚡ Backend</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">FastAPI</span><span class="tech-version">0.100+</span></li>
+                    <li><span class="tech-name">Python</span><span class="tech-version">3.9+</span></li>
+                    <li><span class="tech-name">Uvicorn</span><span class="tech-version">ASGI Server</span></li>
+                    <li><span class="tech-name">Pydantic</span><span class="tech-version">Data Validation</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🗄️ Database</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">ChromaDB</span><span class="tech-version">Vector DB</span></li>
+                    <li><span class="tech-name">JSON</span><span class="tech-version">Config Storage</span></li>
+                    <li><span class="tech-name">In-Memory Cache</span><span class="tech-version">5분 TTL</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🤖 AI/ML</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">Ollama</span><span class="tech-version">LLM Runtime</span></li>
+                    <li><span class="tech-name">Qwen2.5:7b</span><span class="tech-version">Language Model</span></li>
+                    <li><span class="tech-name">nomic-embed-text</span><span class="tech-version">Embedding</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🌐 Frontend</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">HTML5/CSS3</span><span class="tech-version">UI</span></li>
+                    <li><span class="tech-name">Vanilla JS</span><span class="tech-version">No Framework</span></li>
+                    <li><span class="tech-name">SSE</span><span class="tech-version">Streaming</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <h2 class="section-title">API 엔드포인트</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>설명</th>
+                    <th>응답</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>POST</code></td>
+                    <td><code>/chat</code></td>
+                    <td>장비 추천 요청</td>
+                    <td>JSON</td>
+                </tr>
+                <tr>
+                    <td><code>POST</code></td>
+                    <td><code>/chat/stream</code></td>
+                    <td>스트리밍 추천</td>
+                    <td>SSE</td>
+                </tr>
+                <tr>
+                    <td><code>GET</code></td>
+                    <td><code>/equipment/count</code></td>
+                    <td>장비 수 조회</td>
+                    <td>JSON</td>
+                </tr>
+                <tr>
+                    <td><code>POST</code></td>
+                    <td><code>/equipment/reload</code></td>
+                    <td>데이터 리로드</td>
+                    <td>JSON</td>
+                </tr>
+                <tr>
+                    <td><code>GET</code></td>
+                    <td><code>/health</code></td>
+                    <td>헬스 체크</td>
+                    <td>JSON</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <footer style="text-align: center; padding: 40px; color: var(--gray); font-size: 14px;">
+        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
+        <p style="margin-top: 10px; opacity: 0.7;">Made with ❤️ by Kelly</p>
+    </footer>
+</body>
+</html>
