@@ -16,6 +16,7 @@
             --bg-light: #F5F7FA;
             --white: #FFFFFF;
             --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.15);
         }
 
         * {
@@ -193,6 +194,13 @@
         .category-세정 { background: #F1F8E9; color: #558B2F; }
         .category-패키징 { background: #FBE9E7; color: #BF360C; }
         .category-측정 { background: #EDE7F6; color: #512DA8; }
+        .category-이온주입 { background: #FCE4EC; color: #C2185B; }
+        .category-CMP { background: #ECEFF1; color: #455A64; }
+
+        /* Load More Button */
+        #loadMoreBtn:hover {
+            background: var(--primary-dark);
+        }
 
         .tag {
             display: inline-block;
@@ -345,12 +353,32 @@
         <section class="section">
             <div class="section-header">
                 <h2>장비 데이터 (Equipment)</h2>
-                <span class="badge">kion_equipment.json</span>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="badge">kion_equipment.json</span>
+                    <span id="equipmentCount" class="badge" style="background: rgba(255,255,255,0.3);">0 / 100</span>
+                </div>
             </div>
             <div class="section-body">
-                <p style="margin-bottom: 20px; color: var(--gray);">
-                    ChromaDB에 저장된 장비 데이터입니다. 각 장비는 벡터화되어 의미 기반 검색에 사용됩니다.
-                </p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <p style="color: var(--gray);">
+                        ChromaDB에 저장된 장비 데이터입니다. 각 장비는 벡터화되어 의미 기반 검색에 사용됩니다.
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <select id="categoryFilter" onchange="filterEquipment()" style="padding: 8px 12px; border: 1px solid var(--light-gray); border-radius: 6px; font-size: 13px;">
+                            <option value="">전체 카테고리</option>
+                            <option value="증착">증착</option>
+                            <option value="분석">분석</option>
+                            <option value="식각">식각</option>
+                            <option value="열처리">열처리</option>
+                            <option value="리소그래피">리소그래피</option>
+                            <option value="코팅">코팅</option>
+                            <option value="세정">세정</option>
+                            <option value="패키징">패키징</option>
+                            <option value="측정">측정</option>
+                        </select>
+                        <input type="text" id="searchInput" placeholder="검색..." onkeyup="filterEquipment()" style="padding: 8px 12px; border: 1px solid var(--light-gray); border-radius: 6px; font-size: 13px; width: 150px;">
+                    </div>
+                </div>
                 <div class="table-wrapper">
                     <table class="data-table">
                         <thead>
@@ -364,103 +392,16 @@
                                 <th>기관</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td class="id">KION-001</td>
-                                <td><strong>ICP-CVD</strong><br><small>Inductively Coupled Plasma CVD</small></td>
-                                <td><span class="category-badge category-증착">증착</span></td>
-                                <td><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
-                                <td><span class="tag">SiO2</span><span class="tag">SiNx</span><span class="tag">a-Si</span></td>
-                                <td>100~400°C</td>
-                                <td>광주나노기술집적센터</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-002</td>
-                                <td><strong>FE-SEM</strong><br><small>Field Emission SEM</small></td>
-                                <td><span class="category-badge category-분석">분석</span></td>
-                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span></td>
-                                <td><span class="tag">Si</span><span class="tag">GaN</span><span class="tag">metal</span></td>
-                                <td>20~30°C</td>
-                                <td>나노종합기술원</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-003</td>
-                                <td><strong>HR-XRD</strong><br><small>High Resolution XRD</small></td>
-                                <td><span class="category-badge category-분석">분석</span></td>
-                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span><span class="tag">6 inch</span></td>
-                                <td><span class="tag">Si</span><span class="tag">GaN</span><span class="tag">thin film</span></td>
-                                <td>20~30°C</td>
-                                <td>한국나노기술원</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-004</td>
-                                <td><strong>Metal Dry Etcher</strong><br><small>TCP Metal Dry Etcher</small></td>
-                                <td><span class="category-badge category-식각">식각</span></td>
-                                <td><span class="tag">8 inch</span></td>
-                                <td><span class="tag">Al</span><span class="tag">Ti</span><span class="tag">TiN</span><span class="tag">W</span></td>
-                                <td>20~100°C</td>
-                                <td>나노융합기술원</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-005</td>
-                                <td><strong>Spray Coater</strong><br><small>Spray Coating System</small></td>
-                                <td><span class="category-badge category-코팅">코팅</span></td>
-                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
-                                <td><span class="tag">photoresist</span><span class="tag">polymer</span></td>
-                                <td>20~200°C</td>
-                                <td>나노종합기술원</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-006</td>
-                                <td><strong>RTA</strong><br><small>Rapid Thermal Annealing</small></td>
-                                <td><span class="category-badge category-열처리">열처리</span></td>
-                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span></td>
-                                <td><span class="tag">Si</span><span class="tag">SiO2</span><span class="tag">metal</span></td>
-                                <td>200~1200°C</td>
-                                <td>한국나노기술원</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-007</td>
-                                <td><strong>E-beam Lithography</strong><br><small>Electron Beam Lithography</small></td>
-                                <td><span class="category-badge category-리소그래피">리소그래피</span></td>
-                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span></td>
-                                <td><span class="tag">Si</span><span class="tag">GaAs</span><span class="tag">photoresist</span></td>
-                                <td>20~150°C</td>
-                                <td>나노종합기술원</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-008</td>
-                                <td><strong>Wet Station</strong><br><small>Wet Cleaning System</small></td>
-                                <td><span class="category-badge category-세정">세정</span></td>
-                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
-                                <td><span class="tag">Si</span><span class="tag">glass</span><span class="tag">metal</span></td>
-                                <td>20~90°C</td>
-                                <td>광주나노기술집적센터</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-009</td>
-                                <td><strong>MOCVD</strong><br><small>Metal Organic CVD</small></td>
-                                <td><span class="category-badge category-증착">증착</span></td>
-                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span></td>
-                                <td><span class="tag">GaN</span><span class="tag">AlGaN</span><span class="tag">InGaN</span><span class="tag">AlN</span></td>
-                                <td>400~1100°C</td>
-                                <td>나노종합기술원</td>
-                            </tr>
-                            <tr>
-                                <td class="id">KION-010</td>
-                                <td><strong>Sputter</strong><br><small>DC/RF Magnetron Sputter</small></td>
-                                <td><span class="category-badge category-증착">증착</span></td>
-                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
-                                <td><span class="tag">Ti</span><span class="tag">TiN</span><span class="tag">Al</span><span class="tag">Cu</span></td>
-                                <td>20~400°C</td>
-                                <td>나노융합기술원</td>
-                            </tr>
+                        <tbody id="equipmentTableBody">
+                            <!-- 동적으로 로드됨 -->
                         </tbody>
                     </table>
                 </div>
-                <p style="margin-top: 15px; font-size: 13px; color: var(--gray); text-align: center;">
-                    ... 외 90개 장비 (총 100개)
-                </p>
+                <div id="loadMoreContainer" style="margin-top: 20px; text-align: center;">
+                    <button id="loadMoreBtn" onclick="loadMoreEquipment()" style="padding: 12px 30px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s;">
+                        더보기 <span id="remainingCount"></span>
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -695,18 +636,102 @@
     </footer>
 
     <script>
+        // Tab functionality
         function showTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-
-            // Show selected tab
             document.getElementById('tab-' + tabName).classList.add('active');
             event.target.classList.add('active');
+        }
+
+        // Equipment data loading
+        let allEquipment = [];
+        let filteredEquipment = [];
+        let displayedCount = 0;
+        const ITEMS_PER_PAGE = 10;
+
+        // 페이지 로드 시 데이터 가져오기
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchEquipmentData();
+        });
+
+        async function fetchEquipmentData() {
+            try {
+                const response = await fetch('/data/kion_equipment.json');
+                allEquipment = await response.json();
+                filteredEquipment = [...allEquipment];
+                displayedCount = 0;
+                loadMoreEquipment();
+                updateStats();
+            } catch (error) {
+                console.error('장비 데이터 로드 실패:', error);
+                document.getElementById('equipmentTableBody').innerHTML =
+                    '<tr><td colspan="7" style="text-align: center; color: #999; padding: 40px;">데이터를 불러올 수 없습니다.</td></tr>';
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('equipmentCount').textContent = `${displayedCount} / ${filteredEquipment.length}`;
+            const remaining = filteredEquipment.length - displayedCount;
+            document.getElementById('remainingCount').textContent = remaining > 0 ? `(${remaining}개 남음)` : '';
+            document.getElementById('loadMoreBtn').style.display = remaining > 0 ? 'inline-block' : 'none';
+        }
+
+        function loadMoreEquipment() {
+            const tbody = document.getElementById('equipmentTableBody');
+            const endIndex = Math.min(displayedCount + ITEMS_PER_PAGE, filteredEquipment.length);
+
+            for (let i = displayedCount; i < endIndex; i++) {
+                const eq = filteredEquipment[i];
+                const row = createEquipmentRow(eq);
+                tbody.insertAdjacentHTML('beforeend', row);
+            }
+
+            displayedCount = endIndex;
+            updateStats();
+        }
+
+        function createEquipmentRow(eq) {
+            const waferTags = (eq.wafer_sizes || []).map(w => `<span class="tag">${w}</span>`).join('');
+            const materialTags = (eq.materials || []).slice(0, 4).map(m => `<span class="tag">${m}</span>`).join('');
+            const moreCount = (eq.materials || []).length > 4 ? `<span class="tag">+${eq.materials.length - 4}</span>` : '';
+
+            return `
+                <tr>
+                    <td class="id">${eq.equipment_id}</td>
+                    <td><strong>${eq.name}</strong><br><small>${eq.name_en || ''}</small></td>
+                    <td><span class="category-badge category-${eq.category}">${eq.category}</span></td>
+                    <td>${waferTags || '-'}</td>
+                    <td>${materialTags}${moreCount || ''}</td>
+                    <td>${eq.temp_min || 0}~${eq.temp_max || 0}°C</td>
+                    <td>${eq.institution || '-'}</td>
+                </tr>
+            `;
+        }
+
+        function filterEquipment() {
+            const category = document.getElementById('categoryFilter').value;
+            const search = document.getElementById('searchInput').value.toLowerCase();
+
+            filteredEquipment = allEquipment.filter(eq => {
+                const matchCategory = !category || eq.category === category;
+                const matchSearch = !search ||
+                    eq.name.toLowerCase().includes(search) ||
+                    (eq.name_en && eq.name_en.toLowerCase().includes(search)) ||
+                    eq.equipment_id.toLowerCase().includes(search) ||
+                    (eq.institution && eq.institution.toLowerCase().includes(search)) ||
+                    (eq.materials && eq.materials.some(m => m.toLowerCase().includes(search)));
+                return matchCategory && matchSearch;
+            });
+
+            // 테이블 초기화 후 다시 로드
+            document.getElementById('equipmentTableBody').innerHTML = '';
+            displayedCount = 0;
+            loadMoreEquipment();
         }
     </script>
 </body>
