@@ -1,0 +1,237 @@
+{
+  "test_queries": [
+    {
+      "id": "Q01",
+      "query": "ICP-CVD 장비 찾아줘",
+      "expected_ids": ["KION-001"],
+      "category": "직접 검색",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q02",
+      "query": "GaN 에피택시 성장용 MOCVD 장비",
+      "expected_ids": ["KION-009"],
+      "category": "재료+공정",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q03",
+      "query": "나노종합기술원에 있는 SEM 장비",
+      "expected_ids": ["KION-002"],
+      "category": "기관+장비타입",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q04",
+      "query": "6인치 웨이퍼 지원하는 증착 장비",
+      "expected_ids": ["KION-001", "KION-008", "KION-019", "KION-020"],
+      "category": "사이즈+공정",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q05",
+      "query": "1000도 이상 고온 열처리 가능한 장비",
+      "expected_ids": ["KION-022", "KION-023", "KION-009"],
+      "category": "온도 제약",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q06",
+      "query": "MEMS 공정용 심층 식각 장비",
+      "expected_ids": ["KION-007"],
+      "category": "공정타입",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q07",
+      "query": "박막 두께 측정 장비",
+      "expected_ids": ["KION-035", "KION-045", "KION-046"],
+      "category": "측정타입",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q08",
+      "query": "금속 배선용 스퍼터 장비",
+      "expected_ids": ["KION-016"],
+      "category": "공정+장비타입",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q09",
+      "query": "E-beam 리소그래피 장비",
+      "expected_ids": ["KION-013"],
+      "category": "직접 검색",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q10",
+      "query": "GaAs 기판용 MBE 장비",
+      "expected_ids": ["KION-010"],
+      "category": "재료+장비타입",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q11",
+      "query": "8인치 웨이퍼 CMP 연마 장비",
+      "expected_ids": ["KION-025"],
+      "category": "사이즈+공정",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q12",
+      "query": "포토레지스트 스핀 코팅 장비",
+      "expected_ids": ["KION-063"],
+      "category": "재료+공정",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q13",
+      "query": "ALD 원자층 증착 장비",
+      "expected_ids": ["KION-008"],
+      "category": "직접 검색",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q14",
+      "query": "이온 주입 장비",
+      "expected_ids": ["KION-024"],
+      "category": "직접 검색",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q15",
+      "query": "반도체 패키징용 다이싱 장비",
+      "expected_ids": ["KION-029"],
+      "category": "공정타입",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q16",
+      "query": "TEM 투과전자현미경",
+      "expected_ids": ["KION-033"],
+      "category": "직접 검색",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q17",
+      "query": "XRD 결정구조 분석 장비",
+      "expected_ids": ["KION-003"],
+      "category": "분석타입",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q18",
+      "query": "LED 제작용 에피 성장 장비",
+      "expected_ids": ["KION-009"],
+      "category": "응용+공정",
+      "difficulty": "hard"
+    },
+    {
+      "id": "Q19",
+      "query": "수원에 있는 습식 세정 장비",
+      "expected_ids": ["KION-006"],
+      "category": "지역+장비타입",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q20",
+      "query": "알루미늄 금속막 식각 장비",
+      "expected_ids": ["KION-004"],
+      "category": "재료+공정",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q21",
+      "query": "4인치 사파이어 기판 지원하는 장비",
+      "expected_ids": ["KION-009", "KION-010"],
+      "category": "사이즈+재료",
+      "difficulty": "hard"
+    },
+    {
+      "id": "Q22",
+      "query": "FIB 집속이온빔 장비",
+      "expected_ids": ["KION-034"],
+      "category": "직접 검색",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q23",
+      "query": "라만 분광 분석 장비",
+      "expected_ids": ["KION-077"],
+      "category": "분석타입",
+      "difficulty": "easy"
+    },
+    {
+      "id": "Q24",
+      "query": "산화막 성장용 확산로",
+      "expected_ids": ["KION-022", "KION-023", "KION-067"],
+      "category": "공정+장비타입",
+      "difficulty": "medium"
+    },
+    {
+      "id": "Q25",
+      "query": "웨이퍼 본딩 장비",
+      "expected_ids": ["KION-026", "KION-059", "KION-060"],
+      "category": "직접 검색",
+      "difficulty": "medium"
+    }
+  ],
+  "edge_cases": [
+    {
+      "id": "E01",
+      "query": "12인치 웨이퍼 장비",
+      "expected_ids": [],
+      "category": "존재하지 않는 사이즈",
+      "expected_behavior": "적합한 장비 없음 안내"
+    },
+    {
+      "id": "E02",
+      "query": "장비 추천해줘",
+      "expected_ids": [],
+      "category": "모호한 질의",
+      "expected_behavior": "추가 정보 요청"
+    },
+    {
+      "id": "E03",
+      "query": "2000도 열처리",
+      "expected_ids": [],
+      "category": "비현실적 온도",
+      "expected_behavior": "적합한 장비 없음 또는 최고온 장비 추천"
+    },
+    {
+      "id": "E04",
+      "query": "다이아몬드 기판 공정 장비",
+      "expected_ids": ["KION-076"],
+      "category": "특수 재료",
+      "expected_behavior": "다이아몬드 관련 장비 또는 유사 장비 추천"
+    },
+    {
+      "id": "E05",
+      "query": "300mm 웨이퍼 증착",
+      "expected_ids": [],
+      "category": "지원하지 않는 사이즈 표기",
+      "expected_behavior": "12인치로 변환 후 검색 또는 없음 안내"
+    }
+  ],
+  "metadata": {
+    "total_queries": 25,
+    "total_edge_cases": 5,
+    "categories": [
+      "직접 검색",
+      "재료+공정",
+      "기관+장비타입",
+      "사이즈+공정",
+      "온도 제약",
+      "공정타입",
+      "측정타입",
+      "분석타입",
+      "응용+공정",
+      "지역+장비타입"
+    ],
+    "difficulty_distribution": {
+      "easy": 10,
+      "medium": 13,
+      "hard": 2
+    }
+  }
+}

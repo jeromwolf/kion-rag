@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장비 예약 - KION AI 팹서비스</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #00A651;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 0 20px;
+        }
+
+        .header-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg-light);
+            border: none;
+            border-radius: 8px;
+            color: var(--gray);
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: var(--dark);
+        }
+
+        .page-title span {
+            color: var(--primary);
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 16px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Query Section */
+        .query-box {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .query-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .query-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Equipment Info */
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .equipment-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .equipment-id {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .equipment-score {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .equipment-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .detail-item {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .detail-value .tag {
+            display: inline-block;
+            background: var(--white);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin: 2px 4px 2px 0;
+            border: 1px solid var(--light-gray);
+        }
+
+        /* Reservation Form */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        /* Notice */
+        .notice {
+            background: #FFF3CD;
+            border: 1px solid #FFE69C;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #664D03;
+        }
+
+        .notice strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        /* Success Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 40px;
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .modal p {
+            color: var(--gray);
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .equipment-details {
+                grid-template-columns: 1fr;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .equipment-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> AI 팹서비스</div>
+            </a>
+            <button onclick="history.back()" class="back-btn">
+                ← 챗봇으로 돌아가기
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1 class="page-title">장비 <span>예약 신청</span></h1>
+
+        <!-- 검색 조건 -->
+        <div class="card">
+            <div class="card-header">검색 조건</div>
+            <div class="card-body">
+                <div class="query-box">
+                    <div class="query-label">사용자 입력 쿼리</div>
+                    <div class="query-text" id="queryText">-</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 장비 정보 -->
+        <div class="card">
+            <div class="card-header">선택한 장비 정보</div>
+            <div class="card-body">
+                <div class="equipment-header">
+                    <div>
+                        <div class="equipment-name" id="equipmentName">-</div>
+                        <div class="equipment-id" id="equipmentId">-</div>
+                    </div>
+                    <div class="equipment-score" id="equipmentScore">-</div>
+                </div>
+                <div class="equipment-details">
+                    <div class="detail-item">
+                        <div class="detail-label">운영 기관</div>
+                        <div class="detail-value" id="institution">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">카테고리</div>
+                        <div class="detail-value" id="category">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">지원 웨이퍼 사이즈</div>
+                        <div class="detail-value" id="waferSizes">-</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">처리 가능 재료</div>
+                        <div class="detail-value" id="materials">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 예약 신청 -->
+        <div class="card">
+            <div class="card-header">예약 신청</div>
+            <div class="card-body">
+                <form id="reservationForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">신청자 이름 *</label>
+                            <input type="text" class="form-input" id="userName" required placeholder="홍길동">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">연락처 *</label>
+                            <input type="tel" class="form-input" id="userPhone" required placeholder="010-1234-5678">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">이메일 *</label>
+                            <input type="email" class="form-input" id="userEmail" required placeholder="example@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">소속 기관</label>
+                            <input type="text" class="form-input" id="userOrg" placeholder="○○대학교 / ○○기업">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">희망 사용일 *</label>
+                            <input type="date" class="form-input" id="useDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">예상 사용 시간</label>
+                            <input type="text" class="form-input" id="useTime" placeholder="예: 3시간">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">사용 목적 / 공정 내용</label>
+                        <textarea class="form-textarea" id="purpose" placeholder="예: GaN HEMT 에피 성장, 2인치 sapphire 기판 사용 예정"></textarea>
+                    </div>
+
+                    <div class="notice">
+                        <strong>안내사항</strong>
+                        이 페이지는 데모용입니다. 실제 예약은 <a href="https://fab.kion.or.kr" target="_blank">KION 팹서비스</a>에서 진행해주세요.
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            예약 신청하기
+                        </button>
+                        <button type="button" onclick="history.back()" class="btn btn-secondary">취소</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-icon">✓</div>
+            <h2>예약 신청 완료</h2>
+            <p>담당자 확인 후 연락드리겠습니다.<br>(데모용 - 실제 예약은 KION 팹서비스 이용)</p>
+            <a href="/" class="btn btn-primary">확인</a>
+        </div>
+    </div>
+
+    <script>
+        // URL 파라미터에서 데이터 추출
+        const params = new URLSearchParams(window.location.search);
+
+        // 데이터 표시
+        document.getElementById('queryText').textContent = params.get('query') || '-';
+        document.getElementById('equipmentName').textContent = params.get('name') || '-';
+        document.getElementById('equipmentId').textContent = params.get('id') || '';
+        document.getElementById('equipmentScore').textContent = params.get('score') ? `매칭 ${params.get('score')}%` : '-';
+        document.getElementById('institution').textContent = params.get('institution') || '-';
+        document.getElementById('category').textContent = params.get('category') || '-';
+
+        // 웨이퍼 사이즈 태그
+        const waferSizes = params.get('wafers');
+        if (waferSizes) {
+            document.getElementById('waferSizes').innerHTML = waferSizes.split(',').map(s =>
+                `<span class="tag">${s.trim()}</span>`
+            ).join('');
+        }
+
+        // 재료 태그
+        const materials = params.get('materials');
+        if (materials) {
+            document.getElementById('materials').innerHTML = materials.split(',').map(m =>
+                `<span class="tag">${m.trim()}</span>`
+            ).join('');
+        }
+
+        // 날짜 기본값 (내일)
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('useDate').value = tomorrow.toISOString().split('T')[0];
+
+        // 폼 제출
+        document.getElementById('reservationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            document.getElementById('successModal').classList.add('show');
+        });
+    </script>
+</body>
+</html>

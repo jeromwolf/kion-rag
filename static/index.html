@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KION 팹서비스 AI 챗봇 - PoC Demo</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #00A651;
+            --accent: #FF6B35;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* === Header === */
+        .header {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav a:hover {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* === Hero Section === */
+        .hero {
+            margin-top: 70px;
+            background: linear-gradient(135deg, var(--primary) 0%, #0088FF 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* === Quick Menu === */
+        .quick-menu {
+            max-width: 1200px;
+            margin: -40px auto 40px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .quick-menu-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .quick-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quick-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .quick-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .quick-card p {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        /* === Section === */
+        .section {
+            max-width: 1200px;
+            margin: 0 auto 60px;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .section-title span {
+            color: var(--primary);
+        }
+
+        /* === Architecture Section === */
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .arch-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .arch-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .arch-card-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .arch-card-body {
+            padding: 20px;
+        }
+
+        .arch-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .arch-card p {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .arch-link {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* === Tech Stack === */
+        .tech-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .tech-badge {
+            background: var(--white);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tech-badge .icon {
+            font-size: 18px;
+        }
+
+        /* === Footer === */
+        .footer {
+            background: var(--dark);
+            color: var(--light-gray);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* === Chatbot Widget === */
+        .chat-widget-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: transform 0.2s;
+            border: none;
+        }
+
+        .chat-widget-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-widget-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        .chat-widget-btn .close-icon {
+            display: none;
+        }
+
+        .chat-widget-btn.open .chat-icon {
+            display: none;
+        }
+
+        .chat-widget-btn.open .close-icon {
+            display: block;
+        }
+
+        /* Chat Window */
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 420px;
+            height: 600px;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chat-window.open {
+            display: flex;
+        }
+
+        .chat-window.maximized {
+            width: 800px;
+            height: 85vh;
+            bottom: 20px;
+            right: 20px;
+            max-width: calc(100vw - 40px);
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-header-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chat-header-text {
+            flex: 1;
+        }
+
+        .chat-header-text h3 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .chat-header-text p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-header-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-header-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .chat-header-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: var(--bg-light);
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.bot {
+            background: var(--white);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .message.user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.system {
+            background: #FFF3CD;
+            color: #856404;
+            align-self: center;
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+
+        /* Equipment Card */
+        .equipment-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary);
+        }
+
+        .equipment-card h4 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .equipment-card h4 .eq-id {
+            color: var(--primary);
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        .equipment-card h4 .score {
+            background: var(--secondary);
+            color: white;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .equipment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .equipment-meta span {
+            background: var(--bg-light);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .equipment-card .reason {
+            font-size: 14px;
+            color: var(--gray);
+            border-top: 1px solid var(--light-gray);
+            padding-top: 12px;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .equipment-card a.reserve-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .equipment-card a.reserve-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Maximized mode - larger cards */
+        .chat-window.maximized .equipment-card {
+            padding: 20px;
+        }
+
+        .chat-window.maximized .equipment-card h4 {
+            font-size: 18px;
+        }
+
+        .chat-window.maximized .equipment-meta span {
+            font-size: 13px;
+            padding: 6px 12px;
+        }
+
+        .chat-window.maximized .equipment-card .reason {
+            font-size: 15px;
+        }
+
+        .chat-window.maximized .message {
+            font-size: 15px;
+            padding: 14px 18px;
+        }
+
+        /* Chat Input */
+        .chat-input-area {
+            padding: 15px;
+            background: var(--white);
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--light-gray);
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-send-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .chat-send-btn:disabled {
+            background: var(--light-gray);
+            cursor: not-allowed;
+        }
+
+        .chat-send-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        /* Loading */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: var(--white);
+            border-radius: 16px;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--gray);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Quick Suggestions */
+        .quick-suggestions {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 8px;
+            padding: 12px 15px;
+            background: var(--white);
+            border-top: 1px solid var(--light-gray);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .quick-suggestions::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .quick-suggestions::-webkit-scrollbar-thumb {
+            background: var(--light-gray);
+            border-radius: 2px;
+        }
+
+        .suggestion-btn {
+            padding: 8px 14px;
+            background: var(--bg-light);
+            border: 1px solid var(--light-gray);
+            border-radius: 18px;
+            font-size: 13px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .suggestion-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Explanation text formatting */
+        .message.bot .explanation {
+            line-height: 1.9;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .message.bot .explanation strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .chat-window.maximized .message.bot .explanation {
+            font-size: 15px;
+            line-height: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav { display: none; }
+            .hero h1 { font-size: 28px; }
+            .quick-menu-grid { grid-template-columns: repeat(2, 1fr); }
+            .arch-grid { grid-template-columns: 1fr; }
+            .chat-window {
+                width: calc(100% - 20px);
+                right: 10px;
+                bottom: 80px;
+                height: 70vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> AI 팹서비스</div>
+            </a>
+            <nav class="nav">
+                <a href="#about">소개</a>
+                <a href="#architecture">아키텍처</a>
+                <a href="#demo">데모</a>
+                <a href="#docs">문서</a>
+                <a href="https://fab.kion.or.kr" target="_blank">KION 팹서비스</a>
+            </nav>
+            <div class="header-actions">
+                <a href="/docs" class="btn btn-outline">API 문서</a>
+                <button class="btn btn-primary" onclick="toggleChat()">AI 상담</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">PoC Demo v1.0</div>
+            <h1>AI 기반 팹서비스<br>장비 추천 시스템</h1>
+            <p>반도체/디스플레이 공정에 최적화된 장비를 AI가 추천해드립니다.<br>웨이퍼 사이즈, 공정 온도, 재료 등 조건에 맞는 장비를 빠르게 찾아보세요.</p>
+            <button class="btn btn-primary" style="padding: 14px 32px; font-size: 16px;" onclick="toggleChat()">
+                AI 챗봇 시작하기
+            </button>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">100+</div>
+                    <div class="stat-label">등록 장비</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">5개</div>
+                    <div class="stat-label">협력 기관</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">~5초</div>
+                    <div class="stat-label">평균 응답</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Menu -->
+    <section class="quick-menu">
+        <div class="quick-menu-grid">
+            <a href="#" class="quick-card" onclick="toggleChat(); sendQuickQuery('MOCVD 장비 추천해줘'); return false;">
+                <div class="quick-icon">🔬</div>
+                <h3>장비 추천</h3>
+                <p>AI가 최적의 장비를 추천</p>
+            </a>
+            <a href="#" class="quick-card" onclick="toggleChat(); sendQuickQuery('6인치 Si 웨이퍼 장비'); return false;">
+                <div class="quick-icon">💿</div>
+                <h3>웨이퍼 사이즈</h3>
+                <p>사이즈별 장비 검색</p>
+            </a>
+            <a href="#" class="quick-card" onclick="toggleChat(); sendQuickQuery('1000도 이상 고온 열처리'); return false;">
+                <div class="quick-icon">🌡️</div>
+                <h3>온도 조건</h3>
+                <p>공정 온도별 검색</p>
+            </a>
+            <a href="https://fab.kion.or.kr" target="_blank" class="quick-card">
+                <div class="quick-icon">📅</div>
+                <h3>장비 예약</h3>
+                <p>KION 팹서비스 바로가기</p>
+            </a>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="section" id="architecture">
+        <h2 class="section-title">시스템 <span>아키텍처</span></h2>
+        <div class="arch-grid">
+            <a href="architecture.html" class="arch-card">
+                <div class="arch-card-header">SYSTEM DESIGN</div>
+                <div class="arch-card-body">
+                    <h3>전체 아키텍처</h3>
+                    <p>RAG 기반 장비 추천 시스템의 전체 구조와 데이터 흐름을 확인하세요.</p>
+                    <span class="arch-link">자세히 보기 →</span>
+                </div>
+            </a>
+            <a href="flowchart.html" class="arch-card">
+                <div class="arch-card-header">FLOW CHART</div>
+                <div class="arch-card-body">
+                    <h3>처리 흐름도</h3>
+                    <p>사용자 질의부터 장비 추천까지의 상세 처리 과정을 확인하세요.</p>
+                    <span class="arch-link">자세히 보기 →</span>
+                </div>
+            </a>
+            <a href="sample.html" class="arch-card">
+                <div class="arch-card-header">SAMPLE DATA</div>
+                <div class="arch-card-body">
+                    <h3>샘플 데이터</h3>
+                    <p>등록된 장비 데이터와 필터 룰 테이블을 확인하세요.</p>
+                    <span class="arch-link">자세히 보기 →</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="section">
+        <h2 class="section-title">기술 <span>스택</span></h2>
+        <div class="tech-grid">
+            <div class="tech-badge"><span class="icon">🦙</span> Ollama + Qwen 2.5</div>
+            <div class="tech-badge"><span class="icon">🔍</span> ChromaDB</div>
+            <div class="tech-badge"><span class="icon">⚡</span> FastAPI</div>
+            <div class="tech-badge"><span class="icon">🧠</span> E5-Large Embedding</div>
+            <div class="tech-badge"><span class="icon">🎯</span> Rule-based Filter</div>
+            <div class="tech-badge"><span class="icon">📊</span> SSE Streaming</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>KION 팹서비스 AI 챗봇 PoC Demo</p>
+        <p>Built with FastAPI + ChromaDB + Ollama | <a href="https://github.com" target="_blank">GitHub</a></p>
+        <p style="margin-top: 15px; font-size: 12px; opacity: 0.7;">© 2025 KION. This is a demonstration prototype.</p>
+    </footer>
+
+    <!-- Chat Widget Button -->
+    <button class="chat-widget-btn" onclick="toggleChat()" id="chatWidgetBtn">
+        <svg class="chat-icon" viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+        </svg>
+        <svg class="close-icon" viewBox="0 0 24 24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+    </button>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-header-icon">🤖</div>
+            <div class="chat-header-text">
+                <h3>KION AI 장비추천</h3>
+                <p>무엇이든 물어보세요</p>
+            </div>
+            <div class="chat-header-actions">
+                <button class="chat-header-btn" onclick="resetChat()" title="대화 초기화">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                    </svg>
+                </button>
+                <button class="chat-header-btn" onclick="toggleMaximize()" title="크기 조절">
+                    <svg id="maximizeIcon" viewBox="0 0 24 24">
+                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                    </svg>
+                </button>
+                <button class="chat-header-btn" onclick="closeAndReset()" title="닫기">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                안녕하세요! KION 팹서비스 AI 챗봇입니다. 🔬<br><br>
+                원하시는 공정이나 조건을 말씀해주시면 최적의 장비를 추천해드릴게요.<br><br>
+                예시: "6인치 Si 웨이퍼 MOCVD 장비 추천해줘"
+            </div>
+        </div>
+        <div class="quick-suggestions" id="quickSuggestions">
+            <button class="suggestion-btn" onclick="sendQuickQuery('MOCVD 장비 추천해줘')">MOCVD</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('6인치 Si 열처리 장비')">6인치 열처리</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('GaN 에피 성장')">GaN 에피</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('8인치 PECVD 증착')">8인치 PECVD</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('1000도 이상 고온 장비')">고온(1000℃+)</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('SEM 분석 장비')">SEM 분석</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('스퍼터 금속 증착')">스퍼터</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('나노종합기술원 장비')">나노종합기술원</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('ICP 식각 장비')">ICP 식각</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('sapphire 기판 장비')">사파이어 기판</button>
+        </div>
+        <div class="chat-input-area">
+            <div class="chat-input-wrapper">
+                <input type="text" class="chat-input" id="chatInput" placeholder="장비 조건을 입력하세요..." onkeypress="handleKeyPress(event)">
+                <button class="chat-send-btn" onclick="sendMessage()" id="sendBtn">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+        const CHAT_STORAGE_KEY = 'kion_chat_state';
+        let isStreaming = false;
+        let isMaximized = false;
+        let lastQuery = '';  // 마지막 쿼리 저장
+
+        // === 채팅 상태 저장/복원 ===
+        function saveChatState() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const state = {
+                messages: messagesDiv.innerHTML,
+                lastQuery: lastQuery,
+                isOpen: document.getElementById('chatWindow').classList.contains('open'),
+                isMaximized: isMaximized,
+                timestamp: Date.now()
+            };
+            sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function restoreChatState() {
+            const saved = sessionStorage.getItem(CHAT_STORAGE_KEY);
+            if (!saved) return false;
+
+            try {
+                const state = JSON.parse(saved);
+                // 30분 이내 상태만 복원
+                if (Date.now() - state.timestamp > 30 * 60 * 1000) {
+                    sessionStorage.removeItem(CHAT_STORAGE_KEY);
+                    return false;
+                }
+
+                const messagesDiv = document.getElementById('chatMessages');
+                messagesDiv.innerHTML = state.messages;
+                lastQuery = state.lastQuery || '';
+
+                if (state.isOpen) {
+                    document.getElementById('chatWindow').classList.add('open');
+                    document.getElementById('chatWidgetBtn').classList.add('open');
+                }
+                if (state.isMaximized) {
+                    document.getElementById('chatWindow').classList.add('maximized');
+                    isMaximized = true;
+                }
+
+                // 스크롤 맨 아래로
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                return true;
+            } catch (e) {
+                console.error('채팅 상태 복원 실패:', e);
+                return false;
+            }
+        }
+
+        // 페이지 로드 시 상태 복원
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreChatState();
+        });
+
+        const INITIAL_MESSAGE = `안녕하세요! KION 팹서비스 AI 챗봇입니다. 🔬<br><br>
+                원하시는 공정이나 조건을 말씀해주시면 최적의 장비를 추천해드릴게요.<br><br>
+                예시: "6인치 Si 웨이퍼 MOCVD 장비 추천해줘"`;
+
+        function resetChat() {
+            const messagesDiv = document.getElementById('chatMessages');
+            messagesDiv.innerHTML = `<div class="message bot">${INITIAL_MESSAGE}</div>`;
+            lastQuery = '';
+            sessionStorage.removeItem(CHAT_STORAGE_KEY);
+        }
+
+        function closeAndReset() {
+            resetChat();
+            const chatWindow = document.getElementById('chatWindow');
+            const chatBtn = document.getElementById('chatWidgetBtn');
+            chatWindow.classList.remove('open');
+            chatBtn.classList.remove('open');
+            if (isMaximized) {
+                chatWindow.classList.remove('maximized');
+                isMaximized = false;
+            }
+        }
+
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            const chatBtn = document.getElementById('chatWidgetBtn');
+            chatWindow.classList.toggle('open');
+            chatBtn.classList.toggle('open');
+            saveChatState();
+        }
+
+        function toggleMaximize() {
+            const chatWindow = document.getElementById('chatWindow');
+            isMaximized = !isMaximized;
+            chatWindow.classList.toggle('maximized', isMaximized);
+            saveChatState();
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendQuickQuery(query) {
+            const chatWindow = document.getElementById('chatWindow');
+            if (!chatWindow.classList.contains('open')) {
+                toggleChat();
+            }
+            setTimeout(() => {
+                document.getElementById('chatInput').value = query;
+                sendMessage();
+            }, 300);
+        }
+
+        function addMessage(content, type, skipSave = false) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = content;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            // 상태 저장 (스트리밍 중에는 skipSave로 마지막에만 저장)
+            if (!skipSave) saveChatState();
+            return messageDiv;
+        }
+
+        function addTypingIndicator() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.id = 'typingIndicator';
+            indicator.innerHTML = '<span></span><span></span><span></span>';
+            messagesDiv.appendChild(indicator);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        function createEquipmentCard(eq) {
+            const reservationUrl = `reservation.html?` + new URLSearchParams({
+                query: lastQuery,
+                id: eq.equipment_id || '',
+                name: eq.name || '',
+                score: Math.round(eq.score * 100),
+                institution: eq.institution || '',
+                category: eq.category || '',
+                wafers: (eq.wafer_sizes || []).join(','),
+                materials: (eq.materials || []).join(',')
+            }).toString();
+
+            return `
+                <div class="equipment-card">
+                    <h4>
+                        <span class="eq-id">[${eq.equipment_id}]</span> ${eq.name}
+                        <span class="score">${Math.round(eq.score * 100)}%</span>
+                    </h4>
+                    <div class="equipment-meta">
+                        <span>📍 ${eq.institution || '-'}</span>
+                        <span>💿 ${(eq.wafer_sizes || []).join(', ') || '-'}</span>
+                        <span>🧪 ${(eq.materials || []).slice(0, 3).join(', ') || '-'}</span>
+                    </div>
+                    ${eq.reason ? `<div class="reason">${eq.reason}</div>` : ''}
+                    <a href="${reservationUrl}" class="reserve-btn">예약 신청 →</a>
+                </div>
+            `;
+        }
+
+        function formatExplanation(text) {
+            let formatted = text
+                // **텍스트** -> 볼드
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                // [KION-XXX] -> 볼드
+                .replace(/\[([^\]]+)\]/g, '<strong>$1</strong>')
+                // 숫자. 으로 시작하는 부분을 리스트로 변환
+                .replace(/(\d+)\.\s+/g, '<br><br>$1. ')
+                // - 로 시작하는 부분을 bullet으로
+                .replace(/\n-\s*/g, '<br>• ')
+                .replace(/^-\s*/g, '• ')
+                // 따라서, 결론적으로 등 앞에 줄바꿈
+                .replace(/(따라서|결론적으로|종합하면)/g, '<br><br>$1')
+                .trim();
+
+            // 시작 부분 정리
+            formatted = formatted.replace(/^(<br>)+/, '');
+
+            return `<div class="explanation">${formatted}</div>`;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const query = input.value.trim();
+            if (!query || isStreaming) return;
+
+            // 쿼리 저장
+            lastQuery = query;
+
+            // Add user message
+            addMessage(query, 'user');
+            input.value = '';
+            isStreaming = true;
+            document.getElementById('sendBtn').disabled = true;
+
+            // Add typing indicator
+            addTypingIndicator();
+
+            try {
+                const response = await fetch(`${API_URL}/chat/stream`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query, top_k: 3 })
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let equipmentData = [];  // 장비 데이터 저장
+                let explanationDiv = null;
+                let explanationText = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6));
+
+                                if (data.type === 'equipment') {
+                                    removeTypingIndicator();
+                                    // 장비 데이터 저장 (나중에 표시)
+                                    equipmentData = data.data;
+                                    // 설명 컨테이너 먼저 생성
+                                    explanationDiv = addMessage('', 'bot', true);  // skipSave
+                                    explanationText = '';
+                                } else if (data.type === 'token' && explanationDiv) {
+                                    explanationText += data.data;
+                                    explanationDiv.innerHTML = formatExplanation(explanationText);
+                                    document.getElementById('chatMessages').scrollTop =
+                                        document.getElementById('chatMessages').scrollHeight;
+                                } else if (data.type === 'done') {
+                                    // 설명 최종 포맷팅
+                                    if (explanationDiv && explanationText) {
+                                        explanationDiv.innerHTML = formatExplanation(explanationText);
+                                    }
+                                    // 설명 아래에 장비 카드 추가
+                                    if (equipmentData.length > 0) {
+                                        let equipmentHtml = '';
+                                        for (const eq of equipmentData) {
+                                            equipmentHtml += createEquipmentCard(eq);
+                                        }
+                                        addMessage(equipmentHtml, 'bot', true);  // skipSave
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                addMessage('죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.', 'system');
+            }
+
+            isStreaming = false;
+            document.getElementById('sendBtn').disabled = false;
+            // 스트리밍 완료 후 상태 저장
+            saveChatState();
+        }
+    </script>
+</body>
+</html>

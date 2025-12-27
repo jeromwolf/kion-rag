@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "updated": "2025-12-27",
+
+  "wafer_sizes": {
+    "valid_sizes": ["2 inch", "3 inch", "4 inch", "6 inch", "8 inch", "12 inch"],
+    "mm_to_inch": {
+      "50mm": "2 inch",
+      "75mm": "3 inch",
+      "100mm": "4 inch",
+      "150mm": "6 inch",
+      "200mm": "8 inch",
+      "300mm": "12 inch"
+    }
+  },
+
+  "temperature": {
+    "high_temp_threshold": 500,
+    "low_temp_threshold": 200
+  },
+
+  "materials": {
+    "si": "Si", "silicon": "Si", "실리콘": "Si",
+    "sio2": "SiO2", "산화막": "SiO2", "산화실리콘": "SiO2",
+    "sinx": "SiNx", "sin": "SiNx", "질화막": "SiNx", "질화실리콘": "SiNx",
+    "poly": "poly-Si", "polysilicon": "poly-Si", "폴리실리콘": "poly-Si",
+    "soi": "SOI",
+    "sic": "SiC", "탄화규소": "SiC",
+
+    "gan": "GaN", "질화갈륨": "GaN",
+    "gaas": "GaAs", "갈륨비소": "GaAs",
+    "inp": "InP", "인화인듐": "InP",
+    "aln": "AlN", "질화알루미늄": "AlN",
+    "algan": "AlGaN",
+    "ingan": "InGaN",
+    "algaas": "AlGaAs",
+    "ingaas": "InGaAs",
+
+    "al": "Al", "aluminum": "Al", "알루미늄": "Al",
+    "cu": "Cu", "copper": "Cu", "구리": "Cu",
+    "ti": "Ti", "titanium": "Ti", "티타늄": "Ti",
+    "tin": "TiN", "질화티타늄": "TiN",
+    "tan": "TaN",
+    "w": "W", "tungsten": "W", "텅스텐": "W",
+    "au": "Au", "gold": "Au", "금": "Au",
+    "pt": "Pt", "platinum": "Pt", "백금": "Pt",
+    "ni": "Ni", "nickel": "Ni", "니켈": "Ni",
+    "cr": "Cr", "chrome": "Cr", "크롬": "Cr",
+    "ru": "Ru",
+
+    "al2o3": "Al2O3", "알루미나": "Al2O3",
+    "hfo2": "HfO2",
+    "zno": "ZnO", "산화아연": "ZnO",
+    "ito": "ITO",
+
+    "sapphire": "sapphire", "사파이어": "sapphire",
+    "quartz": "quartz", "석영": "quartz",
+    "glass": "glass", "유리": "glass",
+    "diamond": "diamond", "다이아몬드": "diamond",
+
+    "photoresist": "photoresist", "pr": "photoresist", "포토레지스트": "photoresist",
+    "polymer": "polymer", "폴리머": "polymer"
+  },
+
+  "categories": {
+    "cvd": "증착", "pecvd": "증착", "lpcvd": "증착", "mocvd": "증착",
+    "ald": "증착", "pvd": "증착", "sputter": "증착", "스퍼터": "증착",
+    "evapor": "증착", "증착": "증착", "deposition": "증착",
+    "mbe": "증착", "epitax": "증착", "에피": "증착",
+
+    "etch": "식각", "식각": "식각", "rie": "식각", "icp": "식각",
+    "drie": "식각", "심층식각": "식각",
+
+    "litho": "리소그래피", "리소": "리소그래피", "stepper": "리소그래피",
+    "aligner": "리소그래피", "e-beam": "리소그래피", "ebl": "리소그래피",
+    "노광": "리소그래피", "exposure": "리소그래피",
+
+    "anneal": "열처리", "rta": "열처리", "rtp": "열처리",
+    "furnace": "열처리", "확산로": "열처리", "열처리": "열처리",
+    "oxidation": "열처리", "산화": "열처리",
+
+    "sem": "분석", "tem": "분석", "afm": "분석", "xrd": "분석",
+    "xps": "분석", "sims": "분석", "fib": "분석",
+    "분석": "분석", "analysis": "분석", "현미경": "분석",
+
+    "ellips": "측정", "profil": "측정", "측정": "측정",
+    "probe": "측정", "metrology": "측정",
+
+    "clean": "세정", "세정": "세정", "wet": "세정",
+    "asher": "세정", "descum": "세정",
+
+    "coat": "코팅", "코팅": "코팅", "spin": "코팅",
+
+    "bond": "패키징", "본딩": "패키징", "dicing": "패키징",
+    "다이싱": "패키징", "package": "패키징", "패키징": "패키징",
+    "wire": "패키징", "die": "패키징", "flip": "패키징",
+
+    "implant": "이온주입", "이온주입": "이온주입",
+
+    "cmp": "CMP", "polish": "CMP", "연마": "CMP"
+  },
+
+  "institutions": {
+    "나노종합": "나노종합기술원",
+    "나노종합기술원": "나노종합기술원",
+    "한국나노": "한국나노기술원",
+    "한국나노기술원": "한국나노기술원",
+    "나노융합": "나노융합기술원",
+    "나노융합기술원": "나노융합기술원",
+    "광주나노": "광주나노기술집적센터",
+    "광주": "광주나노기술집적센터",
+    "서울대": "서울대반도체공동연구소",
+    "대전": "나노종합기술원",
+    "수원": "한국나노기술원",
+    "포항": "나노융합기술원"
+  }
+}

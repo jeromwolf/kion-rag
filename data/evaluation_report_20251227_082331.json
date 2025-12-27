@@ -1,0 +1,651 @@
+{
+  "timestamp": "2025-12-27T08:23:31.185236",
+  "summary": {
+    "total_queries": 25,
+    "avg_recall_at_1": 0.7299999999999999,
+    "avg_recall_at_3": 0.7433333333333333,
+    "avg_response_time": 5.489004182815552
+  },
+  "standard_tests": {
+    "results": [
+      {
+        "id": "Q01",
+        "query": "ICP-CVD 장비 찾아줘",
+        "category": "직접 검색",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-001"
+        ],
+        "actual_ids": [
+          "KION-001"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.910737037658691,
+        "status": "HIT"
+      },
+      {
+        "id": "Q02",
+        "query": "GaN 에피택시 성장용 MOCVD 장비",
+        "category": "재료+공정",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-009"
+        ],
+        "actual_ids": [
+          "KION-009"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.197813034057617,
+        "status": "HIT"
+      },
+      {
+        "id": "Q03",
+        "query": "나노종합기술원에 있는 SEM 장비",
+        "category": "기관+장비타입",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-002"
+        ],
+        "actual_ids": [
+          "KION-002"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.732223987579346,
+        "status": "HIT"
+      },
+      {
+        "id": "Q04",
+        "query": "6인치 웨이퍼 지원하는 증착 장비",
+        "category": "사이즈+공정",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-001",
+          "KION-008",
+          "KION-019",
+          "KION-020"
+        ],
+        "actual_ids": [
+          "KION-020"
+        ],
+        "recall_at_1": 0.25,
+        "recall_at_3": 0.25,
+        "time": 4.669487953186035,
+        "status": "PARTIAL"
+      },
+      {
+        "id": "Q05",
+        "query": "1000도 이상 고온 열처리 가능한 장비",
+        "category": "온도 제약",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-022",
+          "KION-023",
+          "KION-009"
+        ],
+        "actual_ids": [
+          "KION-090"
+        ],
+        "recall_at_1": 0.0,
+        "recall_at_3": 0.0,
+        "time": 5.822843313217163,
+        "status": "MISS"
+      },
+      {
+        "id": "Q06",
+        "query": "MEMS 공정용 심층 식각 장비",
+        "category": "공정타입",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-007"
+        ],
+        "actual_ids": [
+          "KION-007"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.57756781578064,
+        "status": "HIT"
+      },
+      {
+        "id": "Q07",
+        "query": "박막 두께 측정 장비",
+        "category": "측정타입",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-035",
+          "KION-045",
+          "KION-046"
+        ],
+        "actual_ids": [
+          "KION-035",
+          "KION-045"
+        ],
+        "recall_at_1": 0.3333333333333333,
+        "recall_at_3": 0.6666666666666666,
+        "time": 0.1002042293548584,
+        "status": "PARTIAL"
+      },
+      {
+        "id": "Q08",
+        "query": "금속 배선용 스퍼터 장비",
+        "category": "공정+장비타입",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-016"
+        ],
+        "actual_ids": [
+          "KION-016"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 6.005387783050537,
+        "status": "HIT"
+      },
+      {
+        "id": "Q09",
+        "query": "E-beam 리소그래피 장비",
+        "category": "직접 검색",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-013"
+        ],
+        "actual_ids": [
+          "KION-013"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.718472957611084,
+        "status": "HIT"
+      },
+      {
+        "id": "Q10",
+        "query": "GaAs 기판용 MBE 장비",
+        "category": "재료+장비타입",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-010"
+        ],
+        "actual_ids": [
+          "KION-010"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.598273038864136,
+        "status": "HIT"
+      },
+      {
+        "id": "Q11",
+        "query": "8인치 웨이퍼 CMP 연마 장비",
+        "category": "사이즈+공정",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-025"
+        ],
+        "actual_ids": [
+          "KION-025"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.578366994857788,
+        "status": "HIT"
+      },
+      {
+        "id": "Q12",
+        "query": "포토레지스트 스핀 코팅 장비",
+        "category": "재료+공정",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-063"
+        ],
+        "actual_ids": [
+          "KION-063",
+          "KION-005",
+          "KION-011"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 9.241209030151367,
+        "status": "HIT"
+      },
+      {
+        "id": "Q13",
+        "query": "ALD 원자층 증착 장비",
+        "category": "직접 검색",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-008"
+        ],
+        "actual_ids": [
+          "KION-008"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 6.759058952331543,
+        "status": "HIT"
+      },
+      {
+        "id": "Q14",
+        "query": "이온 주입 장비",
+        "category": "직접 검색",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-024"
+        ],
+        "actual_ids": [
+          "KION-024"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.524178981781006,
+        "status": "HIT"
+      },
+      {
+        "id": "Q15",
+        "query": "반도체 패키징용 다이싱 장비",
+        "category": "공정타입",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-029"
+        ],
+        "actual_ids": [
+          "KION-029"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.866544008255005,
+        "status": "HIT"
+      },
+      {
+        "id": "Q16",
+        "query": "TEM 투과전자현미경",
+        "category": "직접 검색",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-033"
+        ],
+        "actual_ids": [
+          "KION-033"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 6.228856801986694,
+        "status": "HIT"
+      },
+      {
+        "id": "Q17",
+        "query": "XRD 결정구조 분석 장비",
+        "category": "분석타입",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-003"
+        ],
+        "actual_ids": [
+          "KION-003"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.878024101257324,
+        "status": "HIT"
+      },
+      {
+        "id": "Q18",
+        "query": "LED 제작용 에피 성장 장비",
+        "category": "응용+공정",
+        "difficulty": "hard",
+        "expected_ids": [
+          "KION-009"
+        ],
+        "actual_ids": [
+          "KION-009",
+          "KION-010",
+          "KION-077"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 3.9390130043029785,
+        "status": "HIT"
+      },
+      {
+        "id": "Q19",
+        "query": "수원에 있는 습식 세정 장비",
+        "category": "지역+장비타입",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-006"
+        ],
+        "actual_ids": [
+          "KION-061"
+        ],
+        "recall_at_1": 0.0,
+        "recall_at_3": 0.0,
+        "time": 6.035505771636963,
+        "status": "MISS"
+      },
+      {
+        "id": "Q20",
+        "query": "알루미늄 금속막 식각 장비",
+        "category": "재료+공정",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-004"
+        ],
+        "actual_ids": [
+          "KION-004"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 5.333173990249634,
+        "status": "HIT"
+      },
+      {
+        "id": "Q21",
+        "query": "4인치 사파이어 기판 지원하는 장비",
+        "category": "사이즈+재료",
+        "difficulty": "hard",
+        "expected_ids": [
+          "KION-009",
+          "KION-010"
+        ],
+        "actual_ids": [
+          "KION-029"
+        ],
+        "recall_at_1": 0.0,
+        "recall_at_3": 0.0,
+        "time": 5.4359190464019775,
+        "status": "MISS"
+      },
+      {
+        "id": "Q22",
+        "query": "FIB 집속이온빔 장비",
+        "category": "직접 검색",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-034"
+        ],
+        "actual_ids": [
+          "KION-034"
+        ],
+        "recall_at_1": 1.0,
+        "recall_at_3": 1.0,
+        "time": 4.75246000289917,
+        "status": "HIT"
+      },
+      {
+        "id": "Q23",
+        "query": "라만 분광 분석 장비",
+        "category": "분석타입",
+        "difficulty": "easy",
+        "expected_ids": [
+          "KION-077"
+        ],
+        "actual_ids": [
+          "KION-078"
+        ],
+        "recall_at_1": 0.0,
+        "recall_at_3": 0.0,
+        "time": 4.941807746887207,
+        "status": "MISS"
+      },
+      {
+        "id": "Q24",
+        "query": "산화막 성장용 확산로",
+        "category": "공정+장비타입",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-022",
+          "KION-023",
+          "KION-067"
+        ],
+        "actual_ids": [
+          "KION-067"
+        ],
+        "recall_at_1": 0.3333333333333333,
+        "recall_at_3": 0.3333333333333333,
+        "time": 5.455127000808716,
+        "status": "PARTIAL"
+      },
+      {
+        "id": "Q25",
+        "query": "웨이퍼 본딩 장비",
+        "category": "직접 검색",
+        "difficulty": "medium",
+        "expected_ids": [
+          "KION-026",
+          "KION-059",
+          "KION-060"
+        ],
+        "actual_ids": [
+          "KION-026"
+        ],
+        "recall_at_1": 0.3333333333333333,
+        "recall_at_3": 0.3333333333333333,
+        "time": 5.9228479862213135,
+        "status": "PARTIAL"
+      }
+    ],
+    "stats": {
+      "total_queries": 25,
+      "avg_recall_at_1": 0.7299999999999999,
+      "avg_recall_at_3": 0.7433333333333333,
+      "avg_response_time": 5.489004182815552,
+      "total_time": 137.2251045703888,
+      "hit_count": 17,
+      "partial_count": 4,
+      "miss_count": 4,
+      "error_count": 0
+    }
+  },
+  "edge_cases": {
+    "results": [
+      {
+        "id": "E01",
+        "query": "12인치 웨이퍼 장비",
+        "category": "존재하지 않는 사이즈",
+        "expected_behavior": "적합한 장비 없음 안내",
+        "recommendation_count": 3,
+        "actual_ids": [
+          "KION-030",
+          "KION-026",
+          "KION-029"
+        ],
+        "explanation_snippet": "현재 제공된 장비 목록에서는 6인치, 8인치 웨이퍼용 장비만 있습니다. 따라서 12인치 웨이퍼를 처리하기 위한 적합한 장비는 없습니다.",
+        "time": 4.593343019485474
+      },
+      {
+        "id": "E02",
+        "query": "장비 추천해줘",
+        "category": "모호한 질의",
+        "expected_behavior": "추가 정보 요청",
+        "recommendation_count": 3,
+        "actual_ids": [
+          "KION-016",
+          "KION-071",
+          "KION-074"
+        ],
+        "explanation_snippet": "이 추천은 사용자의 요구사항을 고려하여 Back-end 공정과 Front-end 공정 모두를 아우르는 다양한 용도의 장비들을 선별하였습니다. 각 장비들은 특정 재료와 웨이퍼 크기를 지원하며, 해당 공정에 필요한 기능을 충족시킵니다.",
+        "time": 7.331563949584961
+      },
+      {
+        "id": "E03",
+        "query": "2000도 열처리",
+        "category": "비현실적 온도",
+        "expected_behavior": "적합한 장비 없음 또는 최고온 장비 추천",
+        "recommendation_count": 1,
+        "actual_ids": [
+          "KION-021"
+        ],
+        "explanation_snippet": "KION-021 Rapid Thermal Processor는 요구하는 2000도 열처리 범위 내에서 가장 높은 온도(1300.0℃)를 지원하기 때문에 가장 적합한 장비입니다. 다른 장비들은 더 낮은 온도 범위를 가진 반면, KION-021은 급속 열처리와 다양한 분위기 가스 지원 능력으로 추가적인 유용성을 제공합니다.",
+        "time": 6.286303997039795
+      },
+      {
+        "id": "E04",
+        "query": "다이아몬드 기판 공정 장비",
+        "category": "특수 재료",
+        "expected_behavior": "다이아몬드 관련 장비 또는 유사 장비 추천",
+        "recommendation_count": 1,
+        "actual_ids": [
+          "KION-076"
+        ],
+        "explanation_snippet": "KION-076 MPCVD 장비는 2인치와 4인치 웨이퍼를 처리할 수 있으며, 다이아몬드 박막 증착과 DLC 코팅을 가능하게 합니다. 이 장비가 다이아몬드 기판 공정에 가장 적합합니다.",
+        "time": 5.265177965164185
+      },
+      {
+        "id": "E05",
+        "query": "300mm 웨이퍼 증착",
+        "category": "지원하지 않는 사이즈 표기",
+        "expected_behavior": "12인치로 변환 후 검색 또는 없음 안내",
+        "recommendation_count": 1,
+        "actual_ids": [
+          "KION-029"
+        ],
+        "explanation_snippet": "제공된 장비 중에서 300mm 웨이퍼 증착에 적합한 장비는 없으므로, 자동 다이싱 장비인 KION-029를 추천합니다. 이 장비는 고정밀 웨이퍼 절단 기능으로 반도체/LED 칩 분리를 가능하게 하며, 4inch~8inch 웨이퍼에 대해 최소 스트리트 폭 30μm의 정확한 절단을 제공합니다.",
+        "time": 7.269601106643677
+      }
+    ]
+  },
+  "by_category": {
+    "직접 검색": {
+      "count": 7,
+      "recall_1_sum": 6.333333333333333,
+      "recall_3_sum": 6.333333333333333,
+      "time_sum": 40.8166127204895,
+      "avg_recall_1": 0.9047619047619048,
+      "avg_recall_3": 0.9047619047619048,
+      "avg_time": 5.830944674355643
+    },
+    "재료+공정": {
+      "count": 3,
+      "recall_1_sum": 3.0,
+      "recall_3_sum": 3.0,
+      "time_sum": 19.772196054458618,
+      "avg_recall_1": 1.0,
+      "avg_recall_3": 1.0,
+      "avg_time": 6.590732018152873
+    },
+    "기관+장비타입": {
+      "count": 1,
+      "recall_1_sum": 1.0,
+      "recall_3_sum": 1.0,
+      "time_sum": 5.732223987579346,
+      "avg_recall_1": 1.0,
+      "avg_recall_3": 1.0,
+      "avg_time": 5.732223987579346
+    },
+    "사이즈+공정": {
+      "count": 2,
+      "recall_1_sum": 1.25,
+      "recall_3_sum": 1.25,
+      "time_sum": 10.247854948043823,
+      "avg_recall_1": 0.625,
+      "avg_recall_3": 0.625,
+      "avg_time": 5.123927474021912
+    },
+    "온도 제약": {
+      "count": 1,
+      "recall_1_sum": 0.0,
+      "recall_3_sum": 0.0,
+      "time_sum": 5.822843313217163,
+      "avg_recall_1": 0.0,
+      "avg_recall_3": 0.0,
+      "avg_time": 5.822843313217163
+    },
+    "공정타입": {
+      "count": 2,
+      "recall_1_sum": 2.0,
+      "recall_3_sum": 2.0,
+      "time_sum": 11.444111824035645,
+      "avg_recall_1": 1.0,
+      "avg_recall_3": 1.0,
+      "avg_time": 5.722055912017822
+    },
+    "측정타입": {
+      "count": 1,
+      "recall_1_sum": 0.3333333333333333,
+      "recall_3_sum": 0.6666666666666666,
+      "time_sum": 0.1002042293548584,
+      "avg_recall_1": 0.3333333333333333,
+      "avg_recall_3": 0.6666666666666666,
+      "avg_time": 0.1002042293548584
+    },
+    "공정+장비타입": {
+      "count": 2,
+      "recall_1_sum": 1.3333333333333333,
+      "recall_3_sum": 1.3333333333333333,
+      "time_sum": 11.460514783859253,
+      "avg_recall_1": 0.6666666666666666,
+      "avg_recall_3": 0.6666666666666666,
+      "avg_time": 5.7302573919296265
+    },
+    "재료+장비타입": {
+      "count": 1,
+      "recall_1_sum": 1.0,
+      "recall_3_sum": 1.0,
+      "time_sum": 5.598273038864136,
+      "avg_recall_1": 1.0,
+      "avg_recall_3": 1.0,
+      "avg_time": 5.598273038864136
+    },
+    "분석타입": {
+      "count": 2,
+      "recall_1_sum": 1.0,
+      "recall_3_sum": 1.0,
+      "time_sum": 10.819831848144531,
+      "avg_recall_1": 0.5,
+      "avg_recall_3": 0.5,
+      "avg_time": 5.409915924072266
+    },
+    "응용+공정": {
+      "count": 1,
+      "recall_1_sum": 1.0,
+      "recall_3_sum": 1.0,
+      "time_sum": 3.9390130043029785,
+      "avg_recall_1": 1.0,
+      "avg_recall_3": 1.0,
+      "avg_time": 3.9390130043029785
+    },
+    "지역+장비타입": {
+      "count": 1,
+      "recall_1_sum": 0.0,
+      "recall_3_sum": 0.0,
+      "time_sum": 6.035505771636963,
+      "avg_recall_1": 0.0,
+      "avg_recall_3": 0.0,
+      "avg_time": 6.035505771636963
+    },
+    "사이즈+재료": {
+      "count": 1,
+      "recall_1_sum": 0.0,
+      "recall_3_sum": 0.0,
+      "time_sum": 5.4359190464019775,
+      "avg_recall_1": 0.0,
+      "avg_recall_3": 0.0,
+      "avg_time": 5.4359190464019775
+    }
+  },
+  "by_difficulty": {
+    "easy": {
+      "count": 9,
+      "recall_1_sum": 7.333333333333333,
+      "recall_3_sum": 7.666666666666666,
+      "avg_recall_1": 0.8148148148148148,
+      "avg_recall_3": 0.8518518518518517
+    },
+    "medium": {
+      "count": 14,
+      "recall_1_sum": 9.916666666666668,
+      "recall_3_sum": 9.916666666666668,
+      "avg_recall_1": 0.7083333333333334,
+      "avg_recall_3": 0.7083333333333334
+    },
+    "hard": {
+      "count": 2,
+      "recall_1_sum": 1.0,
+      "recall_3_sum": 1.0,
+      "avg_recall_1": 0.5,
+      "avg_recall_3": 0.5
+    }
+  }
+}
