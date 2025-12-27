@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>샘플 데이터 - KION AI 팹서비스</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #00A651;
+            --accent: #FF6B35;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-card .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-card .label {
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        /* Section */
+        .section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, var(--primary), #0088FF);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .section-header .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+        }
+
+        .section-body {
+            padding: 25px;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--light-gray);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--light-gray);
+            vertical-align: top;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .data-table .id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .data-table .category-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .category-증착 { background: #E3F2FD; color: #1565C0; }
+        .category-분석 { background: #F3E5F5; color: #7B1FA2; }
+        .category-식각 { background: #FFEBEE; color: #C62828; }
+        .category-코팅 { background: #E8F5E9; color: #2E7D32; }
+        .category-열처리 { background: #FFF3E0; color: #E65100; }
+        .category-리소그래피 { background: #E0F7FA; color: #00838F; }
+        .category-세정 { background: #F1F8E9; color: #558B2F; }
+        .category-패키징 { background: #FBE9E7; color: #BF360C; }
+        .category-측정 { background: #EDE7F6; color: #512DA8; }
+
+        .tag {
+            display: inline-block;
+            background: var(--bg-light);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin: 2px;
+            color: var(--gray);
+        }
+
+        /* Filter Rules */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .rule-card {
+            background: var(--bg-light);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .rule-card h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .rule-table {
+            width: 100%;
+            font-size: 13px;
+        }
+
+        .rule-table th {
+            text-align: left;
+            padding: 8px 10px;
+            background: white;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .rule-table td {
+            padding: 8px 10px;
+        }
+
+        .rule-table code {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            color: var(--primary);
+        }
+
+        .arrow {
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* Scrollable table wrapper */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: var(--bg-light);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray);
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: var(--light-gray);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .rules-grid { grid-template-columns: 1fr; }
+            .header-inner { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <div>
+                <h1>Sample Data</h1>
+                <p>장비 데이터 및 필터 룰 테이블</p>
+            </div>
+            <a href="/" class="back-btn">← 메인으로</a>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">🔬</div>
+                <div class="value">100</div>
+                <div class="label">등록 장비 수</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🏢</div>
+                <div class="value">5</div>
+                <div class="label">협력 기관</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📂</div>
+                <div class="value">10</div>
+                <div class="label">장비 카테고리</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🧪</div>
+                <div class="value">60+</div>
+                <div class="label">지원 재료</div>
+            </div>
+        </div>
+
+        <!-- Equipment Data -->
+        <section class="section">
+            <div class="section-header">
+                <h2>장비 데이터 (Equipment)</h2>
+                <span class="badge">kion_equipment.json</span>
+            </div>
+            <div class="section-body">
+                <p style="margin-bottom: 20px; color: var(--gray);">
+                    ChromaDB에 저장된 장비 데이터입니다. 각 장비는 벡터화되어 의미 기반 검색에 사용됩니다.
+                </p>
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>장비명</th>
+                                <th>카테고리</th>
+                                <th>웨이퍼</th>
+                                <th>재료</th>
+                                <th>온도</th>
+                                <th>기관</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="id">KION-001</td>
+                                <td><strong>ICP-CVD</strong><br><small>Inductively Coupled Plasma CVD</small></td>
+                                <td><span class="category-badge category-증착">증착</span></td>
+                                <td><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
+                                <td><span class="tag">SiO2</span><span class="tag">SiNx</span><span class="tag">a-Si</span></td>
+                                <td>100~400°C</td>
+                                <td>광주나노기술집적센터</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-002</td>
+                                <td><strong>FE-SEM</strong><br><small>Field Emission SEM</small></td>
+                                <td><span class="category-badge category-분석">분석</span></td>
+                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span></td>
+                                <td><span class="tag">Si</span><span class="tag">GaN</span><span class="tag">metal</span></td>
+                                <td>20~30°C</td>
+                                <td>나노종합기술원</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-003</td>
+                                <td><strong>HR-XRD</strong><br><small>High Resolution XRD</small></td>
+                                <td><span class="category-badge category-분석">분석</span></td>
+                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span><span class="tag">6 inch</span></td>
+                                <td><span class="tag">Si</span><span class="tag">GaN</span><span class="tag">thin film</span></td>
+                                <td>20~30°C</td>
+                                <td>한국나노기술원</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-004</td>
+                                <td><strong>Metal Dry Etcher</strong><br><small>TCP Metal Dry Etcher</small></td>
+                                <td><span class="category-badge category-식각">식각</span></td>
+                                <td><span class="tag">8 inch</span></td>
+                                <td><span class="tag">Al</span><span class="tag">Ti</span><span class="tag">TiN</span><span class="tag">W</span></td>
+                                <td>20~100°C</td>
+                                <td>나노융합기술원</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-005</td>
+                                <td><strong>Spray Coater</strong><br><small>Spray Coating System</small></td>
+                                <td><span class="category-badge category-코팅">코팅</span></td>
+                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
+                                <td><span class="tag">photoresist</span><span class="tag">polymer</span></td>
+                                <td>20~200°C</td>
+                                <td>나노종합기술원</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-006</td>
+                                <td><strong>RTA</strong><br><small>Rapid Thermal Annealing</small></td>
+                                <td><span class="category-badge category-열처리">열처리</span></td>
+                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span></td>
+                                <td><span class="tag">Si</span><span class="tag">SiO2</span><span class="tag">metal</span></td>
+                                <td>200~1200°C</td>
+                                <td>한국나노기술원</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-007</td>
+                                <td><strong>E-beam Lithography</strong><br><small>Electron Beam Lithography</small></td>
+                                <td><span class="category-badge category-리소그래피">리소그래피</span></td>
+                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span></td>
+                                <td><span class="tag">Si</span><span class="tag">GaAs</span><span class="tag">photoresist</span></td>
+                                <td>20~150°C</td>
+                                <td>나노종합기술원</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-008</td>
+                                <td><strong>Wet Station</strong><br><small>Wet Cleaning System</small></td>
+                                <td><span class="category-badge category-세정">세정</span></td>
+                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
+                                <td><span class="tag">Si</span><span class="tag">glass</span><span class="tag">metal</span></td>
+                                <td>20~90°C</td>
+                                <td>광주나노기술집적센터</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-009</td>
+                                <td><strong>MOCVD</strong><br><small>Metal Organic CVD</small></td>
+                                <td><span class="category-badge category-증착">증착</span></td>
+                                <td><span class="tag">2 inch</span><span class="tag">4 inch</span></td>
+                                <td><span class="tag">GaN</span><span class="tag">AlGaN</span><span class="tag">InGaN</span><span class="tag">AlN</span></td>
+                                <td>400~1100°C</td>
+                                <td>나노종합기술원</td>
+                            </tr>
+                            <tr>
+                                <td class="id">KION-010</td>
+                                <td><strong>Sputter</strong><br><small>DC/RF Magnetron Sputter</small></td>
+                                <td><span class="category-badge category-증착">증착</span></td>
+                                <td><span class="tag">4 inch</span><span class="tag">6 inch</span><span class="tag">8 inch</span></td>
+                                <td><span class="tag">Ti</span><span class="tag">TiN</span><span class="tag">Al</span><span class="tag">Cu</span></td>
+                                <td>20~400°C</td>
+                                <td>나노융합기술원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top: 15px; font-size: 13px; color: var(--gray); text-align: center;">
+                    ... 외 90개 장비 (총 100개)
+                </p>
+            </div>
+        </section>
+
+        <!-- Filter Rules -->
+        <section class="section">
+            <div class="section-header">
+                <h2>필터 룰 (Filter Rules)</h2>
+                <span class="badge">filter_rules.json</span>
+            </div>
+            <div class="section-body">
+                <p style="margin-bottom: 25px; color: var(--gray);">
+                    Query Parser에서 사용자 입력을 정규화하는 데 사용하는 매핑 규칙입니다.
+                </p>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('wafer')">웨이퍼 크기</button>
+                    <button class="tab-btn" onclick="showTab('materials')">재료</button>
+                    <button class="tab-btn" onclick="showTab('categories')">카테고리</button>
+                    <button class="tab-btn" onclick="showTab('institutions')">기관</button>
+                </div>
+
+                <!-- Wafer Sizes -->
+                <div id="tab-wafer" class="tab-content active">
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <h3>📏 유효 웨이퍼 크기</h3>
+                            <table class="rule-table">
+                                <tr><td><code>2 inch</code></td><td><code>3 inch</code></td><td><code>4 inch</code></td></tr>
+                                <tr><td><code>6 inch</code></td><td><code>8 inch</code></td><td><code>12 inch</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>🔄 mm → inch 변환</h3>
+                            <table class="rule-table">
+                                <tr><td><code>50mm</code></td><td class="arrow">→</td><td><code>2 inch</code></td></tr>
+                                <tr><td><code>75mm</code></td><td class="arrow">→</td><td><code>3 inch</code></td></tr>
+                                <tr><td><code>100mm</code></td><td class="arrow">→</td><td><code>4 inch</code></td></tr>
+                                <tr><td><code>150mm</code></td><td class="arrow">→</td><td><code>6 inch</code></td></tr>
+                                <tr><td><code>200mm</code></td><td class="arrow">→</td><td><code>8 inch</code></td></tr>
+                                <tr><td><code>300mm</code></td><td class="arrow">→</td><td><code>12 inch</code></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Materials -->
+                <div id="tab-materials" class="tab-content">
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <h3>🔵 실리콘 계열</h3>
+                            <table class="rule-table">
+                                <tr><td><code>si, silicon, 실리콘</code></td><td class="arrow">→</td><td><code>Si</code></td></tr>
+                                <tr><td><code>sio2, 산화막</code></td><td class="arrow">→</td><td><code>SiO2</code></td></tr>
+                                <tr><td><code>sinx, sin, 질화막</code></td><td class="arrow">→</td><td><code>SiNx</code></td></tr>
+                                <tr><td><code>poly, polysilicon</code></td><td class="arrow">→</td><td><code>poly-Si</code></td></tr>
+                                <tr><td><code>sic, 탄화규소</code></td><td class="arrow">→</td><td><code>SiC</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>🟢 III-V 화합물</h3>
+                            <table class="rule-table">
+                                <tr><td><code>gan, 질화갈륨</code></td><td class="arrow">→</td><td><code>GaN</code></td></tr>
+                                <tr><td><code>gaas, 갈륨비소</code></td><td class="arrow">→</td><td><code>GaAs</code></td></tr>
+                                <tr><td><code>inp, 인화인듐</code></td><td class="arrow">→</td><td><code>InP</code></td></tr>
+                                <tr><td><code>aln, 질화알루미늄</code></td><td class="arrow">→</td><td><code>AlN</code></td></tr>
+                                <tr><td><code>algan</code></td><td class="arrow">→</td><td><code>AlGaN</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>🟡 금속</h3>
+                            <table class="rule-table">
+                                <tr><td><code>al, aluminum, 알루미늄</code></td><td class="arrow">→</td><td><code>Al</code></td></tr>
+                                <tr><td><code>cu, copper, 구리</code></td><td class="arrow">→</td><td><code>Cu</code></td></tr>
+                                <tr><td><code>ti, titanium, 티타늄</code></td><td class="arrow">→</td><td><code>Ti</code></td></tr>
+                                <tr><td><code>w, tungsten, 텅스텐</code></td><td class="arrow">→</td><td><code>W</code></td></tr>
+                                <tr><td><code>au, gold, 금</code></td><td class="arrow">→</td><td><code>Au</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>⚪ 기타 재료</h3>
+                            <table class="rule-table">
+                                <tr><td><code>sapphire, 사파이어</code></td><td class="arrow">→</td><td><code>sapphire</code></td></tr>
+                                <tr><td><code>quartz, 석영</code></td><td class="arrow">→</td><td><code>quartz</code></td></tr>
+                                <tr><td><code>glass, 유리</code></td><td class="arrow">→</td><td><code>glass</code></td></tr>
+                                <tr><td><code>photoresist, pr</code></td><td class="arrow">→</td><td><code>photoresist</code></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div id="tab-categories" class="tab-content">
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <h3>📦 증착 (Deposition)</h3>
+                            <table class="rule-table">
+                                <tr><td><code>cvd, pecvd, lpcvd</code></td><td class="arrow">→</td><td><code>증착</code></td></tr>
+                                <tr><td><code>mocvd, mbe, epitax</code></td><td class="arrow">→</td><td><code>증착</code></td></tr>
+                                <tr><td><code>ald, pvd, sputter</code></td><td class="arrow">→</td><td><code>증착</code></td></tr>
+                                <tr><td><code>evapor, 에피</code></td><td class="arrow">→</td><td><code>증착</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>🔍 분석 (Analysis)</h3>
+                            <table class="rule-table">
+                                <tr><td><code>sem, tem, afm</code></td><td class="arrow">→</td><td><code>분석</code></td></tr>
+                                <tr><td><code>xrd, xps, sims</code></td><td class="arrow">→</td><td><code>분석</code></td></tr>
+                                <tr><td><code>fib, 현미경</code></td><td class="arrow">→</td><td><code>분석</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>⚡ 식각 (Etching)</h3>
+                            <table class="rule-table">
+                                <tr><td><code>etch, 식각</code></td><td class="arrow">→</td><td><code>식각</code></td></tr>
+                                <tr><td><code>rie, icp, drie</code></td><td class="arrow">→</td><td><code>식각</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>🔥 열처리 (Thermal)</h3>
+                            <table class="rule-table">
+                                <tr><td><code>anneal, rta, rtp</code></td><td class="arrow">→</td><td><code>열처리</code></td></tr>
+                                <tr><td><code>furnace, 확산로</code></td><td class="arrow">→</td><td><code>열처리</code></td></tr>
+                                <tr><td><code>oxidation, 산화</code></td><td class="arrow">→</td><td><code>열처리</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>📷 리소그래피</h3>
+                            <table class="rule-table">
+                                <tr><td><code>litho, 리소</code></td><td class="arrow">→</td><td><code>리소그래피</code></td></tr>
+                                <tr><td><code>stepper, aligner</code></td><td class="arrow">→</td><td><code>리소그래피</code></td></tr>
+                                <tr><td><code>e-beam, ebl, 노광</code></td><td class="arrow">→</td><td><code>리소그래피</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>🧹 기타 공정</h3>
+                            <table class="rule-table">
+                                <tr><td><code>clean, wet, asher</code></td><td class="arrow">→</td><td><code>세정</code></td></tr>
+                                <tr><td><code>coat, spin</code></td><td class="arrow">→</td><td><code>코팅</code></td></tr>
+                                <tr><td><code>bond, dicing</code></td><td class="arrow">→</td><td><code>패키징</code></td></tr>
+                                <tr><td><code>implant, 이온주입</code></td><td class="arrow">→</td><td><code>이온주입</code></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Institutions -->
+                <div id="tab-institutions" class="tab-content">
+                    <div class="rules-grid">
+                        <div class="rule-card">
+                            <h3>🏢 기관 매핑</h3>
+                            <table class="rule-table">
+                                <tr><td><code>나노종합, 대전</code></td><td class="arrow">→</td><td><code>나노종합기술원</code></td></tr>
+                                <tr><td><code>한국나노, 수원</code></td><td class="arrow">→</td><td><code>한국나노기술원</code></td></tr>
+                                <tr><td><code>나노융합, 포항</code></td><td class="arrow">→</td><td><code>나노융합기술원</code></td></tr>
+                                <tr><td><code>광주나노, 광주</code></td><td class="arrow">→</td><td><code>광주나노기술집적센터</code></td></tr>
+                                <tr><td><code>서울대</code></td><td class="arrow">→</td><td><code>서울대반도체공동연구소</code></td></tr>
+                            </table>
+                        </div>
+                        <div class="rule-card">
+                            <h3>📍 기관별 장비 수</h3>
+                            <table class="rule-table">
+                                <tr><th>기관</th><th>장비 수</th></tr>
+                                <tr><td>나노종합기술원</td><td>32개</td></tr>
+                                <tr><td>한국나노기술원</td><td>28개</td></tr>
+                                <tr><td>나노융합기술원</td><td>18개</td></tr>
+                                <tr><td>광주나노기술집적센터</td><td>15개</td></tr>
+                                <tr><td>서울대반도체공동연구소</td><td>7개</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON Structure -->
+        <section class="section">
+            <div class="section-header">
+                <h2>JSON 데이터 구조</h2>
+                <span class="badge">Schema</span>
+            </div>
+            <div class="section-body">
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <h3>📄 장비 데이터 스키마</h3>
+                        <pre style="background: white; padding: 15px; border-radius: 8px; font-size: 12px; overflow-x: auto;">
+{
+  "equipment_id": "KION-XXX",
+  "name": "장비명",
+  "name_en": "English Name",
+  "model": "모델명",
+  "manufacturer": "제조사",
+  "category": "카테고리",
+  "part": "Front-end/Back-end/분석",
+  "wafer_sizes": ["4 inch", "6 inch"],
+  "materials": ["Si", "GaN", ...],
+  "temp_min": 20,
+  "temp_max": 400,
+  "description": "상세 설명",
+  "tags": ["태그1", "태그2"],
+  "institution": "기관명",
+  "location": "위치",
+  "contact": "담당자",
+  "phone": "연락처",
+  "reservation_url": "예약 URL"
+}</pre>
+                    </div>
+                    <div class="rule-card">
+                        <h3>📝 벡터화 대상 필드</h3>
+                        <table class="rule-table">
+                            <tr><th>필드</th><th>용도</th></tr>
+                            <tr><td><code>name + name_en</code></td><td>장비명 매칭</td></tr>
+                            <tr><td><code>description</code></td><td>의미 기반 검색</td></tr>
+                            <tr><td><code>tags</code></td><td>키워드 매칭</td></tr>
+                            <tr><td><code>materials</code></td><td>재료 필터링</td></tr>
+                        </table>
+                        <p style="margin-top: 15px; font-size: 12px; color: var(--gray);">
+                            → 위 필드들을 결합하여 nomic-embed-text로 벡터화 후 ChromaDB에 저장
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 30px; color: var(--gray); font-size: 14px;">
+        <p>KION AI 팹서비스 PoC Demo</p>
+        <p style="margin-top: 5px;">
+            <a href="architecture.html" style="color: var(--primary); text-decoration: none;">아키텍처</a> ·
+            <a href="flowchart.html" style="color: var(--primary); text-decoration: none;">플로우차트</a> ·
+            <a href="/" style="color: var(--primary); text-decoration: none;">메인</a>
+        </p>
+    </footer>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
