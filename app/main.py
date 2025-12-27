@@ -21,6 +21,7 @@ import json
 
 # Static files directory
 STATIC_DIR = Path(__file__).parent.parent / "static"
+DATA_DIR = Path(__file__).parent.parent / "data"
 
 
 @asynccontextmanager
@@ -53,6 +54,10 @@ app.add_middleware(
 # Static files mount
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+# Data files mount
+if DATA_DIR.exists():
+    app.mount("/data", StaticFiles(directory=str(DATA_DIR)), name="data")
 
 
 @app.get("/", tags=["Root"])
