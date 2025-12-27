@@ -165,11 +165,25 @@ kion-rag/
 │   └── recommendation_stream.txt  # 스트리밍용 프롬프트
 ├── static/
 │   ├── index.html        # 메인 페이지 & 챗봇
-│   └── reservation.html  # 예약 페이지
+│   ├── reservation.html  # 예약 페이지
+│   ├── architecture.html # 시스템 아키텍처
+│   ├── flowchart.html    # 처리 흐름도
+│   ├── deployment.html   # 배포 아키텍처 (로컬/클라우드)
+│   └── sample.html       # 샘플 데이터 (100개 장비)
 ├── requirements.txt
 ├── run.py
+├── CLAUDE.md             # 프로젝트 컨텍스트
 └── README.md
 ```
+
+## 문서 페이지
+
+| 페이지 | URL | 설명 |
+|--------|-----|------|
+| 시스템 아키텍처 | `/static/architecture.html` | RAG 파이프라인 구조 |
+| 처리 흐름도 | `/static/flowchart.html` | 쿼리→추천 상세 흐름 |
+| 배포 아키텍처 | `/static/deployment.html` | 로컬 vs 클라우드 비교 |
+| 샘플 데이터 | `/static/sample.html` | 100개 장비 & 필터 룰 |
 
 ## 쿼리 파싱 예시
 
