@@ -195,6 +195,10 @@
         .category-패키징 { background: #FBE9E7; color: #BF360C; }
         .category-측정 { background: #EDE7F6; color: #512DA8; }
         .category-이온주입 { background: #FCE4EC; color: #C2185B; }
+        .category-본딩 { background: #FFF8E1; color: #F57F17; }
+        .category-검사 { background: #E8EAF6; color: #3949AB; }
+        .category-기타 { background: #ECEFF1; color: #546E7A; }
+        .category-평탄화 { background: #E0F2F1; color: #00796B; }
         .category-CMP { background: #ECEFF1; color: #455A64; }
 
         /* Load More Button */
@@ -366,15 +370,20 @@
                     <div style="display: flex; gap: 10px;">
                         <select id="categoryFilter" onchange="filterEquipment()" style="padding: 8px 12px; border: 1px solid var(--light-gray); border-radius: 6px; font-size: 13px;">
                             <option value="">전체 카테고리</option>
-                            <option value="증착">증착</option>
-                            <option value="분석">분석</option>
-                            <option value="식각">식각</option>
-                            <option value="열처리">열처리</option>
-                            <option value="리소그래피">리소그래피</option>
-                            <option value="코팅">코팅</option>
-                            <option value="세정">세정</option>
-                            <option value="패키징">패키징</option>
-                            <option value="측정">측정</option>
+                            <option value="측정">측정 (20)</option>
+                            <option value="증착">증착 (17)</option>
+                            <option value="분석">분석 (17)</option>
+                            <option value="식각">식각 (7)</option>
+                            <option value="리소그래피">리소그래피 (7)</option>
+                            <option value="열처리">열처리 (7)</option>
+                            <option value="패키징">패키징 (7)</option>
+                            <option value="세정">세정 (6)</option>
+                            <option value="코팅">코팅 (3)</option>
+                            <option value="본딩">본딩 (3)</option>
+                            <option value="검사">검사 (2)</option>
+                            <option value="기타">기타 (2)</option>
+                            <option value="이온주입">이온주입 (1)</option>
+                            <option value="평탄화">평탄화 (1)</option>
                         </select>
                         <input type="text" id="searchInput" placeholder="검색..." onkeyup="filterEquipment()" style="padding: 8px 12px; border: 1px solid var(--light-gray); border-radius: 6px; font-size: 13px; width: 150px;">
                     </div>
