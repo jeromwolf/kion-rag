@@ -198,14 +198,15 @@ def generate_recommendation_stream(query: str, equipments: List[Dict[str, Any]])
 
     # 장비 컨텍스트 생성
     equipment_context = format_equipment_context(equipments)
+    equipment_count = len(equipments)
 
     # 사용자 프롬프트
     user_prompt = f"""사용자 질의: {query}
 
-검색된 장비 목록:
+검색된 장비 목록 (총 {equipment_count}개):
 {equipment_context}
 
-위 장비들 중에서 사용자 질의에 가장 적합한 장비를 추천해주세요."""
+[중요] 위 {equipment_count}개 장비만 추천하세요. 같은 장비를 여러 번 설명하지 마세요."""
 
     try:
         stream = ollama.chat(

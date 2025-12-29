@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터 설계 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #00A651;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tech-card h3 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tech-list li:last-child { border-bottom: none; }
+
+        .tech-list .tech-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .tech-list .tech-version {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        .data-table td {
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #263238;
+            color: #ECEFF1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .flow-container {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .flow-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .flow-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .flow-desc {
+            font-size: 11px;
+            color: var(--gray);
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .flow-arrow {
+            color: var(--primary);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/architecture.html">아키텍처</a>
+                <a href="/techstack.html">기술스택</a>
+                <a href="/data-design.html" class="active">데이터설계</a>
+                <a href="/implementation.html">구현가이드</a>
+                <a href="/admin.html">관리자</a>
+                
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>데이터 설계</h1>
+            <p>장비 데이터 스키마, RAG 지식베이스 설계, 동기화 전략</p>
+        </div>
+
+        <!-- 데이터 파이프라인 -->
+        <h2 class="section-title">데이터 파이프라인</h2>
+        <div class="flow-container">
+            <div class="flow">
+                <div class="flow-step">
+                    <div class="flow-icon">🗃️</div>
+                    <div class="flow-title">MS-SQL</div>
+                    <div class="flow-desc">장비 마스터 DB</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-icon">⚙️</div>
+                    <div class="flow-title">ETL 스크립트</div>
+                    <div class="flow-desc">데이터 정제/변환</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-icon">📄</div>
+                    <div class="flow-title">JSON 스키마</div>
+                    <div class="flow-desc">RAG용 장비 뷰</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-icon">🔢</div>
+                    <div class="flow-title">임베딩 생성</div>
+                    <div class="flow-desc">e5-large / bge-m3</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <div class="flow-icon">🗄️</div>
+                    <div class="flow-title">벡터 DB</div>
+                    <div class="flow-desc">ChromaDB / Qdrant</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MS-SQL 장비 스키마 -->
+        <h2 class="section-title">MS-SQL 장비 스키마 (필수 컬럼)</h2>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>🔑 기본 정보</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">equipment_id</span><span class="tech-version">장비 고유 ID (PK)</span></li>
+                    <li><span class="tech-name">name / name_en</span><span class="tech-version">장비명 (국문/영문)</span></li>
+                    <li><span class="tech-name">category</span><span class="tech-version">카테고리 (증착, 식각, 측정 등)</span></li>
+                    <li><span class="tech-name">part</span><span class="tech-version">파트 (Front-end, Back-end 등)</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>📐 스펙 정보</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">wafer_sizes</span><span class="tech-version">지원 웨이퍼 (2/4/6/8 inch)</span></li>
+                    <li><span class="tech-name">materials</span><span class="tech-version">공정 재료 (Si, GaN, sapphire)</span></li>
+                    <li><span class="tech-name">temp_min / temp_max</span><span class="tech-version">온도 범위 (℃)</span></li>
+                    <li><span class="tech-name">pressure_range</span><span class="tech-version">압력 범위 (Torr)</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>📝 설명 · 태그</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">description</span><span class="tech-version">용도/활용분야 (NVARCHAR MAX)</span></li>
+                    <li><span class="tech-name">tags</span><span class="tech-version">검색 태그 (JSON Array)</span></li>
+                    <li><span class="tech-name">features</span><span class="tech-version">주요 특징/성능</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🔗 연동 정보</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">institution</span><span class="tech-version">기관명</span></li>
+                    <li><span class="tech-name">location</span><span class="tech-version">위치 (A동 2층 등)</span></li>
+                    <li><span class="tech-name">reservation_url</span><span class="tech-version">fab.kion.or.kr 예약 딥링크</span></li>
+                    <li><span class="tech-name">image_url</span><span class="tech-version">장비 이미지 경로</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 용어 표준화 / 태깅 -->
+        <h2 class="section-title">용어 표준화 · 태깅 체계</h2>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>📂 파트/공정 표준 분류</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">Front-end</span><span class="tech-version">증착, 식각, 확산, 이온주입</span></li>
+                    <li><span class="tech-name">Back-end</span><span class="tech-version">패키징, 본딩, 다이싱</span></li>
+                    <li><span class="tech-name">분석/측정</span><span class="tech-version">SEM, TEM, XRD, AFM</span></li>
+                    <li><span class="tech-name">열처리</span><span class="tech-version">RTA, 어닐링, 산화</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🏷️ 태그 예시</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">RTA 장비</span><span class="tech-version">["RTA", "급속열처리", "어닐링"]</span></li>
+                    <li><span class="tech-name">MOCVD</span><span class="tech-version">["MOCVD", "에피성장", "GaN"]</span></li>
+                    <li><span class="tech-name">PECVD</span><span class="tech-version">["PECVD", "박막증착", "SiO2"]</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RAG 지식베이스 설계 -->
+        <h2 class="section-title">RAG 지식베이스 설계</h2>
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #1565C0;">
+                <h3>📄 문서 단위 정의</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">1 장비 = 1 문서</span><span class="tech-version">기본 구조</span></li>
+                    <li><span class="tech-name">제목</span><span class="tech-version">"장비명 + 주요 파트"</span></li>
+                    <li><span class="tech-name">본문</span><span class="tech-version">용도 요약 + 스펙 + 공정 예시</span></li>
+                    <li><span class="tech-name">메타데이터</span><span class="tech-version">장비ID, 사이즈, 재료, 기관</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #1565C0;">
+                <h3>🔢 임베딩 대상</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">전체 텍스트</span><span class="tech-version">설명 + 스펙 요약 결합</span></li>
+                    <li><span class="tech-name">서브문서 (선택)</span><span class="tech-version">공정별 블록 분리 가능</span></li>
+                    <li><span class="tech-name">청킹 전략</span><span class="tech-version">장비당 1문서 (현재)</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="code-block" style="margin-top: 20px;">
+            <pre><strong># 문서 구조 예시</strong>
+[KION-001] Hybrid RTA – 급속 열처리 장비
+
+<strong>용도:</strong> 반도체/디스플레이 소자 급속 열처리
+<strong>스펙:</strong> 4/6 inch | Si, GaN | 200~1200℃
+<strong>공정:</strong> 도펀트 활성화, 게이트 산화막, 소자물성 개선
+<strong>태그:</strong> RTA, 급속열처리, 어닐링
+
+<strong>메타데이터:</strong> {id: "KION-001", wafer: ["4 inch", "6 inch"], ...}</pre>
+        </div>
+
+        <!-- 데이터 동기화 전략 -->
+        <h2 class="section-title">데이터 동기화 전략</h2>
+
+        <!-- 동기화 시 업데이트 대상 -->
+        <div style="background: #E3F2FD; border: 2px solid #1565C0; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <h4 style="font-size: 15px; color: #1565C0; margin: 0 0 12px 0;">⚠️ 동기화 시 함께 업데이트해야 할 항목</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div style="background: #fff; border-radius: 8px; padding: 16px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #1565C0; margin-bottom: 8px;">1. 임베딩 (벡터)</div>
+                    <div style="font-size: 12px; color: #666;">
+                        • 장비 설명, 이름, 태그 변경 시<br>
+                        • 검색 텍스트 재생성 → 임베딩 재계산
+                    </div>
+                </div>
+                <div style="background: #fff; border-radius: 8px; padding: 16px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #1565C0; margin-bottom: 8px;">2. 메타데이터 (스펙)</div>
+                    <div style="font-size: 12px; color: #666;">
+                        • temp_min, temp_max, wafer_sizes 등<br>
+                        • 메타필터에서 사용하는 스펙 정보
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 12px; padding: 10px; background: #BBDEFB; border-radius: 6px; font-size: 12px;">
+                <code>collection.upsert(documents=[텍스트], metadatas=[스펙])</code> → 둘 다 함께 업데이트
+            </div>
+        </div>
+
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #1565C0;">
+                <h3>🔄 증분 업데이트 (Incremental)</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">신규 추가</span><span class="tech-version">INSERT → 임베딩+메타 → VectorDB 추가</span></li>
+                    <li><span class="tech-name">수정 반영</span><span class="tech-version">UPDATE → 임베딩+메타 재생성 → upsert</span></li>
+                    <li><span class="tech-name">삭제 처리</span><span class="tech-version">DELETE → VectorDB에서 제거</span></li>
+                    <li><span class="tech-name">변경 감지</span><span class="tech-version">updated_at 컬럼 비교</span></li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                    ✅ 빠른 동기화<br>
+                    ✅ 서비스 중단 없음<br>
+                    ⚠️ 변경 추적 로직 필요
+                </p>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #FF9800;">
+                <h3>🔁 전체 재빌드 (Full Rebuild)</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">전체 추출</span><span class="tech-version">MS-SQL에서 전체 데이터 덤프</span></li>
+                    <li><span class="tech-name">일괄 임베딩</span><span class="tech-version">모든 문서 임베딩 재생성</span></li>
+                    <li><span class="tech-name">DB 교체</span><span class="tech-version">기존 VectorDB 삭제 → 새 DB</span></li>
+                    <li><span class="tech-name">주기</span><span class="tech-version">일간 또는 주간 (야간 배치)</span></li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                    ✅ 구현 단순<br>
+                    ✅ 데이터 정합성 보장<br>
+                    ⚠️ 처리 시간 길음
+                </p>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: #E3F2FD; border-radius: 8px;">
+            <p style="font-size: 14px; margin: 0;"><strong>권장 방식:</strong></p>
+            <ul style="font-size: 13px; color: #333; margin: 10px 0 0 20px; padding: 0;">
+                <li><strong>PoC:</strong> 관리자 수동 리로드 (Admin 페이지 버튼) - 현재 구현됨</li>
+                <li><strong>Production:</strong> Cron 배치 (일간/주간) + 필요시 수동 트리거</li>
+            </ul>
+        </div>
+
+        <!-- 정책/룰 관리 DB -->
+        <h2 class="section-title">정책/룰 관리 DB</h2>
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #00796B;">
+                <h3>🏢 기관별 우선순위 테이블</h3>
+                <table style="width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 10px;">
+                    <tr style="background: #E0F2F1;">
+                        <th style="padding: 8px; text-align: left;">컬럼</th>
+                        <th style="padding: 8px; text-align: left;">타입</th>
+                        <th style="padding: 8px; text-align: left;">설명</th>
+                    </tr>
+                    <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;">institution_id</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">INT (PK)</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">기관 ID</td></tr>
+                    <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;">name</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">VARCHAR</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">기관명</td></tr>
+                    <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;">priority</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">INT</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">우선순위 (1=최우선)</td></tr>
+                    <tr><td style="padding: 6px;">is_active</td><td style="padding: 6px;">BOOLEAN</td><td style="padding: 6px;">활성 여부</td></tr>
+                </table>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #00796B;">
+                <h3>⚙️ 정책 설정 테이블</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">maintenance_exclude</span><span class="tech-version">점검 중 장비 제외</span></li>
+                    <li><span class="tech-name">reservation_check</span><span class="tech-version">예약 가능 여부 표시</span></li>
+                    <li><span class="tech-name">cost_display</span><span class="tech-version">비용 정보 노출</span></li>
+                    <li><span class="tech-name">external_visible</span><span class="tech-version">외부 장비 표시</span></li>
+                </ul>
+                <p style="margin-top: 10px; font-size: 11px; color: #666;">
+                    관리자가 정책을 ON/OFF 할 수 있는 설정 테이블
+                </p>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #FF9800;">
+                <h3>🔗 공정↔장비 매핑 테이블</h3>
+                <table style="width: 100%; font-size: 12px; border-collapse: collapse; margin-top: 10px;">
+                    <tr style="background: #FFF3E0;">
+                        <th style="padding: 8px; text-align: left;">공정 키워드</th>
+                        <th style="padding: 8px; text-align: left;">매핑 장비 카테고리</th>
+                    </tr>
+                    <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;">에피 성장</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">MOCVD, MBE</td></tr>
+                    <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;">박막 증착</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">Sputter, PECVD, ALD</td></tr>
+                    <tr><td style="padding: 6px; border-bottom: 1px solid #ddd;">열처리</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">RTA, Furnace</td></tr>
+                    <tr><td style="padding: 6px;">표면 분석</td><td style="padding: 6px;">SEM, AFM, XPS</td></tr>
+                </table>
+                <p style="margin-top: 10px; font-size: 11px; color: #E65100;">
+                    관리자가 수시로 매핑 추가/수정 가능
+                </p>
+            </div>
+        </div>
+
+        <!-- 파이프라인 상태 -->
+        <h2 class="section-title">파이프라인 구현 상태</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>단계</th>
+                    <th>설명</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>MS-SQL 연동</strong></td>
+                    <td>KION 장비 마스터 테이블 접속</td>
+                    <td style="color: #FF9800;">⏳ 미팅 후</td>
+                </tr>
+                <tr>
+                    <td><strong>ETL 스크립트</strong></td>
+                    <td>데이터 추출/정제/변환 자동화</td>
+                    <td style="color: #FF9800;">⏳ 예정</td>
+                </tr>
+                <tr>
+                    <td><strong>스키마 정규화</strong></td>
+                    <td>웨이퍼 사이즈, 온도, 재료 표준화</td>
+                    <td style="color: #4CAF50;">✅ 샘플 완료</td>
+                </tr>
+                <tr>
+                    <td><strong>주기적 동기화</strong></td>
+                    <td>DB 변경분 → 벡터DB 증분 업데이트</td>
+                    <td style="color: #FF9800;">⏳ 예정</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <footer style="text-align: center; padding: 40px; color: var(--gray); font-size: 14px;" class="no-print">
+        <button onclick="savePDF()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF 저장
+        </button>
+        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function savePDF() {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin: 10,
+                filename: 'KION_RAG_데이터설계.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+    <style>
+        @media print {
+            .header, .no-print { display: none !important; }
+            .container { padding-top: 0 !important; }
+            body { background: white; }
+        }
+    </style>
+</body>
+</html>

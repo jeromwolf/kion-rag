@@ -795,12 +795,12 @@
                 <div class="logo-text"><span>KION</span> AI 팹서비스</div>
             </a>
             <nav class="nav">
-                <a href="/static/architecture.html">아키텍처</a>
-                <a href="/static/techstack.html">기술스택</a>
-                <a href="/static/data-design.html">데이터설계</a>
-                <a href="/static/implementation.html">구현가이드</a>
-                <a href="/static/admin.html">관리자</a>
-                <a href="/static/api-docs.html">API 문서</a>
+                <a href="/architecture.html">아키텍처</a>
+                <a href="/techstack.html">기술스택</a>
+                <a href="/data-design.html">데이터설계</a>
+                <a href="/implementation.html">구현가이드</a>
+                <a href="/admin.html">관리자</a>
+                
             </nav>
             <div class="header-actions">
                 <button class="btn btn-primary" onclick="toggleChat()">AI 상담</button>
@@ -814,6 +814,16 @@
             <div class="hero-badge">PoC Demo v1.0</div>
             <h1>AI 기반 팹서비스<br>장비 추천 시스템</h1>
             <p>반도체/디스플레이 공정에 최적화된 장비를 AI가 추천해드립니다.<br>웨이퍼 사이즈, 공정 온도, 재료 등 조건에 맞는 장비를 빠르게 찾아보세요.</p>
+
+            <!-- 로컬 테스트 안내 -->
+            <div style="background: rgba(255,107,53,0.9); padding: 12px 24px; border-radius: 8px; margin: 20px auto; max-width: 600px;">
+                <p style="margin: 0; font-size: 14px; opacity: 1;">
+                    <strong>* 챗봇 테스트 안내</strong><br>
+                    온프레미스 sLLM(Ollama + Qwen) 기반으로 구동되어<br>
+                    <strong>로컬 환경에서만 테스트 가능</strong>합니다.
+                </p>
+            </div>
+
             <button class="btn btn-primary" style="padding: 14px 32px; font-size: 16px;" onclick="toggleChat()">
                 AI 챗봇 시작하기
             </button>

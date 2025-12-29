@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구현 가이드 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #00A651;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tech-card h3 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tech-list li:last-child { border-bottom: none; }
+
+        .tech-list .tech-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .tech-list .tech-version {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        .data-table td {
+            font-size: 14px;
+        }
+
+        .data-table code {
+            background: #f1f3f4;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+        }
+
+        .code-block {
+            background: #263238;
+            color: #ECEFF1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .flow-compact {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .flow-item {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .flow-item b {
+            color: var(--primary);
+            margin-right: 6px;
+        }
+
+        .flow-sep {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/static/architecture.html">아키텍처</a>
+                <a href="/static/techstack.html">기술스택</a>
+                <a href="/static/data-design.html">데이터설계</a>
+                <a href="/static/implementation.html" class="active">구현가이드</a>
+                <a href="/static/admin.html">관리자</a>
+                <a href="/static/api-docs.html">API 문서</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>구현 가이드</h1>
+            <p>RAG 파이프라인, 프롬프트 설계, API 엔드포인트, 운영 가이드</p>
+        </div>
+
+        <!-- 데이터 처리 흐름 -->
+        <h2 class="section-title">데이터 처리 흐름</h2>
+        <div class="flow-compact">
+            <span class="flow-item"><b>1</b> 💬 입력</span>
+            <span class="flow-sep">→</span>
+            <span class="flow-item"><b>2</b> 🔍 파싱</span>
+            <span class="flow-sep">→</span>
+            <span class="flow-item" style="background: linear-gradient(135deg, #c8e6c9, #bbdefb);"><b>3</b> 📚 RAG + 🎯 메타필터 <span style="font-size: 10px; color: #666;">(동시)</span></span>
+            <span class="flow-sep">→</span>
+            <span class="flow-item"><b>4</b> ⚖️ 리랭킹</span>
+            <span class="flow-sep">→</span>
+            <span class="flow-item"><b>5</b> 🤖 LLM</span>
+        </div>
+        <p style="text-align: center; font-size: 12px; color: #666; margin-top: 12px;">
+            ※ 벡터 검색과 메타데이터 필터가 동시에 처리됨 (Hybrid Search)
+        </p>
+
+        <!-- 구현 단계별 가이드 -->
+        <h2 class="section-title">구현 단계별 가이드</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>단계</th>
+                    <th>주요 작업</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Phase 1</strong></td>
+                    <td>데이터 정제 · 스키마 확정</td>
+                    <td>MS-SQL 연동, 스키마 정규화, 용어 표준화</td>
+                    <td style="color: #FF9800;">⏳ 미팅 후</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>Phase 2</strong></td>
+                    <td>RAG PoC</td>
+                    <td>임베딩 모델, 벡터DB, API 서버, 평가</td>
+                    <td style="color: #4CAF50;">✅ 완료</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>Phase 3</strong></td>
+                    <td>규칙 · 필터 강화</td>
+                    <td>쿼리 파서, 메타필터, 비즈니스 룰</td>
+                    <td style="color: #4CAF50;">✅ 완료</td>
+                </tr>
+                <tr>
+                    <td><strong>Phase 4</strong></td>
+                    <td>UI/UX 및 권한</td>
+                    <td>챗봇 위젯, 필터 UI, 권한 관리</td>
+                    <td style="color: #2196F3;">🔄 30%</td>
+                </tr>
+                <tr>
+                    <td><strong>Phase 5</strong></td>
+                    <td>운영 · 모니터링</td>
+                    <td>로깅, 피드백, 동기화 스케줄러</td>
+                    <td style="color: #FF9800;">⏳ 예정</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 프롬프트 설계 -->
+        <h2 class="section-title">sLLM 프롬프트 설계</h2>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>🎭 시스템 프롬프트 구성</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">역할 정의</span><span class="tech-version">"반도체 장비 추천 전문가"</span></li>
+                    <li><span class="tech-name">언어 규칙</span><span class="tech-version">한국어 필수, 기술용어만 영어</span></li>
+                    <li><span class="tech-name">추천 규칙</span><span class="tech-version">제공된 리스트만 사용</span></li>
+                    <li><span class="tech-name">응답 포맷</span><span class="tech-version">JSON / 자연어 선택</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>📋 추천 규칙</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">생성 금지</span><span class="tech-version">장비 리스트 내에서만 추천</span></li>
+                    <li><span class="tech-name">조건 불만족</span><span class="tech-version">"적합한 장비 없음" 허용</span></li>
+                    <li><span class="tech-name">근거 설명</span><span class="tech-version">스펙 기반 "왜 적합한지" 설명</span></li>
+                    <li><span class="tech-name">Top N</span><span class="tech-version">1~3개 장비 추천</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 입력 형태 -->
+        <h3 style="margin: 25px 0 15px; font-size: 16px;">입력 형태 정의</h3>
+        <div style="background: #E3F2FD; border-left: 4px solid var(--primary); padding: 15px 20px; border-radius: 0 8px 8px 0; margin-bottom: 15px;">
+            <p style="font-size: 14px; color: #1565C0; margin: 0; font-weight: 600;">복합 쿼리 예시</p>
+            <p style="font-size: 15px; color: var(--dark); margin: 10px 0 0 0;">"6 inch Si 웨이퍼, 게이트 산화막 5nm, RTA 필요, 400℃ 이상"</p>
+        </div>
+        <table class="data-table" style="margin-bottom: 20px;">
+            <thead>
+                <tr>
+                    <th>추출 항목</th>
+                    <th>파싱 결과</th>
+                    <th>처리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>웨이퍼 사이즈</td>
+                    <td><code>6 inch</code></td>
+                    <td>메타필터</td>
+                </tr>
+                <tr>
+                    <td>재료</td>
+                    <td><code>Si</code></td>
+                    <td>메타필터</td>
+                </tr>
+                <tr>
+                    <td>공정</td>
+                    <td><code>RTA</code> (열처리)</td>
+                    <td>벡터검색 + 메타필터</td>
+                </tr>
+                <tr>
+                    <td>온도</td>
+                    <td><code>temp_min: 400</code></td>
+                    <td>메타필터</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 응답 포맷 -->
+        <h3 style="margin: 25px 0 15px; font-size: 16px;">응답 포맷</h3>
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #4CAF50;">
+                <h3>💬 자연어 응답 (사용자용)</h3>
+                <div style="background: #f5f5f5; padding: 12px; border-radius: 6px; font-size: 12px; margin-top: 10px;">
+                    사용자님, GaN MOCVD 장비에 대해 추천드립니다.<br><br>
+                    1. <strong>[KION-009]</strong> MOCVD 시스템<br>
+                    이 장비는 GaN, AlGaN 에피 성장에 최적화...<br><br>
+                    따라서 <strong>[KION-009]</strong>를 추천드립니다.
+                </div>
+                <p style="margin-top: 8px; font-size: 11px; color: var(--gray);">파일: prompts/recommendation_stream.txt</p>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid var(--primary);">
+                <h3>📊 JSON 응답 (시스템 연동용)</h3>
+                <div class="code-block" style="margin-top: 10px; font-size: 11px;">
+{<br>
+&nbsp;&nbsp;"recommendations": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{"equipment_id": "KION-009",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"reason": "GaN 에피 성장 최적화"}<br>
+&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;"explanation": "종합 설명..."<br>
+}
+                </div>
+                <p style="margin-top: 8px; font-size: 11px; color: var(--gray);">파일: prompts/recommendation_json.txt</p>
+            </div>
+        </div>
+
+        <!-- 비즈니스 룰 -->
+        <h2 class="section-title">비즈니스 룰</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>룰</th>
+                    <th>설명</th>
+                    <th>구현 위치</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>메타 필터링</strong></td>
+                    <td>웨이퍼 사이즈, 온도, 재료 조건으로 필터</td>
+                    <td><code>rag.py / filters.py</code></td>
+                    <td style="color: #4CAF50;">✅ 구현됨</td>
+                </tr>
+                <tr>
+                    <td><strong>기관별 우선순위</strong></td>
+                    <td>사용자 소속 기관 장비 우선 표시</td>
+                    <td><code>filters.py</code></td>
+                    <td style="color: #4CAF50;">✅ 구현됨</td>
+                </tr>
+                <tr>
+                    <td><strong>예약 가능 여부</strong></td>
+                    <td>예약 불가 장비 필터링 또는 표시</td>
+                    <td><code>filters.py</code></td>
+                    <td style="color: #FF9800;">⏳ 예정</td>
+                </tr>
+                <tr>
+                    <td><strong>Maintenance 제외</strong></td>
+                    <td>유지보수 중인 장비 검색 결과에서 제외</td>
+                    <td><code>filters.py</code></td>
+                    <td style="color: #FF9800;">⏳ 예정</td>
+                </tr>
+                <tr>
+                    <td><strong>권한별 장비 제한</strong></td>
+                    <td>사용자 권한에 따라 표시 장비 제한</td>
+                    <td><code>main.py</code></td>
+                    <td style="color: #FF9800;">⏳ 예정</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- API 엔드포인트 -->
+        <h2 class="section-title">API 엔드포인트</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Endpoint</th>
+                    <th>설명</th>
+                    <th>응답</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>POST</code></td>
+                    <td><code>/chat</code></td>
+                    <td>장비 추천 요청</td>
+                    <td>JSON</td>
+                </tr>
+                <tr>
+                    <td><code>POST</code></td>
+                    <td><code>/chat/stream</code></td>
+                    <td>스트리밍 추천</td>
+                    <td>SSE</td>
+                </tr>
+                <tr>
+                    <td><code>GET</code></td>
+                    <td><code>/equipment/count</code></td>
+                    <td>장비 수 조회</td>
+                    <td>JSON</td>
+                </tr>
+                <tr>
+                    <td><code>POST</code></td>
+                    <td><code>/equipment/reload</code></td>
+                    <td>데이터 리로드</td>
+                    <td>JSON</td>
+                </tr>
+                <tr>
+                    <td><code>GET</code></td>
+                    <td><code>/health</code></td>
+                    <td>헬스 체크</td>
+                    <td>JSON</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 운영 / 모니터링 -->
+        <h2 class="section-title">운영 / 모니터링</h2>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>📊 로그 수집</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">질의 로그</span><span class="tech-version">사용자 쿼리 기록</span></li>
+                    <li><span class="tech-name">추천 로그</span><span class="tech-version">추천된 장비 목록</span></li>
+                    <li><span class="tech-name">선택 로그</span><span class="tech-version">실제 선택한 장비</span></li>
+                    <li><span class="tech-name">응답 시간</span><span class="tech-version">성능 메트릭</span></li>
+                </ul>
+                <p style="margin-top: 8px; font-size: 11px; color: #FF9800;">⏳ Phase 5 예정</p>
+            </div>
+            <div class="tech-card">
+                <h3>🔄 피드백 루프</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">👍 맞음 / 👎 안맞음</span><span class="tech-version">사용자 피드백</span></li>
+                    <li><span class="tech-name">추천 정확도 분석</span><span class="tech-version">Recall 측정</span></li>
+                    <li><span class="tech-name">프롬프트 개선</span><span class="tech-version">피드백 기반</span></li>
+                    <li><span class="tech-name">임베딩/룰 튜닝</span><span class="tech-version">지속 개선</span></li>
+                </ul>
+                <p style="margin-top: 8px; font-size: 11px; color: #FF9800;">⏳ Phase 5 예정</p>
+            </div>
+            <div class="tech-card">
+                <h3>🔧 시스템 모니터링</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">헬스 체크</span><span class="tech-version">/health API</span></li>
+                    <li><span class="tech-name">LLM 상태</span><span class="tech-version">Ollama 연결</span></li>
+                    <li><span class="tech-name">벡터DB 상태</span><span class="tech-version">ChromaDB</span></li>
+                    <li><span class="tech-name">에러 알림</span><span class="tech-version">Slack/Email (예정)</span></li>
+                </ul>
+                <p style="margin-top: 8px; font-size: 11px; color: #4CAF50;">✅ 기본 구현됨</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer style="text-align: center; padding: 40px; color: var(--gray); font-size: 14px;" class="no-print">
+        <button onclick="savePDF()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF 저장
+        </button>
+        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function savePDF() {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin: 10,
+                filename: 'KION_RAG_구현가이드.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+    <style>
+        @media print {
+            .header, .no-print { display: none !important; }
+            .container { padding-top: 0 !important; }
+            body { background: white; }
+        }
+    </style>
+</body>
+</html>

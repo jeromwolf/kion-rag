@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #1565C0;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --dark: #333;
+            --gray: #666;
+            --light: #f5f5f5;
+            --white: #fff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            color: var(--dark);
+        }
+
+        .page-title p {
+            color: var(--gray);
+            margin-top: 8px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        .status-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .status-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-value.success { color: var(--success); }
+        .status-value.warning { color: var(--warning); }
+        .status-value.danger { color: var(--danger); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background: #1255A1; }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover { background: #eee; }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover { background: #D32F2F; }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .action-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .action-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        .action-info h4 {
+            font-size: 14px;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .action-info p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .log-box {
+            background: #263238;
+            color: #ECEFF1;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .log-box .log-entry {
+            margin-bottom: 4px;
+        }
+
+        .log-box .log-time {
+            color: #78909C;
+        }
+
+        .log-box .log-success { color: #81C784; }
+        .log-box .log-error { color: #EF5350; }
+        .log-box .log-info { color: #64B5F6; }
+
+        .stats-number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stats-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .refresh-time {
+            font-size: 12px;
+            color: var(--gray);
+            text-align: right;
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/architecture.html">아키텍처</a>
+                <a href="/techstack.html">기술스택</a>
+                <a href="/data-design.html">데이터설계</a>
+                <a href="/implementation.html">구현가이드</a>
+                <a href="/admin.html" class="active">관리자</a>
+                
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>관리자 대시보드</h1>
+            <p>시스템 상태 모니터링 및 데이터 관리</p>
+        </div>
+
+        <div class="grid">
+            <!-- 시스템 상태 -->
+            <div class="card">
+                <h3>📊 시스템 상태</h3>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-label">API 서버</span>
+                        <span class="status-value success" id="api-status">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">Ollama (LLM)</span>
+                        <span class="status-value" id="ollama-status">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">ChromaDB (벡터DB)</span>
+                        <span class="status-value" id="chroma-status">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">장비 데이터</span>
+                        <span class="status-value" id="equipment-count">-</span>
+                    </div>
+                </div>
+                <p class="refresh-time" id="last-refresh">마지막 갱신: -</p>
+            </div>
+
+            <!-- 데이터 관리 -->
+            <div class="card">
+                <h3>🗄️ 데이터 관리</h3>
+                <div class="action-grid">
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>데이터 리로드</h4>
+                            <p>JSON 파일에서 장비 데이터 다시 로드</p>
+                        </div>
+                        <button class="btn btn-primary" id="btn-reload" onclick="reloadData()">
+                            🔄 리로드
+                        </button>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>캐시 초기화</h4>
+                            <p>LLM 응답 캐시 삭제 (TTL 5분)</p>
+                        </div>
+                        <button class="btn btn-secondary" id="btn-cache" onclick="clearCache()">
+                            🗑️ 초기화
+                        </button>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>프롬프트 리로드</h4>
+                            <p>시스템 프롬프트 파일 다시 로드</p>
+                        </div>
+                        <button class="btn btn-secondary" id="btn-prompt" onclick="reloadPrompts()">
+                            📝 리로드
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 통계 -->
+            <div class="card">
+                <h3>📈 통계</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center;">
+                    <div>
+                        <div class="stats-number" id="stats-equipment">-</div>
+                        <div class="stats-label">등록 장비</div>
+                    </div>
+                    <div>
+                        <div class="stats-number" id="stats-categories">-</div>
+                        <div class="stats-label">카테고리</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 작업 로그 -->
+            <div class="card">
+                <h3>📋 작업 로그</h3>
+                <div class="log-box" id="log-box">
+                    <div class="log-entry">
+                        <span class="log-time">[시스템]</span>
+                        <span class="log-info">관리자 페이지 로드됨</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 프롬프트 관리 -->
+        <div class="grid" style="margin-top: 20px;">
+            <div class="card">
+                <h3>💬 프롬프트 관리</h3>
+                <div class="action-grid">
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>시스템 프롬프트</h4>
+                            <p>LLM 역할 정의, 추천 규칙 설정</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="editPrompt('system')">
+                            ✏️ 편집
+                        </button>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>출력 포맷팅</h4>
+                            <p>JSON/자연어 응답 형식, 필드 구성</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="editPrompt('format')">
+                            ✏️ 편집
+                        </button>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>프롬프트 A/B 테스트</h4>
+                            <p>버전별 성능 비교, 자동 선택</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="manageABTest()">
+                            🧪 관리
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🗄️ 정책/룰 관리</h3>
+                <div class="action-grid">
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>기관별 우선순위</h4>
+                            <p>추천 시 기관 우선순위 설정</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="managePriority()">
+                            🏢 설정
+                        </button>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>공정↔장비 매핑</h4>
+                            <p>키워드-카테고리 매핑 관리</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="manageMapping()">
+                            🔗 관리
+                        </button>
+                    </div>
+                    <div class="action-item">
+                        <div class="action-info">
+                            <h4>정책 설정</h4>
+                            <p>점검 제외, 예약 표시 등 ON/OFF</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="managePolicy()">
+                            ⚙️ 설정
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 피드백 & 로그 -->
+        <div class="grid" style="margin-top: 20px;">
+            <div class="card">
+                <h3>👍👎 사용자 피드백</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; text-align: center; margin-bottom: 16px;">
+                    <div style="background: #E8F5E9; padding: 16px; border-radius: 8px;">
+                        <div style="font-size: 24px; font-weight: 700; color: #4CAF50;">-</div>
+                        <div style="font-size: 12px; color: #666;">긍정 피드백</div>
+                    </div>
+                    <div style="background: #FFEBEE; padding: 16px; border-radius: 8px;">
+                        <div style="font-size: 24px; font-weight: 700; color: #F44336;">-</div>
+                        <div style="font-size: 12px; color: #666;">부정 피드백</div>
+                    </div>
+                    <div style="background: #E3F2FD; padding: 16px; border-radius: 8px;">
+                        <div style="font-size: 24px; font-weight: 700; color: #1565C0;">-%</div>
+                        <div style="font-size: 12px; color: #666;">정확도</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="viewFeedback()">
+                    📊 피드백 상세 보기
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>📈 질의 로그 분석</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                    <div style="background: var(--light); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--primary);">-</div>
+                        <div style="font-size: 11px; color: #666;">오늘 질의 수</div>
+                    </div>
+                    <div style="background: var(--light); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 20px; font-weight: 700; color: var(--primary);">-ms</div>
+                        <div style="font-size: 11px; color: #666;">평균 응답시간</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="width: 100%;" onclick="viewLogs()">
+                    📋 로그 상세 보기
+                </button>
+            </div>
+        </div>
+
+        <!-- 향후 기능 -->
+        <div class="card" style="margin-top: 20px;">
+            <h3>🚀 향후 추가 예정 기능</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">MS-SQL 동기화</span>
+                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">장비 데이터 편집</span>
+                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">임베딩 재학습</span>
+                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">알림 설정</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 시스템 상태 체크
+        async function checkHealth() {
+            try {
+                const res = await fetch('/health');
+                const data = await res.json();
+
+                document.getElementById('api-status').textContent = '정상';
+                document.getElementById('api-status').className = 'status-value success';
+
+                document.getElementById('ollama-status').textContent =
+                    data.ollama_status === 'connected' ? '연결됨' : '연결 안됨';
+                document.getElementById('ollama-status').className =
+                    'status-value ' + (data.ollama_status === 'connected' ? 'success' : 'danger');
+
+                document.getElementById('chroma-status').textContent =
+                    data.chroma_status === 'connected' ? '연결됨' : '연결 안됨';
+                document.getElementById('chroma-status').className =
+                    'status-value ' + (data.chroma_status === 'connected' ? 'success' : 'danger');
+
+                document.getElementById('equipment-count').textContent = data.equipment_count + '대';
+                document.getElementById('equipment-count').className = 'status-value success';
+
+                document.getElementById('stats-equipment').textContent = data.equipment_count;
+
+                document.getElementById('last-refresh').textContent =
+                    '마지막 갱신: ' + new Date().toLocaleTimeString();
+
+            } catch (e) {
+                document.getElementById('api-status').textContent = '오류';
+                document.getElementById('api-status').className = 'status-value danger';
+                addLog('API 연결 실패: ' + e.message, 'error');
+            }
+        }
+
+        // 데이터 리로드
+        async function reloadData() {
+            const btn = document.getElementById('btn-reload');
+            btn.disabled = true;
+            btn.textContent = '처리 중...';
+
+            try {
+                const res = await fetch('/equipment/reload', { method: 'POST' });
+                const data = await res.json();
+                addLog(`데이터 리로드 완료: ${data.count}개 장비`, 'success');
+                checkHealth();
+            } catch (e) {
+                addLog('데이터 리로드 실패: ' + e.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 리로드';
+            }
+        }
+
+        // 캐시 초기화
+        async function clearCache() {
+            const btn = document.getElementById('btn-cache');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/cache/clear', { method: 'POST' });
+                if (res.ok) {
+                    addLog('캐시 초기화 완료', 'success');
+                } else {
+                    addLog('캐시 초기화 API 미구현', 'info');
+                }
+            } catch (e) {
+                addLog('캐시 초기화: API 미구현 (향후 추가)', 'info');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // 프롬프트 리로드
+        async function reloadPrompts() {
+            const btn = document.getElementById('btn-prompt');
+            btn.disabled = true;
+
+            try {
+                const res = await fetch('/prompts/reload', { method: 'POST' });
+                if (res.ok) {
+                    addLog('프롬프트 리로드 완료', 'success');
+                } else {
+                    addLog('프롬프트 리로드 API 미구현', 'info');
+                }
+            } catch (e) {
+                addLog('프롬프트 리로드: API 미구현 (향후 추가)', 'info');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // 로그 추가
+        function addLog(message, type = 'info') {
+            const logBox = document.getElementById('log-box');
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-${type}">${message}</span>`;
+            logBox.insertBefore(entry, logBox.firstChild);
+        }
+
+        // 프롬프트 편집
+        function editPrompt(type) {
+            const messages = {
+                'system': '시스템 프롬프트 편집기 (향후 구현 예정)\n\n- LLM 역할 정의\n- 추천 규칙 설정\n- 언어 규칙 설정',
+                'format': '출력 포맷팅 편집기 (향후 구현 예정)\n\n- JSON 필드 구성\n- 자연어 응답 템플릿\n- 장비 표시 형식'
+            };
+            alert(messages[type]);
+            addLog(`${type} 프롬프트 편집 시도`, 'info');
+        }
+
+        // A/B 테스트 관리
+        function manageABTest() {
+            alert('프롬프트 A/B 테스트 관리 (향후 구현 예정)\n\n- 버전별 성능 비교\n- 트래픽 분배 설정\n- 우승 버전 자동 적용');
+            addLog('A/B 테스트 관리 접근', 'info');
+        }
+
+        // 기관 우선순위 관리
+        function managePriority() {
+            alert('기관별 우선순위 설정 (향후 구현 예정)\n\n나노종합기술원: 1순위\n한국나노기술원: 2순위\n...');
+            addLog('기관 우선순위 관리 접근', 'info');
+        }
+
+        // 공정-장비 매핑 관리
+        function manageMapping() {
+            alert('공정↔장비 매핑 관리 (향후 구현 예정)\n\n에피 성장 → MOCVD, MBE\n박막 증착 → Sputter, PECVD, ALD\n열처리 → RTA, Furnace');
+            addLog('공정-장비 매핑 관리 접근', 'info');
+        }
+
+        // 정책 설정
+        function managePolicy() {
+            alert('정책 설정 (향후 구현 예정)\n\n☑ maintenance_exclude: ON\n☑ reservation_check: ON\n☐ cost_display: OFF\n☑ external_visible: ON');
+            addLog('정책 설정 관리 접근', 'info');
+        }
+
+        // 피드백 보기
+        function viewFeedback() {
+            alert('사용자 피드백 상세 (향후 구현 예정)\n\n피드백 목록, 패턴 분석, 개선 제안');
+            addLog('피드백 상세 조회', 'info');
+        }
+
+        // 로그 보기
+        function viewLogs() {
+            alert('질의 로그 상세 (향후 구현 예정)\n\n일별 질의 수, 인기 키워드, 응답시간 추이');
+            addLog('로그 상세 조회', 'info');
+        }
+
+        // 초기화
+        checkHealth();
+
+        // 카테고리 수 임시 설정 (향후 API 연동)
+        document.getElementById('stats-categories').textContent = '12';
+
+        // 30초마다 자동 갱신
+        setInterval(checkHealth, 30000);
+    </script>
+
+    <footer style="text-align: center; padding: 40px; color: var(--gray); font-size: 14px;" class="no-print">
+        <button onclick="savePDF()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF 저장
+        </button>
+        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function savePDF() {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin: 10,
+                filename: 'KION_RAG_관리자.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+    <style>
+        @media print {
+            .header, .no-print { display: none !important; }
+            .container { padding-top: 0 !important; }
+            body { background: white; }
+        }
+    </style>
+</body>
+</html>

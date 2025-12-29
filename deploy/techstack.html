@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기술 스택 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #004C99;
+            --secondary: #00A651;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tech-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tech-card h3 {
+            font-size: 16px;
+            color: var(--dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tech-list {
+            list-style: none;
+        }
+
+        .tech-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .tech-list li:last-child { border-bottom: none; }
+
+        .tech-list .tech-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .tech-list .tech-version {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .data-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--dark);
+        }
+
+        .data-table td {
+            font-size: 14px;
+        }
+
+        .data-table code {
+            background: #f1f3f4;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/architecture.html">아키텍처</a>
+                <a href="/techstack.html" class="active">기술스택</a>
+                <a href="/data-design.html">데이터설계</a>
+                <a href="/implementation.html">구현가이드</a>
+                <a href="/admin.html">관리자</a>
+                
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>기술 스택</h1>
+            <p>KION RAG 시스템의 기술 구성 요소 및 비교</p>
+        </div>
+
+        <!-- 현재 PoC 기술 스택 -->
+        <h2 class="section-title">현재 PoC 기술 스택</h2>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <h3>⚡ Backend</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">FastAPI</span><span class="tech-version">0.100+</span></li>
+                    <li><span class="tech-name">Python</span><span class="tech-version">3.9+</span></li>
+                    <li><span class="tech-name">Uvicorn</span><span class="tech-version">ASGI Server</span></li>
+                    <li><span class="tech-name">Pydantic</span><span class="tech-version">Data Validation</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🗄️ Database</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">ChromaDB</span><span class="tech-version">Vector DB (PoC)</span></li>
+                    <li><span class="tech-name">JSON</span><span class="tech-version">Config Storage</span></li>
+                    <li><span class="tech-name">In-Memory Cache</span><span class="tech-version">5분 TTL</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🤖 AI/ML</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">Ollama</span><span class="tech-version">LLM Runtime</span></li>
+                    <li><span class="tech-name">Qwen2.5:7b</span><span class="tech-version">Language Model</span></li>
+                    <li><span class="tech-name">multilingual-e5-large</span><span class="tech-version">Embedding</span></li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3>🌐 Frontend</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">HTML5/CSS3</span><span class="tech-version">UI</span></li>
+                    <li><span class="tech-name">Vanilla JS</span><span class="tech-version">No Framework</span></li>
+                    <li><span class="tech-name">SSE</span><span class="tech-version">실시간 스트리밍</span></li>
+                </ul>
+                <p style="margin-top: 10px; font-size: 11px; color: #888; background: #f5f5f5; padding: 8px; border-radius: 4px;">
+                    <strong>SSE (Server-Sent Events)</strong>: 서버→클라이언트 단방향 스트리밍. ChatGPT처럼 답변이 글자 단위로 실시간 출력됨.
+                </p>
+            </div>
+        </div>
+
+        <!-- 권장 기술 스택 조합 -->
+        <h2 class="section-title">권장 기술 스택 조합</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>구분</th>
+                    <th>LLM</th>
+                    <th>임베딩</th>
+                    <th>벡터DB</th>
+                    <th>초기 비용</th>
+                    <th>월 운영비</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>A: 온프레미스</strong></td>
+                    <td>Ollama + Qwen 2.5</td>
+                    <td>BGE-M3 (로컬)</td>
+                    <td>Qdrant</td>
+                    <td>~1,000-1,500만원</td>
+                    <td>~10-30만원</td>
+                </tr>
+                <tr style="background: #F3E5F5;">
+                    <td><strong>B-1: EC2 GPU</strong></td>
+                    <td>Ollama + Llama 3</td>
+                    <td>BGE-M3 (로컬)</td>
+                    <td>Qdrant (EC2)</td>
+                    <td>없음</td>
+                    <td>~20-30만원<br><span style="font-size: 11px; color: #888;">(업무시간만)</span></td>
+                </tr>
+                <tr style="background: #E3F2FD;">
+                    <td><strong>B-2: Bedrock API</strong></td>
+                    <td>AWS Bedrock Llama 3</td>
+                    <td>Bedrock Titan</td>
+                    <td>Qdrant Cloud</td>
+                    <td>없음</td>
+                    <td>~5-20만원<br><span style="font-size: 11px; color: #888;">(사용량 비례)</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="color: var(--gray); font-size: 12px; margin-top: 15px;">
+            ※ 비용은 사용량, 인스턴스 타입, 리전에 따라 달라질 수 있음. 정확한 비용은 AWS Calculator 참고.
+        </p>
+
+        <!-- 임베딩 모델 비교 -->
+        <h2 class="section-title">임베딩 모델 비교 테스트 (2025-12-29)</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>모델</th>
+                    <th>Recall@1</th>
+                    <th>Recall@3</th>
+                    <th>검색시간</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>intfloat/multilingual-e5-large</strong></td>
+                    <td><strong>76.00%</strong></td>
+                    <td><strong>82.67%</strong></td>
+                    <td>85.68ms</td>
+                    <td>PoC 사용 중</td>
+                </tr>
+                <tr>
+                    <td>BAAI/bge-m3</td>
+                    <td>72.00%</td>
+                    <td>80.00%</td>
+                    <td>82.67ms</td>
+                    <td>Production 권장</td>
+                </tr>
+                <tr>
+                    <td>jhgan/ko-sroberta-multitask</td>
+                    <td>64.00%</td>
+                    <td>76.00%</td>
+                    <td>32.87ms</td>
+                    <td>대안</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 15px; color: var(--gray); font-size: 14px;">
+            <strong>분석:</strong> 일반 벤치마크(MIRACL)에서는 BGE-M3가 우수하나, 도메인 특성에 따라 결과가 달라질 수 있음.<br>
+            <strong>현재 상태:</strong> 초기 테스트 기준 e5-large 사용 중. 실제 장비 데이터 확보 후 추가 테스트하여 최종 확정 예정.
+        </p>
+
+        <!-- 벡터DB 비교 -->
+        <h2 class="section-title">벡터DB 비교</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>벡터DB</th>
+                    <th>온프레미스</th>
+                    <th>메타필터</th>
+                    <th>확장성</th>
+                    <th>특징</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>ChromaDB</strong></td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td>중소규모</td>
+                    <td>설치 간편, Python 네이티브</td>
+                    <td>PoC 사용 중</td>
+                </tr>
+                <tr>
+                    <td><strong>Qdrant</strong></td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td>대규모</td>
+                    <td>고성능, 분산 지원, REST/gRPC</td>
+                    <td>Prod 권장</td>
+                </tr>
+                <tr>
+                    <td><strong>Milvus</strong></td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td>엔터프라이즈</td>
+                    <td>Kubernetes 기반, 대규모 분산</td>
+                    <td>대안</td>
+                </tr>
+                <tr>
+                    <td><strong>pgvector</strong></td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td style="color: #4CAF50;">✅</td>
+                    <td>중규모</td>
+                    <td>PostgreSQL 확장, SQL 통합</td>
+                    <td>대안</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- sLLM 선택 전략 -->
+        <h2 class="section-title">sLLM 선택 전략</h2>
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #4CAF50;">
+                <h3>🏢 온프레미스 / 프라이빗</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">Qwen 2.5</span><span class="tech-version">7B~14B (현재 사용)</span></li>
+                    <li><span class="tech-name">Llama 3</span><span class="tech-version">8B~70B</span></li>
+                    <li><span class="tech-name">DeepSeek</span><span class="tech-version">7B~67B</span></li>
+                    <li><span class="tech-name">Ollama</span><span class="tech-version">로컬 인퍼런스 서버</span></li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                    ✅ 데이터 보안 우수<br>
+                    ✅ 비용 예측 가능<br>
+                    ⚠️ GPU 서버 필요
+                </p>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid var(--primary);">
+                <h3>☁️ 클라우드 호스팅 sLLM</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">AWS Bedrock</span><span class="tech-version">Llama 3, Titan</span></li>
+                    <li><span class="tech-name">Azure OpenAI</span><span class="tech-version">Enterprise</span></li>
+                    <li><span class="tech-name">HuggingFace</span><span class="tech-version">Inference Endpoints</span></li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                    ✅ GPU 서버 불필요<br>
+                    ✅ 관리형 서비스<br>
+                    ⚠️ 클라우드 비용 발생
+                </p>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #FF9800;">
+                <h3>☁️ 클라우드 LLM API</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">GPT-4o-mini</span><span class="tech-version">$0.15/1M tokens</span></li>
+                    <li><span class="tech-name">Claude 3.5 Sonnet</span><span class="tech-version">$3/1M tokens</span></li>
+                    <li><span class="tech-name">Gemini Pro</span><span class="tech-version">Google AI</span></li>
+                </ul>
+                <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                    ✅ 빠른 PoC 가능<br>
+                    ✅ 최신 모델 사용<br>
+                    ⚠️ 데이터 외부 전송
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer style="text-align: center; padding: 40px; color: var(--gray); font-size: 14px;" class="no-print">
+        <button onclick="savePDF()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PDF 저장
+        </button>
+        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function savePDF() {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin: 10,
+                filename: 'KION_RAG_기술스택.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+    <style>
+        @media print {
+            .header, .no-print { display: none !important; }
+            .container { padding-top: 0 !important; }
+            body { background: white; }
+        }
+    </style>
+</body>
+</html>

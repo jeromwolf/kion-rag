@@ -7,9 +7,9 @@ KION(국가나노인프라협의체) 팹서비스의 장비 검색을 자연어 
 ## 기술 스택
 
 - **Backend**: FastAPI (Python 3.9+)
-- **Vector DB**: ChromaDB (In-Memory)
+- **Vector DB**: ChromaDB (PersistentClient)
 - **LLM**: Ollama + Qwen 2.5:7B
-- **Embedding**: nomic-embed-text
+- **Embedding**: intfloat/multilingual-e5-large (현재 사용 중, 추가 테스트 후 확정 예정)
 - **Frontend**: Vanilla JavaScript + CSS
 
 ## 핵심 파일
@@ -44,9 +44,11 @@ GET  /equipment/count - 장비 수
 ## 서버 실행
 
 ```bash
-# Ollama 모델 필요
+# Ollama LLM 모델 필요
 ollama pull qwen2.5:7b
-ollama pull nomic-embed-text
+
+# 임베딩 모델은 sentence-transformers에서 자동 다운로드
+# (intfloat/multilingual-e5-large)
 
 # 서버 실행
 python3 run.py
@@ -78,6 +80,21 @@ SEM 분석 장비
 - 평균 응답 시간: ~5초
 - 장비 데이터: 100개
 - 카테고리: 14개 (증착, 분석, 식각, 열처리 등)
+
+## 임베딩 모델 초기 비교 테스트 (2025-12-29)
+
+PRD 권장 모델(bge-m3, ko-sentence-transformers) 초기 테스트 진행.
+
+| 모델 | Recall@3 | 상태 |
+|------|----------|------|
+| **multilingual-e5-large** | **82.67%** | 현재 사용 중 |
+| bge-m3 | 80.00% | PRD 권장 |
+| ko-sroberta-multitask | 76.00% | PRD 권장 |
+
+**현재 상태**: 초기 테스트 기준 e5-large 사용 중
+**향후 계획**: 실제 장비 데이터 확보 후 추가 테스트하여 최종 확정
+
+테스트 스크립트: `compare_embeddings.py`
 
 ## GitHub
 

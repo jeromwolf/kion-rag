@@ -4,8 +4,12 @@ KION RAG PoC - 서버 실행 스크립트
 """
 
 import uvicorn
-from app.data_loader import load_sample_data
+from pathlib import Path
+from app.data_loader import load_from_json
 from app.rag import rag_pipeline
+
+# 장비 데이터 JSON 파일 경로
+DATA_FILE = Path(__file__).parent / "data" / "kion_equipment.json"
 
 
 def main():
@@ -13,8 +17,8 @@ def main():
     rag_pipeline.initialize()
 
     if rag_pipeline.get_count() == 0:
-        print("[Run] 샘플 데이터 로드 중...")
-        load_sample_data()
+        print("[Run] 장비 데이터 로드 중...")
+        load_from_json(str(DATA_FILE))
 
     print(f"[Run] 장비 데이터: {rag_pipeline.get_count()}개")
     print("[Run] 서버 시작: http://localhost:8000")

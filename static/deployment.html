@@ -576,7 +576,7 @@
                                     <div class="arch-box llm highlight">
                                         <div class="icon">🦙</div>
                                         <h4>Ollama (sLLM)</h4>
-                                        <p>Qwen 2.5:7B<br>nomic-embed-text</p>
+                                        <p>Qwen 2.5:7B</p>
                                     </div>
                                 </div>
                             </div>
@@ -596,12 +596,16 @@
                             <h4>🧠 AI/ML</h4>
                             <div class="tech-item"><span class="icon">🦙</span> Ollama (Local LLM Runner)</div>
                             <div class="tech-item"><span class="icon">💬</span> Qwen 2.5:7B (4.4GB)</div>
-                            <div class="tech-item"><span class="icon">📐</span> nomic-embed-text (274MB)</div>
+                            <div class="tech-item"><span class="icon">📐</span> multilingual-e5-large (임베딩)</div>
                         </div>
                         <div class="tech-card">
-                            <h4>💾 Database</h4>
-                            <div class="tech-item"><span class="icon">🔮</span> ChromaDB (In-Memory)</div>
-                            <div class="tech-item"><span class="icon">📄</span> JSON 데이터 파일</div>
+                            <h4>💾 Vector Database</h4>
+                            <div class="tech-item"><span class="icon">🔮</span> <strong>ChromaDB</strong> (PersistentClient)</div>
+                            <div class="tech-item"><span class="icon">📐</span> multilingual-e5-large (임베딩)</div>
+                            <div class="tech-item"><span class="icon">📄</span> JSON 데이터 파일 (100개 장비)</div>
+                            <div style="margin-top: 10px; padding: 8px; background: #DBEAFE; border-radius: 6px; font-size: 11px;">
+                                💡 PoC용. 프로덕션은 미팅 후 선택
+                            </div>
                         </div>
                         <div class="tech-card">
                             <h4>🎨 Frontend</h4>
@@ -723,7 +727,7 @@
                                 <div class="arch-box db">
                                     <div class="icon">🔮</div>
                                     <h4>Vector DB</h4>
-                                    <p>Pinecone / Weaviate<br>또는 pgvector</p>
+                                    <p>Qdrant / Milvus /<br>Weaviate / pgvector</p>
                                 </div>
 
                                 <div class="arch-box" style="border-top: 4px solid #EC4899;">
@@ -812,6 +816,147 @@
                         </div>
                     </div>
 
+                    <!-- Vector DB Comparison -->
+                    <h3 style="margin: 30px 0 20px; font-size: 18px;">벡터 데이터베이스 후보 상세 비교</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="comparison-table" style="min-width: 900px;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px;">항목</th>
+                                    <th style="text-align: center;"><strong>Qdrant</strong></th>
+                                    <th style="text-align: center;"><strong>Milvus</strong></th>
+                                    <th style="text-align: center;"><strong>Weaviate</strong></th>
+                                    <th style="text-align: center;"><strong>pgvector</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>라이선스</strong></td>
+                                    <td style="text-align: center;">Apache 2.0</td>
+                                    <td style="text-align: center;">Apache 2.0</td>
+                                    <td style="text-align: center;">BSD-3</td>
+                                    <td style="text-align: center;">PostgreSQL</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>언어</strong></td>
+                                    <td style="text-align: center;">Rust</td>
+                                    <td style="text-align: center;">Go + C++</td>
+                                    <td style="text-align: center;">Go</td>
+                                    <td style="text-align: center;">C</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>호스팅</strong></td>
+                                    <td style="text-align: center;">셀프호스팅<br>Qdrant Cloud</td>
+                                    <td style="text-align: center;">셀프호스팅<br>Zilliz Cloud</td>
+                                    <td style="text-align: center;">셀프호스팅<br>Weaviate Cloud</td>
+                                    <td style="text-align: center;">PostgreSQL 확장<br>AWS RDS 지원</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>데이터 규모</strong></td>
+                                    <td style="text-align: center;"><span class="badge badge-good">1K~100M</span></td>
+                                    <td style="text-align: center;"><span class="badge badge-good">100K~1B+</span></td>
+                                    <td style="text-align: center;"><span class="badge badge-good">1K~100M</span></td>
+                                    <td style="text-align: center;"><span class="badge badge-warn">~100K</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>메타데이터<br>필터링</strong></td>
+                                    <td style="text-align: center;"><span class="badge badge-good">강력</span><br>복합 조건 지원</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">강력</span><br>스칼라 필터링</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">강력</span><br>GraphQL 쿼리</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">강력</span><br>SQL WHERE절</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>하이브리드<br>검색</strong></td>
+                                    <td style="text-align: center;">지원<br>(BM25 + 벡터)</td>
+                                    <td style="text-align: center;">지원<br>(Sparse + Dense)</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">강력</span><br>BM25F 내장</td>
+                                    <td style="text-align: center;">지원<br>(tsvector 조합)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>분산/확장</strong></td>
+                                    <td style="text-align: center;">샤딩, 복제 지원</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">최강</span><br>수평 확장</td>
+                                    <td style="text-align: center;">샤딩 지원</td>
+                                    <td style="text-align: center;"><span class="badge badge-warn">제한적</span><br>PG 확장 의존</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>GPU 가속</strong></td>
+                                    <td style="text-align: center;">미지원</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">지원</span></td>
+                                    <td style="text-align: center;">미지원</td>
+                                    <td style="text-align: center;">미지원</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>설치 난이도</strong></td>
+                                    <td style="text-align: center;"><span class="badge badge-good">쉬움</span><br>Docker 1줄</td>
+                                    <td style="text-align: center;"><span class="badge badge-warn">보통</span><br>의존성 많음</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">쉬움</span><br>Docker 1줄</td>
+                                    <td style="text-align: center;"><span class="badge badge-good">쉬움</span><br>PG 확장 설치</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>클라우드 가격</strong></td>
+                                    <td style="text-align: center;">$25~/월<br>(1M 벡터)</td>
+                                    <td style="text-align: center;">$65~/월<br>(Zilliz)</td>
+                                    <td style="text-align: center;">$25~/월<br>(Sandbox)</td>
+                                    <td style="text-align: center;">RDS 비용<br>(PostgreSQL)</td>
+                                </tr>
+                                <tr style="background: #f0fdf4;">
+                                    <td><strong>KION 적합성</strong></td>
+                                    <td style="text-align: center;">
+                                        <span class="badge badge-good">높음</span><br>
+                                        메타데이터 필터링<br>
+                                        (웨이퍼/온도/기관)
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span class="badge badge-warn">보통</span><br>
+                                        대규모일 때 적합<br>
+                                        (10만건 이상)
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span class="badge badge-good">높음</span><br>
+                                        하이브리드 검색<br>
+                                        (장비명+스펙)
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <span class="badge badge-good">높음</span><br>
+                                        기존 PG 있으면<br>
+                                        추가 비용 없음
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 15px; padding: 12px; background: #FEF3C7; border-radius: 8px; font-size: 13px;">
+                        <strong>⚠️ 미팅 후 결정 필요:</strong> 장비 데이터 규모, 온프레미스/클라우드 정책, 기존 인프라(PostgreSQL 유무)에 따라 선택
+                    </div>
+
+                    <!-- Decision Tree -->
+                    <h4 style="margin: 25px 0 15px; font-size: 16px;">의사결정 가이드</h4>
+                    <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
+                        <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="background: #3B82F6; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">Q1</span>
+                                <span>장비 데이터가 <strong>10만건 이상</strong>인가요?</span>
+                                <span style="color: #666;">→ Yes: <strong>Milvus</strong> 고려</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="background: #10B981; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">Q2</span>
+                                <span>기존에 <strong>PostgreSQL</strong>을 사용 중인가요?</span>
+                                <span style="color: #666;">→ Yes: <strong>pgvector</strong> 고려</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="background: #8B5CF6; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">Q3</span>
+                                <span><strong>키워드+벡터 하이브리드</strong> 검색이 중요한가요?</span>
+                                <span style="color: #666;">→ Yes: <strong>Weaviate</strong> 고려</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="background: #F59E0B; color: white; padding: 4px 12px; border-radius: 20px; font-weight: 600;">Q4</span>
+                                <span><strong>메타데이터 필터링</strong>(웨이퍼, 온도, 기관)이 핵심인가요?</span>
+                                <span style="color: #666;">→ Yes: <strong>Qdrant</strong> 고려</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Deployment Flow -->
                     <h3 style="margin: 30px 0 20px; font-size: 18px;">배포 파이프라인</h3>
                     <div class="flow-container">
@@ -860,9 +1005,10 @@
                         </div>
                         <div class="tech-card">
                             <h4>💾 Storage & DB</h4>
-                            <div class="tech-item"><span class="icon">🐘</span> RDS PostgreSQL + pgvector</div>
-                            <div class="tech-item"><span class="icon">⚡</span> ElastiCache Redis</div>
-                            <div class="tech-item"><span class="icon">📦</span> S3 (모델 저장)</div>
+                            <div class="tech-item"><span class="icon">🔮</span> Vector DB (미팅 후 선택)</div>
+                            <div class="tech-item" style="font-size: 11px; color: #666; padding-left: 34px;">Qdrant / Milvus / pgvector / Weaviate</div>
+                            <div class="tech-item"><span class="icon">⚡</span> ElastiCache Redis (캐시)</div>
+                            <div class="tech-item"><span class="icon">📦</span> S3 (모델/데이터 저장)</div>
                         </div>
                         <div class="tech-card">
                             <h4>🤖 AI/ML</h4>
@@ -986,15 +1132,14 @@
                                 <div class="tech-item"><span class="icon">✅</span> ChromaDB</div>
                             </div>
                         </div>
-                        <div class="cloud-option recommended">
-                            <span class="rec-badge">KION 추천</span>
+                        <div class="cloud-option">
                             <div class="icon">🏢</div>
                             <h4>기관 내부용</h4>
                             <p>KION 협력 기관 내부 서비스</p>
                             <div style="margin-top: 15px; text-align: left;">
                                 <div class="tech-item"><span class="icon">✅</span> AWS/GCP 기본 구성</div>
                                 <div class="tech-item"><span class="icon">✅</span> Self-hosted LLM</div>
-                                <div class="tech-item"><span class="icon">✅</span> pgvector</div>
+                                <div class="tech-item"><span class="icon">❓</span> Vector DB (미팅 후 선택)</div>
                             </div>
                         </div>
                         <div class="cloud-option">
@@ -1004,7 +1149,7 @@
                             <div style="margin-top: 15px; text-align: left;">
                                 <div class="tech-item"><span class="icon">✅</span> 완전한 클라우드 구성</div>
                                 <div class="tech-item"><span class="icon">✅</span> Managed LLM API</div>
-                                <div class="tech-item"><span class="icon">✅</span> Pinecone / Weaviate</div>
+                                <div class="tech-item"><span class="icon">❓</span> Vector DB (미팅 후 선택)</div>
                             </div>
                         </div>
                     </div>

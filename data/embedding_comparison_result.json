@@ -1,0 +1,17 @@
+{
+  "e5-large": {
+    "recall@1": 0.76,
+    "recall@3": 0.8266666666666667,
+    "avg_search_time": 0.08568391799926758
+  },
+  "bge-m3": {
+    "recall@1": 0.72,
+    "recall@3": 0.8000000000000002,
+    "avg_search_time": 0.0826728343963623
+  },
+  "ko-sroberta": {
+    "recall@1": 0.64,
+    "recall@3": 0.76,
+    "avg_search_time": 0.03286872863769531
+  }
+}
