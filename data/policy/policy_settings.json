@@ -1,0 +1,61 @@
+{
+  "policies": [
+    {
+      "key": "maintenance_exclude",
+      "name": "점검 중 장비 제외",
+      "value": true,
+      "type": "boolean",
+      "category": "filter",
+      "description": "유지보수/점검 중인 장비를 검색 결과에서 제외"
+    },
+    {
+      "key": "reservation_check",
+      "name": "예약 가능 여부 표시",
+      "value": true,
+      "type": "boolean",
+      "category": "display",
+      "description": "장비 예약 가능 여부를 결과에 표시"
+    },
+    {
+      "key": "cost_display",
+      "name": "비용 정보 표시",
+      "value": false,
+      "type": "boolean",
+      "category": "display",
+      "description": "장비 사용 비용 정보를 결과에 표시"
+    },
+    {
+      "key": "external_visible",
+      "name": "외부 기관 장비 표시",
+      "value": true,
+      "type": "boolean",
+      "category": "filter",
+      "description": "외부 기관 장비를 검색 결과에 포함"
+    },
+    {
+      "key": "max_recommendations",
+      "name": "최대 추천 수",
+      "value": 5,
+      "type": "integer",
+      "category": "limit",
+      "description": "LLM이 추천하는 최대 장비 수"
+    },
+    {
+      "key": "min_rag_score",
+      "name": "최소 RAG 점수",
+      "value": 0.3,
+      "type": "float",
+      "category": "filter",
+      "description": "검색 결과에 포함될 최소 유사도 점수"
+    },
+    {
+      "key": "priority_weight",
+      "name": "우선순위 가중치",
+      "value": 0.3,
+      "type": "float",
+      "category": "scoring",
+      "description": "최종 점수 계산 시 기관 우선순위 가중치 (0~1)"
+    }
+  ],
+  "updated_at": "2025-12-29T00:00:00Z"
+}

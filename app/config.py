@@ -14,7 +14,7 @@ class Settings(BaseSettings):
 
     # Ollama
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "qwen2.5:7b"  # 7B for faster response
+    OLLAMA_MODEL: str = "qwen2.5:32b"  # 32B for better quality
 
     # Embedding
     EMBEDDING_MODEL: str = "intfloat/multilingual-e5-large"

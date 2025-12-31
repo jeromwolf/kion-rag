@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자 - KION RAG</title>
+    <title>관리자 대시보드 - KION RAG</title>
     <style>
         :root {
             --primary: #1565C0;
@@ -24,6 +24,7 @@
             color: var(--dark);
         }
 
+        /* Header */
         .header {
             background: var(--white);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -34,9 +35,9 @@
         }
 
         .header-inner {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            height: 70px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -50,8 +51,8 @@
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: linear-gradient(135deg, var(--primary), var(--success));
             border-radius: 8px;
             display: flex;
@@ -62,75 +63,221 @@
         }
 
         .logo-text {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--dark);
         }
 
         .logo-text span { color: var(--primary); }
 
-        .nav-links {
+        .header-right {
             display: flex;
-            gap: 20px;
+            align-items: center;
+            gap: 16px;
         }
 
-        .nav-links a {
+        .header-right a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .header-right a:hover { color: var(--primary); }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background: var(--white);
+            border-right: 1px solid #e0e0e0;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
             color: var(--gray);
             text-decoration: none;
             font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 6px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
         }
 
-        .nav-links a:hover, .nav-links a.active {
+        .sidebar-menu li a:hover {
             background: var(--light);
-            color: var(--primary);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .page-title {
-            margin-bottom: 30px;
-        }
-
-        .page-title h1 {
-            font-size: 28px;
             color: var(--dark);
         }
 
-        .page-title p {
+        .sidebar-menu li a.active {
+            background: #E3F2FD;
+            color: var(--primary);
+            border-left-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar-menu li a .icon {
+            font-size: 18px;
+        }
+
+        .sidebar-menu li a .badge {
+            margin-left: auto;
+            background: var(--primary);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .sidebar-menu li a .badge.soon {
+            background: var(--gray);
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 16px 24px;
+        }
+
+        .menu-label {
+            font-size: 11px;
             color: var(--gray);
-            margin-top: 8px;
+            padding: 8px 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
         }
 
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            color: var(--dark);
+        }
+
+        .page-header p {
+            color: var(--gray);
+            margin-top: 4px;
+            font-size: 14px;
+        }
+
+        /* Cards */
         .card {
             background: var(--white);
             border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
 
-        .card h3 {
-            font-size: 16px;
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-header h3 {
+            font-size: 15px;
             color: var(--dark);
-            margin-bottom: 20px;
+        }
+
+        .card-header .badge {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: #E3F2FD;
+            color: var(--primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
         }
 
-        .status-grid {
+        .stat-card .stat-icon.blue { background: #E3F2FD; }
+        .stat-card .stat-icon.green { background: #E8F5E9; }
+        .stat-card .stat-icon.orange { background: #FFF3E0; }
+        .stat-card .stat-icon.purple { background: #F3E5F5; }
+
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        /* Grid layouts */
+        .grid-2 {
             display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* Status items */
+        .status-list {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
         }
 
@@ -143,29 +290,58 @@
             border-radius: 8px;
         }
 
-        .status-label {
+        .status-item .label {
             font-size: 14px;
             color: var(--gray);
         }
 
-        .status-value {
+        .status-item .value {
             font-size: 14px;
             font-weight: 600;
         }
 
-        .status-value.success { color: var(--success); }
-        .status-value.warning { color: var(--warning); }
-        .status-value.danger { color: var(--danger); }
+        .status-item .value.success { color: var(--success); }
+        .status-item .value.warning { color: var(--warning); }
+        .status-item .value.danger { color: var(--danger); }
 
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--gray);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
+            gap: 6px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -180,88 +356,200 @@
         .btn-secondary {
             background: var(--light);
             color: var(--dark);
-            border: 1px solid #ddd;
         }
 
-        .btn-secondary:hover { background: #eee; }
+        .btn-secondary:hover { background: #e0e0e0; }
 
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover { background: #D32F2F; }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .action-grid {
-            display: grid;
-            gap: 12px;
-        }
-
-        .action-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background: var(--light);
-            border-radius: 8px;
-        }
-
-        .action-info h4 {
-            font-size: 14px;
-            color: var(--dark);
-            margin-bottom: 4px;
-        }
-
-        .action-info p {
+        .btn-sm {
+            padding: 6px 12px;
             font-size: 12px;
-            color: var(--gray);
         }
 
+        /* Tags */
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .tag-success { background: #E8F5E9; color: var(--success); }
+        .tag-warning { background: #FFF3E0; color: var(--warning); }
+        .tag-info { background: #E3F2FD; color: var(--primary); }
+        .tag-gray { background: var(--light); color: var(--gray); }
+
+        /* Log box */
         .log-box {
-            background: #263238;
-            color: #ECEFF1;
+            background: #1e1e1e;
+            color: #d4d4d4;
             padding: 16px;
             border-radius: 8px;
-            font-family: monospace;
+            font-family: 'SF Mono', monospace;
             font-size: 12px;
             max-height: 200px;
             overflow-y: auto;
         }
 
-        .log-box .log-entry {
+        .log-entry {
             margin-bottom: 4px;
         }
 
-        .log-box .log-time {
-            color: #78909C;
+        .log-time { color: #6A9955; }
+        .log-info { color: #569CD6; }
+        .log-success { color: #4EC9B0; }
+        .log-error { color: #F44747; }
+
+        /* Coming soon overlay */
+        .coming-soon {
+            position: relative;
         }
 
-        .log-box .log-success { color: #81C784; }
-        .log-box .log-error { color: #EF5350; }
-        .log-box .log-info { color: #64B5F6; }
+        .coming-soon::after {
+            content: 'Coming Soon';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
 
-        .stats-number {
-            font-size: 32px;
+        .coming-soon > * {
+            opacity: 0.4;
+        }
+
+        /* Chart placeholder */
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 800px;
+            max-height: 80vh;
+            width: 90%;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h3 { font-size: 16px; }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 60px);
+        }
+
+        .equipment-list {
+            display: grid;
+            gap: 8px;
+        }
+
+        .equipment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
+        .equipment-item:hover { background: #e8e8e8; }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .category-card {
+            padding: 16px;
+            background: var(--light);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-card:hover {
+            background: #e8e8e8;
+            transform: scale(1.02);
+        }
+
+        .category-card .name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .category-card .count {
+            font-size: 24px;
             font-weight: 700;
             color: var(--primary);
+            margin-top: 8px;
         }
 
-        .stats-label {
-            font-size: 14px;
-            color: var(--gray);
-            margin-top: 4px;
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
         }
 
-        .refresh-time {
-            font-size: 12px;
-            color: var(--gray);
-            text-align: right;
-            margin-top: 16px;
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -270,126 +558,601 @@
         <div class="header-inner">
             <a href="/" class="logo">
                 <div class="logo-icon">K</div>
-                <div class="logo-text"><span>KION</span> RAG</div>
+                <div class="logo-text"><span>KION</span> RAG Admin</div>
             </a>
-            <nav class="nav-links">
-                <a href="/">홈</a>
-                <a href="/static/architecture.html">아키텍처</a>
-                <a href="/static/techstack.html">기술스택</a>
-                <a href="/static/data-design.html">데이터설계</a>
-                <a href="/static/implementation.html">구현가이드</a>
-                <a href="/static/admin.html" class="active">관리자</a>
-                <a href="/static/api-docs.html">API 문서</a>
-            </nav>
+            <div class="header-right">
+                <a href="/">홈으로</a>
+                <a href="/static/checklist.html">체크리스트</a>
+                <span style="color: var(--gray);">|</span>
+                <span style="font-size: 13px;">관리자</span>
+            </div>
         </div>
     </header>
 
-    <div class="container">
-        <div class="page-title">
-            <h1>관리자 대시보드</h1>
-            <p>시스템 상태 모니터링 및 데이터 관리</p>
-        </div>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" onclick="showTab('dashboard')"><span class="icon">📊</span> 대시보드</a></li>
+                <li><a href="#" onclick="showTab('equipment')"><span class="icon">🔧</span> 장비 관리</a></li>
+                <li><a href="#" onclick="showTab('logs')"><span class="icon">📋</span> 질의 로그 <span class="badge soon">Soon</span></a></li>
+                <li><a href="#" onclick="showTab('feedback')"><span class="icon">💬</span> 사용자 피드백 <span class="badge soon">Soon</span></a></li>
 
-        <div class="grid">
-            <!-- 시스템 상태 -->
-            <div class="card">
-                <h3>📊 시스템 상태</h3>
-                <div class="status-grid">
-                    <div class="status-item">
-                        <span class="status-label">API 서버</span>
-                        <span class="status-value success" id="api-status">-</span>
+                <div class="menu-divider"></div>
+                <div class="menu-label">설정</div>
+
+                <li><a href="#" onclick="showTab('prompts')"><span class="icon">📝</span> 프롬프트 관리 <span class="badge soon">Soon</span></a></li>
+                <li><a href="#" onclick="showTab('sync')"><span class="icon">🔄</span> 데이터 동기화 <span class="badge soon">Soon</span></a></li>
+                <li><a href="#" onclick="showTab('users')"><span class="icon">👥</span> 사용자 관리 <span class="badge soon">Soon</span></a></li>
+                <li><a href="#" onclick="showTab('settings')"><span class="icon">⚙️</span> 시스템 설정 <span class="badge soon">Soon</span></a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard" class="tab-content active">
+                <div class="page-header">
+                    <h1>대시보드</h1>
+                    <p>시스템 현황 및 주요 지표</p>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="showEquipmentList()">
+                        <div class="stat-icon blue">🔧</div>
+                        <div class="stat-value" id="stats-equipment">-</div>
+                        <div class="stat-label">등록 장비</div>
                     </div>
-                    <div class="status-item">
-                        <span class="status-label">Ollama (LLM)</span>
-                        <span class="status-value" id="ollama-status">-</span>
+                    <div class="stat-card" onclick="showCategoryList()">
+                        <div class="stat-icon green">📁</div>
+                        <div class="stat-value" id="stats-categories">-</div>
+                        <div class="stat-label">카테고리</div>
                     </div>
-                    <div class="status-item">
-                        <span class="status-label">ChromaDB (벡터DB)</span>
-                        <span class="status-value" id="chroma-status">-</span>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">💬</div>
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">오늘 질의 수</div>
                     </div>
-                    <div class="status-item">
-                        <span class="status-label">장비 데이터</span>
-                        <span class="status-value" id="equipment-count">-</span>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">⭐</div>
+                        <div class="stat-value">94%</div>
+                        <div class="stat-label">만족도</div>
                     </div>
                 </div>
-                <p class="refresh-time" id="last-refresh">마지막 갱신: -</p>
-            </div>
 
-            <!-- 데이터 관리 -->
-            <div class="card">
-                <h3>🗄️ 데이터 관리</h3>
-                <div class="action-grid">
-                    <div class="action-item">
-                        <div class="action-info">
-                            <h4>데이터 리로드</h4>
-                            <p>JSON 파일에서 장비 데이터 다시 로드</p>
+                <div class="grid-3">
+                    <!-- System Status -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>시스템 상태</h3>
+                            <span class="tag tag-success">정상</span>
                         </div>
-                        <button class="btn btn-primary" id="btn-reload" onclick="reloadData()">
-                            🔄 리로드
-                        </button>
-                    </div>
-                    <div class="action-item">
-                        <div class="action-info">
-                            <h4>캐시 초기화</h4>
-                            <p>LLM 응답 캐시 삭제 (TTL 5분)</p>
+                        <div class="status-list">
+                            <div class="status-item">
+                                <span class="label">API 서버</span>
+                                <span class="value success" id="api-status">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">Ollama (LLM)</span>
+                                <span class="value" id="ollama-status">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">Qdrant (벡터DB)</span>
+                                <span class="value" id="chroma-status">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">PostgreSQL (로그)</span>
+                                <span class="value warning">미연결</span>
+                            </div>
                         </div>
-                        <button class="btn btn-secondary" id="btn-cache" onclick="clearCache()">
-                            🗑️ 초기화
-                        </button>
+                        <p style="font-size: 12px; color: var(--gray); margin-top: 16px;" id="last-refresh">마지막 갱신: -</p>
                     </div>
-                    <div class="action-item">
-                        <div class="action-info">
-                            <h4>프롬프트 리로드</h4>
-                            <p>시스템 프롬프트 파일 다시 로드</p>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>빠른 작업</h3>
                         </div>
-                        <button class="btn btn-secondary" id="btn-prompt" onclick="reloadPrompts()">
-                            📝 리로드
-                        </button>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button class="btn btn-primary" onclick="reloadData()">🔄 데이터 리로드</button>
+                            <button class="btn btn-secondary" onclick="clearCache()">🗑️ 캐시 초기화</button>
+                            <button class="btn btn-secondary" onclick="reloadPrompts()">📝 프롬프트 리로드</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Recent Queries -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>최근 질의</h3>
+                            <button class="btn btn-sm btn-secondary">전체보기</button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>시간</th>
+                                        <th>질의 내용</th>
+                                        <th>결과</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>14:32</td>
+                                        <td>6인치 MOCVD 장비 추천</td>
+                                        <td><span class="tag tag-success">3건</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>14:28</td>
+                                        <td>GaN 에피 성장 장비</td>
+                                        <td><span class="tag tag-success">2건</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>14:15</td>
+                                        <td>RTA 산화막 형성</td>
+                                        <td><span class="tag tag-success">1건</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>13:52</td>
+                                        <td>ICP-CVD 장비 찾기</td>
+                                        <td><span class="tag tag-success">4건</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Activity Log -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>작업 로그</h3>
+                        </div>
+                        <div class="log-box" id="log-box">
+                            <div class="log-entry"><span class="log-time">[시스템]</span> <span class="log-info">관리자 페이지 로드됨</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 통계 -->
-            <div class="card">
-                <h3>📈 통계</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center;">
-                    <div>
-                        <div class="stats-number" id="stats-equipment">-</div>
-                        <div class="stats-label">등록 장비</div>
+            <!-- Equipment Tab -->
+            <div id="tab-equipment" class="tab-content">
+                <div class="page-header">
+                    <h1>장비 관리</h1>
+                    <p>등록된 장비 데이터 관리</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>장비 목록</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-sm btn-secondary">엑셀 다운로드</button>
+                            <button class="btn btn-sm btn-primary" onclick="reloadData()">🔄 리로드</button>
+                        </div>
                     </div>
-                    <div>
-                        <div class="stats-number" id="stats-categories">-</div>
-                        <div class="stats-label">카테고리</div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>장비 ID</th>
+                                    <th>장비명</th>
+                                    <th>카테고리</th>
+                                    <th>기관</th>
+                                    <th>상태</th>
+                                    <th>작업</th>
+                                </tr>
+                            </thead>
+                            <tbody id="equipment-table-body">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: var(--gray);">로딩 중...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- 작업 로그 -->
-            <div class="card">
-                <h3>📋 작업 로그</h3>
-                <div class="log-box" id="log-box">
-                    <div class="log-entry">
-                        <span class="log-time">[시스템]</span>
-                        <span class="log-info">관리자 페이지 로드됨</span>
+            <!-- Query Logs Tab -->
+            <div id="tab-logs" class="tab-content">
+                <div class="page-header">
+                    <h1>질의 로그</h1>
+                    <p>사용자 질의 및 응답 이력 관리</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">💬</div>
+                        <div class="stat-value">12,847</div>
+                        <div class="stat-label">전체 질의</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">✅</div>
+                        <div class="stat-value">98.2%</div>
+                        <div class="stat-label">응답 성공률</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">⏱️</div>
+                        <div class="stat-value">1.2s</div>
+                        <div class="stat-label">평균 응답시간</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">📈</div>
+                        <div class="stat-value">+23%</div>
+                        <div class="stat-label">전주 대비</div>
+                    </div>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>질의 통계 차트</h3>
+                    </div>
+                    <div class="chart-placeholder">
+                        일별 질의 추이 차트
+                    </div>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>질의 로그 상세</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>시간</th>
+                                    <th>사용자</th>
+                                    <th>질의 내용</th>
+                                    <th>추천 장비</th>
+                                    <th>응답시간</th>
+                                    <th>피드백</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="6" style="text-align:center; padding: 40px; color: var(--gray);">PostgreSQL 연동 후 활성화됩니다</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 향후 기능 -->
-        <div class="card" style="margin-top: 20px;">
-            <h3>🚀 향후 추가 예정 기능</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">MS-SQL 동기화</span>
-                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">장비 데이터 편집</span>
-                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">사용자 피드백 조회</span>
-                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">질의 로그 분석</span>
-                <span style="background: #E3F2FD; color: #1565C0; padding: 8px 16px; border-radius: 20px; font-size: 13px;">프롬프트 편집기</span>
+            <!-- Feedback Tab -->
+            <div id="tab-feedback" class="tab-content">
+                <div class="page-header">
+                    <h1>사용자 피드백</h1>
+                    <p>추천 결과에 대한 사용자 피드백 관리</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">👍</div>
+                        <div class="stat-value">847</div>
+                        <div class="stat-label">긍정 피드백</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">👎</div>
+                        <div class="stat-value">52</div>
+                        <div class="stat-label">부정 피드백</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">💬</div>
+                        <div class="stat-value">124</div>
+                        <div class="stat-label">코멘트</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">⭐</div>
+                        <div class="stat-value">4.7</div>
+                        <div class="stat-label">평균 평점</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card coming-soon">
+                        <div class="card-header">
+                            <h3>피드백 추이</h3>
+                        </div>
+                        <div class="chart-placeholder">
+                            주간 피드백 추이 차트
+                        </div>
+                    </div>
+
+                    <div class="card coming-soon">
+                        <div class="card-header">
+                            <h3>최근 코멘트</h3>
+                        </div>
+                        <div style="padding: 40px; text-align: center; color: var(--gray);">
+                            피드백 시스템 연동 후 활성화됩니다
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Prompts Tab -->
+            <div id="tab-prompts" class="tab-content">
+                <div class="page-header">
+                    <h1>프롬프트 관리</h1>
+                    <p>AI 응답을 위한 시스템 프롬프트 설정</p>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>시스템 프롬프트</h3>
+                        <button class="btn btn-sm btn-primary">저장</button>
+                    </div>
+                    <div style="padding: 20px;">
+                        <textarea style="width: 100%; height: 300px; padding: 16px; border: 1px solid #ddd; border-radius: 8px; font-family: monospace; font-size: 13px; resize: vertical;" readonly>당신은 KION 팹서비스의 AI 장비 추천 전문가입니다.
+
+사용자의 공정 요구사항을 분석하여 가장 적합한 반도체 장비를 추천합니다.
+
+추천 시 고려사항:
+1. 웨이퍼 크기 호환성
+2. 공정 온도 범위
+3. 지원 재료
+4. 기관 위치
+
+응답 형식:
+- 간결하고 전문적인 어조 사용
+- 장비별 핵심 스펙 포함
+- 예약 가능 여부 안내</textarea>
+                    </div>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>프롬프트 버전 히스토리</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>버전</th><th>수정일</th><th>수정자</th><th>변경사항</th><th>작업</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>v1.2</td><td>2025-12-30</td><td>admin</td><td>응답 형식 개선</td><td><button class="btn btn-sm btn-secondary">복원</button></td></tr>
+                                <tr><td>v1.1</td><td>2025-12-28</td><td>admin</td><td>고려사항 추가</td><td><button class="btn btn-sm btn-secondary">복원</button></td></tr>
+                                <tr><td>v1.0</td><td>2025-12-25</td><td>admin</td><td>초기 버전</td><td><button class="btn btn-sm btn-secondary">복원</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sync Tab -->
+            <div id="tab-sync" class="tab-content">
+                <div class="page-header">
+                    <h1>데이터 동기화</h1>
+                    <p>외부 데이터베이스 연동 및 동기화 설정</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card coming-soon">
+                        <div class="card-header">
+                            <h3>MS-SQL 연동</h3>
+                            <span class="tag tag-gray">미연결</span>
+                        </div>
+                        <div class="status-list">
+                            <div class="status-item">
+                                <span class="label">연결 상태</span>
+                                <span class="value warning">미설정</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">마지막 동기화</span>
+                                <span class="value">-</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">동기화 주기</span>
+                                <span class="value">매일 00:00</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;">연결 설정</button>
+                    </div>
+
+                    <div class="card coming-soon">
+                        <div class="card-header">
+                            <h3>fab.kion.or.kr 연동</h3>
+                            <span class="tag tag-gray">미연결</span>
+                        </div>
+                        <div class="status-list">
+                            <div class="status-item">
+                                <span class="label">예약 현황 API</span>
+                                <span class="value warning">미설정</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">장비 상태 API</span>
+                                <span class="value warning">미설정</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;">API 설정</button>
+                    </div>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>동기화 이력</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>시간</th><th>유형</th><th>결과</th><th>변경 건수</th><th>소요시간</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="text-align:center; padding: 40px; color: var(--gray);">동기화 설정 후 이력이 표시됩니다</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="tab-users" class="tab-content">
+                <div class="page-header">
+                    <h1>사용자 관리</h1>
+                    <p>관리자 계정 및 권한 관리</p>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>관리자 목록</h3>
+                        <button class="btn btn-sm btn-primary">+ 사용자 추가</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>이름</th><th>이메일</th><th>역할</th><th>마지막 접속</th><th>상태</th><th>작업</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>관리자</td>
+                                    <td>admin@kion.or.kr</td>
+                                    <td><span class="tag tag-info">Super Admin</span></td>
+                                    <td>2025-12-30 14:30</td>
+                                    <td><span class="tag tag-success">활성</span></td>
+                                    <td><button class="btn btn-sm btn-secondary">편집</button></td>
+                                </tr>
+                                <tr>
+                                    <td>운영자</td>
+                                    <td>operator@kion.or.kr</td>
+                                    <td><span class="tag tag-gray">Operator</span></td>
+                                    <td>2025-12-29 09:15</td>
+                                    <td><span class="tag tag-success">활성</span></td>
+                                    <td><button class="btn btn-sm btn-secondary">편집</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>접속 로그</h3>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>시간</th><th>사용자</th><th>IP</th><th>행동</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>14:30:22</td><td>admin@kion.or.kr</td><td>192.168.1.100</td><td>로그인</td></tr>
+                                <tr><td>14:28:15</td><td>admin@kion.or.kr</td><td>192.168.1.100</td><td>데이터 리로드</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="tab-content">
+                <div class="page-header">
+                    <h1>시스템 설정</h1>
+                    <p>RAG 시스템 및 LLM 설정</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card coming-soon">
+                        <div class="card-header">
+                            <h3>LLM 설정</h3>
+                        </div>
+                        <div class="status-list">
+                            <div class="status-item">
+                                <span class="label">모델</span>
+                                <span class="value">Qwen 2.5 32B</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">Temperature</span>
+                                <span class="value">0.7</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">Max Tokens</span>
+                                <span class="value">2048</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">Top K 결과</span>
+                                <span class="value">5</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card coming-soon">
+                        <div class="card-header">
+                            <h3>임베딩 설정</h3>
+                        </div>
+                        <div class="status-list">
+                            <div class="status-item">
+                                <span class="label">모델</span>
+                                <span class="value">BGE-M3</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">차원</span>
+                                <span class="value">1024</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="label">최대 토큰</span>
+                                <span class="value">8192</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card coming-soon">
+                    <div class="card-header">
+                        <h3>캐시 설정</h3>
+                    </div>
+                    <div class="status-list">
+                        <div class="status-item">
+                            <span class="label">캐시 유형</span>
+                            <span class="value">Redis</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">TTL</span>
+                            <span class="value">5분</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="label">현재 캐시 크기</span>
+                            <span class="value">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">상세 정보</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body"></div>
         </div>
     </div>
 
     <script>
+        // 장비 데이터 캐시
+        let equipmentCache = null;
+
+        // 탭 전환
+        function showTab(tabName) {
+            // 모든 탭 숨기기
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // 모든 메뉴 비활성화
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            // 선택된 탭 표시
+            document.getElementById('tab-' + tabName).classList.add('active');
+            // 선택된 메뉴 활성화
+            event.target.closest('a').classList.add('active');
+
+            // 장비 탭일 때 데이터 로드
+            if (tabName === 'equipment') {
+                loadEquipmentTable();
+            }
+        }
+
         // 시스템 상태 체크
         async function checkHealth() {
             try {
@@ -397,88 +1160,179 @@
                 const data = await res.json();
 
                 document.getElementById('api-status').textContent = '정상';
-                document.getElementById('api-status').className = 'status-value success';
+                document.getElementById('api-status').className = 'value success';
 
                 document.getElementById('ollama-status').textContent =
                     data.ollama_status === 'connected' ? '연결됨' : '연결 안됨';
                 document.getElementById('ollama-status').className =
-                    'status-value ' + (data.ollama_status === 'connected' ? 'success' : 'danger');
+                    'value ' + (data.ollama_status === 'connected' ? 'success' : 'danger');
 
                 document.getElementById('chroma-status').textContent =
                     data.chroma_status === 'connected' ? '연결됨' : '연결 안됨';
                 document.getElementById('chroma-status').className =
-                    'status-value ' + (data.chroma_status === 'connected' ? 'success' : 'danger');
-
-                document.getElementById('equipment-count').textContent = data.equipment_count + '대';
-                document.getElementById('equipment-count').className = 'status-value success';
+                    'value ' + (data.chroma_status === 'connected' ? 'success' : 'danger');
 
                 document.getElementById('stats-equipment').textContent = data.equipment_count;
-
                 document.getElementById('last-refresh').textContent =
                     '마지막 갱신: ' + new Date().toLocaleTimeString();
 
             } catch (e) {
                 document.getElementById('api-status').textContent = '오류';
-                document.getElementById('api-status').className = 'status-value danger';
+                document.getElementById('api-status').className = 'value danger';
                 addLog('API 연결 실패: ' + e.message, 'error');
             }
         }
 
+        // 장비 목록 가져오기
+        async function fetchEquipmentData() {
+            if (equipmentCache) return equipmentCache;
+            try {
+                const res = await fetch('/equipment/list');
+                const data = await res.json();
+                equipmentCache = data.equipment || [];
+                return equipmentCache;
+            } catch (e) {
+                console.error('장비 데이터 로드 실패:', e);
+                return [];
+            }
+        }
+
+        // 장비 테이블 로드
+        async function loadEquipmentTable() {
+            const tbody = document.getElementById('equipment-table-body');
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">로딩 중...</td></tr>';
+
+            const equipment = await fetchEquipmentData();
+            if (equipment.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: var(--gray);">등록된 장비가 없습니다</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = equipment.slice(0, 20).map(eq => `
+                <tr>
+                    <td>${eq.id || '-'}</td>
+                    <td>${eq.name || '-'}</td>
+                    <td><span class="tag tag-info">${eq.category || '-'}</span></td>
+                    <td>${eq.institution || '-'}</td>
+                    <td><span class="tag tag-success">활성</span></td>
+                    <td><button class="btn btn-sm btn-secondary">상세</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // 모달 열기/닫기
+        function openModal(title) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('detailModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('show');
+        }
+
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // 장비 목록 모달
+        async function showEquipmentList() {
+            openModal('등록 장비 목록');
+            document.getElementById('modal-body').innerHTML = '<p style="text-align:center;">로딩 중...</p>';
+
+            const equipment = await fetchEquipmentData();
+            let html = `<div style="margin-bottom:16px; color:var(--gray);">총 ${equipment.length}개 장비</div>`;
+            html += '<div class="equipment-list">';
+            equipment.forEach(eq => {
+                html += `
+                    <div class="equipment-item">
+                        <div>
+                            <div style="font-weight:500;">${eq.name || '-'}</div>
+                            <div style="font-size:12px; color:var(--gray);">${eq.category || '-'} | ${eq.institution || '-'}</div>
+                        </div>
+                        <span class="tag tag-info">${eq.id || '-'}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('modal-body').innerHTML = html;
+        }
+
+        // 카테고리 목록 모달
+        async function showCategoryList() {
+            openModal('카테고리 목록');
+            document.getElementById('modal-body').innerHTML = '<p style="text-align:center;">로딩 중...</p>';
+
+            const equipment = await fetchEquipmentData();
+            const categoryMap = {};
+            equipment.forEach(eq => {
+                const cat = eq.category || '기타';
+                categoryMap[cat] = (categoryMap[cat] || 0) + 1;
+            });
+
+            const categories = Object.entries(categoryMap).sort((a, b) => b[1] - a[1]);
+            document.getElementById('stats-categories').textContent = categories.length;
+
+            let html = `<div style="margin-bottom:16px; color:var(--gray);">총 ${categories.length}개 카테고리 (클릭하여 장비 보기)</div>`;
+            html += '<div class="category-grid">';
+            categories.forEach(([name, count]) => {
+                html += `
+                    <div class="category-card" onclick="showEquipmentByCategory('${name}')">
+                        <div class="name">${name}</div>
+                        <div class="count">${count}대</div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('modal-body').innerHTML = html;
+        }
+
+        // 카테고리별 장비 목록
+        async function showEquipmentByCategory(category) {
+            document.getElementById('modal-title').textContent = category + ' 장비 목록';
+            const equipment = await fetchEquipmentData();
+            const filtered = equipment.filter(eq => (eq.category || '기타') === category);
+
+            let html = `<div style="margin-bottom:16px;">
+                <button onclick="showCategoryList()" class="btn btn-sm btn-secondary">← 카테고리 목록</button>
+                <span style="margin-left:12px; color:var(--gray);">${filtered.length}개 장비</span>
+            </div>`;
+            html += '<div class="equipment-list">';
+            filtered.forEach(eq => {
+                html += `
+                    <div class="equipment-item">
+                        <div>
+                            <div style="font-weight:500;">${eq.name || '-'}</div>
+                            <div style="font-size:12px; color:var(--gray);">${eq.institution || '-'}</div>
+                        </div>
+                        <span class="tag tag-info">${eq.id || '-'}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('modal-body').innerHTML = html;
+        }
+
         // 데이터 리로드
         async function reloadData() {
-            const btn = document.getElementById('btn-reload');
-            btn.disabled = true;
-            btn.textContent = '처리 중...';
-
             try {
                 const res = await fetch('/equipment/reload', { method: 'POST' });
                 const data = await res.json();
-                addLog(`데이터 리로드 완료: ${data.count}개 장비`, 'success');
+                equipmentCache = null;
+                addLog(`데이터 리로드 완료: ${data.count || data.message}`, 'success');
                 checkHealth();
             } catch (e) {
                 addLog('데이터 리로드 실패: ' + e.message, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '🔄 리로드';
             }
         }
 
         // 캐시 초기화
         async function clearCache() {
-            const btn = document.getElementById('btn-cache');
-            btn.disabled = true;
-
-            try {
-                const res = await fetch('/cache/clear', { method: 'POST' });
-                if (res.ok) {
-                    addLog('캐시 초기화 완료', 'success');
-                } else {
-                    addLog('캐시 초기화 API 미구현', 'info');
-                }
-            } catch (e) {
-                addLog('캐시 초기화: API 미구현 (향후 추가)', 'info');
-            } finally {
-                btn.disabled = false;
-            }
+            addLog('캐시 초기화: API 미구현 (향후 추가)', 'info');
         }
 
         // 프롬프트 리로드
         async function reloadPrompts() {
-            const btn = document.getElementById('btn-prompt');
-            btn.disabled = true;
-
-            try {
-                const res = await fetch('/prompts/reload', { method: 'POST' });
-                if (res.ok) {
-                    addLog('프롬프트 리로드 완료', 'success');
-                } else {
-                    addLog('프롬프트 리로드 API 미구현', 'info');
-                }
-            } catch (e) {
-                addLog('프롬프트 리로드: API 미구현 (향후 추가)', 'info');
-            } finally {
-                btn.disabled = false;
-            }
+            addLog('프롬프트 리로드: API 미구현 (향후 추가)', 'info');
         }
 
         // 로그 추가
@@ -491,46 +1345,18 @@
             logBox.insertBefore(entry, logBox.firstChild);
         }
 
+        // 카테고리 수 로드
+        async function loadCategoryCount() {
+            const equipment = await fetchEquipmentData();
+            const categorySet = new Set();
+            equipment.forEach(eq => categorySet.add(eq.category || '기타'));
+            document.getElementById('stats-categories').textContent = categorySet.size;
+        }
+
         // 초기화
         checkHealth();
-
-        // 카테고리 수 임시 설정 (향후 API 연동)
-        document.getElementById('stats-categories').textContent = '12';
-
-        // 30초마다 자동 갱신
+        loadCategoryCount();
         setInterval(checkHealth, 30000);
     </script>
-
-    <footer style="text-align: center; padding: 40px; color: var(--gray); font-size: 14px;" class="no-print">
-        <button onclick="savePDF()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px; display: inline-flex; align-items: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            PDF 저장
-        </button>
-        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
-    </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script>
-        function savePDF() {
-            const element = document.querySelector('.container');
-            const opt = {
-                margin: 10,
-                filename: 'KION_RAG_관리자.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-            };
-            html2pdf().set(opt).from(element).save();
-        }
-    </script>
-
-    <style>
-        @media print {
-            .header, .no-print { display: none !important; }
-            .container { padding-top: 0 !important; }
-            body { background: white; }
-        }
-    </style>
 </body>
 </html>

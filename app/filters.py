@@ -1,5 +1,6 @@
 """
 KION RAG PoC - 하드 필터 및 규칙 기반 필터링
+Policy DB 통합: 정책 설정, 기관 우선순위 적용
 """
 
 from typing import List, Dict, Any, Optional
@@ -12,6 +13,27 @@ class FilterResult:
     """필터링 결과"""
     passed: bool
     reason: str = ""
+
+
+# === Policy DB 통합 함수들 ===
+def get_policy_settings():
+    """PolicySettings 싱글톤 반환"""
+    try:
+        from .policy import get_policy_manager
+        return get_policy_manager().settings
+    except Exception as e:
+        print(f"[Filters] Policy settings load error: {e}")
+        return None
+
+
+def get_institution_priority():
+    """InstitutionPriority 싱글톤 반환"""
+    try:
+        from .policy import get_policy_manager
+        return get_policy_manager().institution
+    except Exception as e:
+        print(f"[Filters] Institution priority load error: {e}")
+        return None
 
 
 def check_wafer_size(equipment: Dict[str, Any], required_sizes: List[str]) -> FilterResult:
@@ -100,18 +122,36 @@ def check_materials(equipment: Dict[str, Any], required_materials: List[str]) ->
     )
 
 
-def check_category(equipment: Dict[str, Any], required_categories: List[str]) -> FilterResult:
+def check_category(
+    equipment: Dict[str, Any],
+    required_categories: List[str],
+    mapped_categories: Optional[List[str]] = None
+) -> FilterResult:
     """
-    카테고리 필터
-    """
-    if not required_categories:
-        return FilterResult(passed=True)
+    카테고리 필터 (Policy DB 매핑 포함)
 
+    Args:
+        equipment: 장비 정보
+        required_categories: 명시적 요청 카테고리
+        mapped_categories: Policy DB에서 매핑된 카테고리 (STEP 4)
+    """
     eq_category = equipment.get("category", "")
+    eq_name = equipment.get("name", "").upper()
 
-    for cat in required_categories:
-        if cat == eq_category:
-            return FilterResult(passed=True)
+    # 명시적 카테고리 먼저 체크
+    if required_categories:
+        for cat in required_categories:
+            if cat == eq_category:
+                return FilterResult(passed=True)
+
+    # Policy DB 매핑 카테고리 체크
+    if mapped_categories:
+        for cat in mapped_categories:
+            # 장비 카테고리 또는 이름에 매칭
+            if cat.upper() == eq_category.upper():
+                return FilterResult(passed=True)
+            if cat.upper() in eq_name:
+                return FilterResult(passed=True)
 
     # 카테고리 불일치는 soft fail (점수만 낮춤)
     return FilterResult(passed=True)
@@ -172,6 +212,11 @@ def apply_hard_filters(
         # 4. 기관 체크 (하드)
         institution_check = check_institution(eq, parsed_query.institutions)
         filter_results.append(("institution", institution_check))
+
+        # 5. 카테고리 체크 (Policy DB 매핑 포함 - STEP 4)
+        mapped_cats = getattr(parsed_query, 'mapped_categories', [])
+        category_check = check_category(eq, parsed_query.categories, mapped_cats)
+        filter_results.append(("category", category_check))
 
         # 결과 집계
         all_passed = all(r.passed for _, r in filter_results)
@@ -242,20 +287,36 @@ def calculate_match_score(equipment: Dict[str, Any], parsed_query: ParsedQuery) 
 
 def rerank_with_filters(
     equipments: List[Dict[str, Any]],
-    parsed_query: ParsedQuery
+    parsed_query: ParsedQuery,
+    user_institution: Optional[str] = None
 ) -> List[Dict[str, Any]]:
     """
-    필터 기반 리랭킹
+    필터 기반 리랭킹 (Policy DB 통합)
 
     Args:
         equipments: 검색된 장비 리스트 (score 필드 포함)
         parsed_query: 파싱된 쿼리
+        user_institution: 사용자 소속 기관 (최우선 처리)
 
     Returns:
         리랭킹된 장비 리스트
     """
+    # Policy DB 설정 로드
+    policy_settings = get_policy_settings()
+    institution_priority = get_institution_priority()
+
     # 하드 필터 적용
     filtered = apply_hard_filters(equipments, parsed_query, strict_mode=False)
+
+    # STEP 5: Policy DB 하드 규칙 적용
+    if policy_settings:
+        # 점검 중 장비 제외
+        if policy_settings.is_enabled("maintenance_exclude"):
+            filtered = [e for e in filtered if not e.get("is_maintenance", False)]
+
+        # 최소 RAG 점수 필터
+        min_score = policy_settings.get("min_rag_score", 0.0)
+        filtered = [e for e in filtered if e.get("score", 1.0) >= min_score]
 
     # 매칭 점수 계산 및 결합
     for eq in filtered:
@@ -268,9 +329,19 @@ def rerank_with_filters(
         # 최종 점수: RAG 점수 + 매칭 점수 + 필터 가중치
         eq["combined_score"] = (rag_score * 0.4 + match_score * 0.6) * filter_weight
         eq["match_score"] = match_score
+        eq["rag_score"] = rag_score  # Policy DB용
 
     # combined_score로 정렬
     filtered.sort(key=lambda x: -x.get("combined_score", 0))
+
+    # STEP 7: 기관 우선순위 적용
+    if institution_priority:
+        filtered = institution_priority.apply_priority(filtered, user_institution)
+
+    # Policy DB: 최대 추천 수 제한
+    if policy_settings:
+        max_rec = policy_settings.get("max_recommendations", 10)
+        filtered = filtered[:max_rec]
 
     return filtered
 

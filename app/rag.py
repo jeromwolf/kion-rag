@@ -1,5 +1,5 @@
 """
-KION RAG PoC - RAG Pipeline (ChromaDB + Embeddings)
+KION RAG PoC - RAG Pipeline (ChromaDB + Embeddings + Hybrid Search)
 """
 
 import chromadb
@@ -10,16 +10,18 @@ from pathlib import Path
 
 from .config import settings
 from .models import Equipment
+from .hybrid_search import hybrid_searcher
 
 
 class RAGPipeline:
-    """RAG 파이프라인 (벡터 검색 + 메타데이터 필터)"""
+    """RAG 파이프라인 (벡터 검색 + BM25 하이브리드)"""
 
     def __init__(self):
         self.client = None
         self.collection = None
         self.embedding_fn = None
         self._initialized = False
+        self._hybrid_initialized = False
 
     def initialize(self):
         """RAG 파이프라인 초기화"""
@@ -195,11 +197,103 @@ class RAGPipeline:
 
         return equipments
 
+    def initialize_hybrid_search(self) -> None:
+        """하이브리드 검색을 위한 BM25 인덱스 초기화"""
+        if not self._initialized:
+            self.initialize()
+
+        # ChromaDB에서 모든 문서 가져오기
+        all_docs = self.collection.get(include=["documents", "metadatas"])
+
+        if not all_docs or not all_docs.get("ids"):
+            print("[RAG] No documents to initialize hybrid search")
+            return
+
+        # BM25용 문서 구성
+        documents = []
+        for i, doc_id in enumerate(all_docs["ids"]):
+            text = all_docs["documents"][i] if all_docs.get("documents") else ""
+            metadata = all_docs["metadatas"][i] if all_docs.get("metadatas") else {}
+
+            documents.append({
+                "id": doc_id,
+                "text": text,
+                "metadata": metadata
+            })
+
+        # 하이브리드 검색 초기화
+        hybrid_searcher.initialize(documents)
+        self._hybrid_initialized = True
+        print(f"[RAG] Hybrid search initialized with {len(documents)} documents")
+
+    def hybrid_search(
+        self,
+        query: str,
+        top_k: int = 10,
+        filters: Optional[Dict[str, Any]] = None,
+        vector_weight: float = 0.5,
+        bm25_weight: float = 0.5
+    ) -> List[Dict[str, Any]]:
+        """
+        하이브리드 검색 (BM25 + 벡터)
+
+        Args:
+            query: 검색 쿼리
+            top_k: 반환할 결과 수
+            filters: 메타데이터 필터
+            vector_weight: 벡터 검색 가중치 (기본 0.5)
+            bm25_weight: BM25 가중치 (기본 0.5)
+
+        Returns:
+            hybrid_score가 포함된 검색 결과
+        """
+        if not self._initialized:
+            self.initialize()
+
+        if not self._hybrid_initialized:
+            self.initialize_hybrid_search()
+
+        # 1. 벡터 검색 (더 많이 가져옴)
+        vector_results = self.search(
+            query=query,
+            top_k=top_k * 2,
+            filters=filters
+        )
+
+        # 2. 하이브리드 결합
+        hybrid_results = hybrid_searcher.hybrid_search(
+            query=query,
+            vector_results=vector_results,
+            top_k=top_k,
+            vector_weight=vector_weight,
+            bm25_weight=bm25_weight
+        )
+
+        return hybrid_results
+
     def get_count(self) -> int:
         """저장된 장비 수 반환"""
         if not self._initialized:
             self.initialize()
         return self.collection.count()
+
+    def get_all(self) -> list:
+        """모든 장비 메타데이터 반환"""
+        if not self._initialized:
+            self.initialize()
+        results = self.collection.get()
+        equipment_list = []
+        if results and results.get("ids"):
+            for i, eq_id in enumerate(results["ids"]):
+                meta = results["metadatas"][i] if results.get("metadatas") else {}
+                equipment_list.append({
+                    "id": eq_id,
+                    "name": meta.get("name", ""),
+                    "category": meta.get("category", ""),
+                    "part": meta.get("part", ""),
+                    "institution": meta.get("institution", ""),
+                })
+        return equipment_list
 
     def clear(self) -> None:
         """모든 데이터 삭제"""

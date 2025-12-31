@@ -33,6 +33,7 @@ class ChatRequest(BaseModel):
     query: str = Field(..., description="사용자 질의", min_length=1)
     filters: Optional[Dict[str, Any]] = Field(None, description="필터 조건")
     top_k: Optional[int] = Field(5, description="추천 장비 수", ge=1, le=10)
+    session_id: Optional[str] = Field(None, description="대화 세션 ID (연계 질의용)")
 
 
 class RecommendedEquipment(BaseModel):
@@ -54,6 +55,8 @@ class ChatResponse(BaseModel):
     recommendations: List[RecommendedEquipment] = Field(..., description="추천 장비 목록")
     explanation: str = Field(..., description="종합 설명")
     processing_time: float = Field(..., description="처리 시간 (초)")
+    session_id: Optional[str] = Field(None, description="대화 세션 ID")
+    turn_count: Optional[int] = Field(None, description="대화 턴 수")
 
 
 class HealthResponse(BaseModel):

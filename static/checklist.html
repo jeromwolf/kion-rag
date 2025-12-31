@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미팅 체크리스트 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #1565C0;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #E53935;
+            --dark: #333;
+            --gray: #666;
+            --light: #f5f5f5;
+            --white: #fff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .logo-text span { color: var(--primary); }
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+        .nav-links a:hover { background: var(--light); color: var(--primary); }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .page-title h1 { font-size: 28px; }
+        .page-title p { color: var(--gray); margin-top: 8px; }
+        .section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .section.expert-feedback {
+            border-left: 4px solid var(--warning);
+        }
+        .section h2 {
+            font-size: 16px;
+            color: var(--primary);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+        }
+        .section h2 .badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+        .section h2 .badge-new {
+            background: #FFECB3;
+            color: #F57C00;
+        }
+        .section h2 .badge-important {
+            background: #FFCDD2;
+            color: #C62828;
+        }
+        .check-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .check-item:last-child { border-bottom: none; }
+        .check-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        .check-item label {
+            flex: 1;
+            cursor: pointer;
+        }
+        .check-item .note {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+        .check-item input[type="text"] {
+            border: 1px solid #ddd;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 200px;
+        }
+        .sub-items {
+            margin-left: 32px;
+            margin-top: 8px;
+        }
+        .sub-items .check-item {
+            padding: 6px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th { background: var(--light); }
+        td input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        .highlight {
+            background: #FFF3E0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+            margin: 12px 0;
+            font-size: 14px;
+        }
+        .highlight.danger {
+            background: #FFEBEE;
+            border-left-color: #E53935;
+        }
+        .highlight.info {
+            background: #E3F2FD;
+            border-left-color: #1565C0;
+        }
+        .highlight.success {
+            background: #E8F5E9;
+            border-left-color: #4CAF50;
+        }
+        .badge-done {
+            background: #C8E6C9;
+            color: #2E7D32;
+        }
+        .status-done {
+            background: #4CAF50;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .status-partial {
+            background: #FF9800;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        tr.done {
+            background: #F1F8E9 !important;
+        }
+        tr.done td:first-child::before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .example-box {
+            background: #FAFAFA;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        .example-box code {
+            background: #ECEFF1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-size: 13px;
+        }
+        @media print {
+            .header { position: relative; }
+            .section { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/static/architecture.html">아키텍처</a>
+                <a href="/static/flowchart-demo.html">파이프라인</a>
+                <a href="/static/admin.html">관리자</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>미팅 체크리스트</h1>
+            <p>요구사항 확인 및 PoC 데모 | 전문가 피드백 반영 | <span style="color: #4CAF50; font-weight: 600;">핵심 기능 구현 완료</span></p>
+        </div>
+
+        <!-- 구현 완료 요약 -->
+        <div class="section" style="background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border: 2px solid #4CAF50;">
+            <h2 style="color: #2E7D32; border-bottom-color: #81C784;">PoC 구현 완료 기능</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🔍</div>
+                    <div style="font-weight: 600; color: #1565C0;">하이브리드 검색</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">BM25 + Vector</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🧠</div>
+                    <div style="font-weight: 600; color: #7E57C2;">LLM 의도 파악</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">부정/복합/추상 질의</div>
+                </div>
+                <div style="background: white; padding: 16px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🔗</div>
+                    <div style="font-weight: 600; color: #2E7D32;">연계 질의 (세션)</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px;">대화 이력 관리</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. 사용자 분석 (신규) -->
+        <div class="section expert-feedback">
+            <h2>1. 사용자 분석 <span class="badge badge-new">전문가 피드백</span></h2>
+
+            <div class="check-item">
+                <input type="checkbox" id="u1">
+                <label for="u1">
+                    <strong>예상 사용자 유형 정의</strong>
+                    <div class="note">연구원 / 엔지니어 / 관리자 등</div>
+                </label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="u2">
+                <label for="u2">
+                    <strong>사용자 도메인 지식 수준</strong>
+                    <div class="note">초보 / 중급 / 전문가</div>
+                </label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="u3">
+                <label for="u3">
+                    <strong>서비스 이용 목적/목표</strong>
+                    <div class="note">장비 검색 / 공정 문의 / 예약 등</div>
+                </label>
+            </div>
+        </div>
+
+        <!-- 2. 질의 시나리오 (신규) -->
+        <div class="section expert-feedback">
+            <h2>2. 질의 시나리오 <span class="badge badge-done">구현 완료</span></h2>
+
+            <div class="highlight success">
+                <strong>PoC 구현 완료:</strong> 하이브리드 검색, LLM 의도 파악, 연계 질의(세션) 구현됨
+            </div>
+
+            <h3 style="font-size: 14px; margin: 16px 0 10px; color: var(--gray);">지원 필요 질의 유형</h3>
+            <table>
+                <tr><th>유형</th><th>예시</th><th>현재</th><th>구현</th></tr>
+                <tr class="done">
+                    <td>단순 검색</td>
+                    <td><code>MOCVD 장비 추천해줘</code></td>
+                    <td><span class="status-done">완료</span></td>
+                    <td><input type="checkbox" checked disabled></td>
+                </tr>
+                <tr class="done">
+                    <td>조건부 검색</td>
+                    <td><code>6인치 Si, 400도 이상 RTA</code></td>
+                    <td><span class="status-done">완료</span></td>
+                    <td><input type="checkbox" checked disabled></td>
+                </tr>
+                <tr class="done">
+                    <td>추상적 질의</td>
+                    <td><code>GaN 에피 성장하려는데 어떤 장비?</code></td>
+                    <td><span class="status-done">완료</span></td>
+                    <td><input type="checkbox" checked disabled></td>
+                </tr>
+                <tr class="done">
+                    <td>연계 질의</td>
+                    <td><code>8인치로 바꿔줘</code></td>
+                    <td><span class="status-done">완료</span></td>
+                    <td><input type="checkbox" checked disabled></td>
+                </tr>
+                <tr class="done">
+                    <td>복합 질의</td>
+                    <td><code>MOCVD랑 PECVD 둘 다 추천해줘</code></td>
+                    <td><span class="status-done">완료</span></td>
+                    <td><input type="checkbox" checked disabled></td>
+                </tr>
+                <tr class="done">
+                    <td>OR 조건</td>
+                    <td><code>MOCVD 또는 PECVD 장비</code></td>
+                    <td><span class="status-done">완료</span></td>
+                    <td><input type="checkbox" checked disabled></td>
+                </tr>
+                <tr class="done">
+                    <td>부정문</td>
+                    <td><code>800도 이하로만 동작하는 열처리</code></td>
+                    <td><span class="status-done">완료</span></td>
+                    <td><input type="checkbox" checked disabled></td>
+                </tr>
+            </table>
+
+            <div class="check-item" style="margin-top: 16px;">
+                <input type="checkbox" id="q1">
+                <label for="q1"><strong>미지원 질의 유형 사전 공유 및 대응 방안</strong></label>
+            </div>
+        </div>
+
+        <!-- 3. 추가 데이터 요구사항 (신규) -->
+        <div class="section expert-feedback">
+            <h2>3. 추가 데이터 요구사항 <span class="badge badge-new">전문가 피드백</span></h2>
+
+            <div class="highlight">
+                <strong>문제:</strong> 현재 데이터만으로는 LLM이 "추천 사유"를 정확히 설명할 수 없음
+            </div>
+
+            <h3 style="font-size: 14px; margin: 16px 0 10px; color: var(--gray);">필요 추가 정보</h3>
+            <table>
+                <tr><th>데이터</th><th>용도</th><th>수집 가능</th></tr>
+                <tr>
+                    <td>장비별 활용 특성</td>
+                    <td>추천 사유 설명</td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>공정별 가이드라인</td>
+                    <td>적합성 판단</td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>장비 유형별 기본 설명</td>
+                    <td>요약 정보 생성</td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td>기술 용어 사전</td>
+                    <td>키워드 검색 정확도</td>
+                    <td><input type="checkbox"></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 4. 데이터 확인 (기존) -->
+        <div class="section">
+            <h2>4. 데이터 확인</h2>
+
+            <div class="check-item">
+                <input type="checkbox" id="c1">
+                <label for="c1">총 장비 수 확인</label>
+                <input type="text" placeholder="_____ 건">
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c2">
+                <label for="c2">데이터 형식: Excel / CSV / DB / API</label>
+            </div>
+
+            <h3 style="font-size: 14px; margin: 16px 0 10px; color: var(--gray);">필드 유무</h3>
+            <table>
+                <tr><th>필드</th><th>PoC</th><th>실제 유무</th></tr>
+                <tr><td>장비명/ID/카테고리/기관</td><td>O</td><td><input type="checkbox"></td></tr>
+                <tr><td>웨이퍼 사이즈</td><td>O</td><td><input type="checkbox"></td></tr>
+                <tr><td>온도 범위</td><td>O</td><td><input type="checkbox"></td></tr>
+                <tr><td>지원 재료</td><td>O</td><td><input type="checkbox"></td></tr>
+                <tr><td>압력 범위</td><td>X</td><td><input type="checkbox"></td></tr>
+                <tr><td>이용료</td><td>X</td><td><input type="checkbox"></td></tr>
+                <tr><td>예약 URL</td><td>X</td><td><input type="checkbox"></td></tr>
+            </table>
+        </div>
+
+        <!-- 5. 검색 파이프라인 (신규) -->
+        <div class="section expert-feedback">
+            <h2>5. 검색 파이프라인 <span class="badge badge-done">구현 완료</span></h2>
+
+            <div class="highlight success">
+                <strong>구현된 파이프라인:</strong> 쿼리파싱 → 의도파악 → 하이브리드검색(BM25+Vector) → 필터+리랭킹 → LLM → 세션저장
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" id="p1" checked disabled>
+                <label for="p1">
+                    <strong>하이브리드 검색</strong> <span class="status-done">완료</span>
+                    <div class="note">BM25 키워드 검색 + 벡터 시멘틱 검색 결합 (<code>app/hybrid_search.py</code>)</div>
+                </label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="p2" checked disabled>
+                <label for="p2">
+                    <strong>LLM 기반 의도 파악</strong> <span class="status-done">완료</span>
+                    <div class="note">부정문, 복합질의, 추상질의 분석 (<code>app/intent_parser.py</code>)</div>
+                </label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="p3" checked disabled>
+                <label for="p3">
+                    <strong>연계 질의 처리 (세션)</strong> <span class="status-done">완료</span>
+                    <div class="note">대화 이력 관리, 조건 병합 (<code>app/conversation.py</code>)</div>
+                </label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="p4" checked disabled>
+                <label for="p4">
+                    <strong>필터 검증 로직</strong> <span class="status-done">완료</span>
+                    <div class="note">Hard/Soft 필터 분리, 의도 기반 필터링 (<code>app/filters.py</code>)</div>
+                </label>
+            </div>
+
+            <div style="margin-top: 16px; padding: 12px; background: #F5F5F5; border-radius: 8px; font-size: 13px;">
+                <strong>구현 파일:</strong>
+                <ul style="margin: 8px 0 0 20px; color: #666;">
+                    <li><code>app/hybrid_search.py</code> - BM25 + Vector 하이브리드 검색</li>
+                    <li><code>app/intent_parser.py</code> - LLM 의도 파악 (부정/복합/추상)</li>
+                    <li><code>app/conversation.py</code> - 세션 관리 및 연계 질의</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 6. LLM 선택 (신규) -->
+        <div class="section expert-feedback">
+            <h2>6. LLM 선택 <span class="badge badge-done">PoC 선택</span></h2>
+
+            <table>
+                <tr><th>옵션</th><th>장점</th><th>단점</th><th>선택</th></tr>
+                <tr>
+                    <td><strong>퍼블릭 LLM</strong><br>(GPT, Claude, Gemini)</td>
+                    <td>고성능, 튜닝 불필요</td>
+                    <td>비용, 데이터 외부 전송</td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr>
+                    <td><strong>AWS Bedrock</strong><br>(Claude, Llama)</td>
+                    <td>보안 구성 용이</td>
+                    <td>비용</td>
+                    <td><input type="checkbox"></td>
+                </tr>
+                <tr class="done">
+                    <td><strong>온프레미스 sLLM</strong><br>(Qwen 2.5 32B)</td>
+                    <td>데이터 보안, 비용</td>
+                    <td>튜닝 필요, GPU 필요</td>
+                    <td><input type="checkbox" checked disabled> <span class="status-done">PoC</span></td>
+                </tr>
+            </table>
+
+            <div class="highlight success">
+                <strong>PoC 선택:</strong> Qwen 2.5 32B (Ollama) + BGE-M3 임베딩 + ChromaDB
+            </div>
+
+            <div class="check-item">
+                <input type="checkbox" id="l1">
+                <label for="l1">데이터 보안 등급 확인 (공개/내부/기밀)</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="l2">
+                <label for="l2">sLLM 선택시 파인튜닝 계획 수립</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="l3">
+                <label for="l3">동시 사용자 수 예상 (GPU 스펙 결정)</label>
+                <input type="text" placeholder="____ 명">
+            </div>
+        </div>
+
+        <!-- 7. 인프라 정책 (기존) -->
+        <div class="section">
+            <h2>7. 인프라 정책</h2>
+
+            <div class="check-item">
+                <input type="checkbox" id="c10">
+                <label for="c10"><strong>배포 환경</strong>: 온프레미스 / 클라우드 / 하이브리드</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c11">
+                <label for="c11">PostgreSQL 사용 중? (pgvector 고려)</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c12">
+                <label for="c12">GPU 서버 보유? (Self-hosted LLM 가능)</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c13">
+                <label for="c13">클라우드 LLM API 사용 가능? (Claude, GPT 등)</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c14">
+                <label for="c14">망분리 환경 여부</label>
+            </div>
+        </div>
+
+        <!-- 8. 벡터 DB 선택 (기존) -->
+        <div class="section">
+            <h2>8. 벡터 DB 선택 <span class="badge badge-done">PoC 선택</span></h2>
+
+            <table>
+                <tr><th>벡터DB</th><th>규모</th><th>특징</th><th>선택</th></tr>
+                <tr class="done"><td><strong>ChromaDB</strong></td><td>~100K</td><td>PoC용, 간단한 설정</td><td><input type="checkbox" checked disabled> <span class="status-done">PoC</span></td></tr>
+                <tr><td><strong>Qdrant</strong></td><td>1K~100M</td><td>메타데이터 필터링 강력 (프로덕션 권장)</td><td><input type="checkbox"></td></tr>
+                <tr><td>Milvus</td><td>100K~1B+</td><td>대규모, GPU 가속</td><td><input type="checkbox"></td></tr>
+                <tr><td>Weaviate</td><td>1K~100M</td><td>하이브리드 검색</td><td><input type="checkbox"></td></tr>
+                <tr><td>pgvector</td><td>~100K</td><td>기존 PG 인프라 활용</td><td><input type="checkbox"></td></tr>
+            </table>
+        </div>
+
+        <!-- 9. 논의 사항 (기존) -->
+        <div class="section">
+            <h2>9. 논의 사항</h2>
+
+            <div class="check-item">
+                <input type="checkbox" id="c30">
+                <label for="c30">실제 데이터 제공 시점</label>
+                <input type="text" placeholder="날짜">
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c31">
+                <label for="c31">2차 PoC 일정 (실데이터 적용)</label>
+                <input type="text" placeholder="날짜">
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c32">
+                <label for="c32">프로덕션 목표 일정</label>
+                <input type="text" placeholder="날짜">
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c33">
+                <label for="c33">클라우드 예산 범위</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="c34">
+                <label for="c34">기존 팹서비스 시스템 연동 범위</label>
+            </div>
+        </div>
+
+        <!-- Action Items -->
+        <div class="section">
+            <h2>Action Items</h2>
+            <table>
+                <tr><th style="width:30px">#</th><th>항목</th><th style="width:100px">담당</th><th style="width:100px">기한</th></tr>
+                <tr><td>1</td><td>사용자 유형 및 질의 시나리오 정의</td><td><input type="text" style="width:100%; border:none;"></td><td><input type="text" style="width:100%; border:none;"></td></tr>
+                <tr><td>2</td><td>추가 데이터 수집 (장비 활용 특성)</td><td><input type="text" style="width:100%; border:none;"></td><td><input type="text" style="width:100%; border:none;"></td></tr>
+                <tr><td>3</td><td>LLM 선택 확정 (퍼블릭 vs sLLM)</td><td><input type="text" style="width:100%; border:none;"></td><td><input type="text" style="width:100%; border:none;"></td></tr>
+                <tr><td>4</td><td>처리 불가 질의 유형 공유</td><td><input type="text" style="width:100%; border:none;"></td><td><input type="text" style="width:100%; border:none;"></td></tr>
+                <tr><td>5</td><td><input type="text" style="width:100%; border:none;"></td><td><input type="text" style="width:100%; border:none;"></td><td><input type="text" style="width:100%; border:none;"></td></tr>
+            </table>
+        </div>
+
+    </div>
+
+    <footer>
+        KION RAG PoC - 미팅 체크리스트 (전문가 피드백 반영) | 최종 업데이트: 2024.12.31
+    </footer>
+
+</body>
+</html>

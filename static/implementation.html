@@ -298,6 +298,95 @@
             ※ 벡터 검색과 메타데이터 필터가 동시에 처리됨 (Hybrid Search)
         </p>
 
+        <!-- RAG 종류 및 선택 이유 -->
+        <h2 class="section-title">RAG 아키텍처 종류</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>종류</th>
+                    <th>설명</th>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Naive RAG</strong></td>
+                    <td>단순 벡터 검색 → LLM</td>
+                    <td>구현 간단, 빠름</td>
+                    <td>정확도 한계</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>Advanced RAG</strong></td>
+                    <td>쿼리 최적화 + 리랭킹</td>
+                    <td>정확도 향상</td>
+                    <td>복잡도 증가</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>Hybrid RAG</strong></td>
+                    <td>벡터 + 키워드 + 메타데이터</td>
+                    <td>균형잡힌 검색</td>
+                    <td>튜닝 필요</td>
+                </tr>
+                <tr>
+                    <td><strong>Graph RAG</strong></td>
+                    <td>지식그래프 + 벡터검색</td>
+                    <td>관계 추론 가능</td>
+                    <td>그래프 구축 비용</td>
+                </tr>
+                <tr>
+                    <td><strong>Self-RAG</strong></td>
+                    <td>LLM이 검색 필요성 판단</td>
+                    <td>불필요한 검색 감소</td>
+                    <td>LLM 호출 증가</td>
+                </tr>
+                <tr>
+                    <td><strong>Corrective RAG</strong></td>
+                    <td>검색 결과 품질 평가 후 보정</td>
+                    <td>오답 감소</td>
+                    <td>지연 시간 증가</td>
+                </tr>
+                <tr>
+                    <td><strong>Agentic RAG</strong></td>
+                    <td>에이전트가 다단계 검색</td>
+                    <td>복잡한 질문 처리</td>
+                    <td>비용/시간 증가</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="text-align: right; font-size: 12px; color: #4CAF50; margin-top: 8px;">
+            ✅ 현재 KION RAG: <strong>Advanced RAG + Hybrid</strong> 방식 채택
+        </p>
+
+        <!-- 현재 RAG 선택 이유 -->
+        <h3 style="margin: 25px 0 15px; font-size: 16px;">현재 방식 선택 이유</h3>
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #4CAF50;">
+                <h3>🎯 도메인 특성</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">정확한 스펙 매칭 중요</span><span class="tech-version">6인치 → 6인치만</span></li>
+                    <li><span class="tech-name">구조화된 장비 DB</span><span class="tech-version">메타필터 효과적</span></li>
+                    <li><span class="tech-name">비즈니스 룰 필수</span><span class="tech-version">기관 우선순위 등</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid var(--primary);">
+                <h3>⚡ PoC 단계 고려</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">빠른 검증 목표</span><span class="tech-version">복잡한 구조 지양</span></li>
+                    <li><span class="tech-name">sLLM 사용 (Ollama)</span><span class="tech-version">다중 호출 부담</span></li>
+                    <li><span class="tech-name">Graph/Agentic</span><span class="tech-version">오버엔지니어링</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #FF9800;">
+                <h3>🚀 향후 확장 계획</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">+ Corrective RAG</span><span class="tech-version">품질 검증 추가</span></li>
+                    <li><span class="tech-name">+ Graph RAG</span><span class="tech-version">장비 간 관계 추론</span></li>
+                    <li><span class="tech-name">+ Agentic RAG</span><span class="tech-version">다단계 질문 처리</span></li>
+                </ul>
+            </div>
+        </div>
+
         <!-- 구현 단계별 가이드 -->
         <h2 class="section-title">구현 단계별 가이드</h2>
         <table class="data-table">
@@ -465,17 +554,96 @@
                 <tr>
                     <td><strong>Maintenance 제외</strong></td>
                     <td>유지보수 중인 장비 검색 결과에서 제외</td>
-                    <td><code>filters.py</code></td>
-                    <td style="color: #FF9800;">⏳ 예정</td>
+                    <td><code>policy.py</code></td>
+                    <td style="color: #4CAF50;">✅ 구현됨</td>
                 </tr>
                 <tr>
                     <td><strong>권한별 장비 제한</strong></td>
                     <td>사용자 권한에 따라 표시 장비 제한</td>
                     <td><code>main.py</code></td>
-                    <td style="color: #FF9800;">⏳ 예정</td>
+                    <td style="color: #9C27B0;">⚠️ 문의필요</td>
                 </tr>
             </tbody>
         </table>
+
+        <!-- Policy DB -->
+        <h2 class="section-title">Policy DB (정책 데이터베이스)</h2>
+        <p style="margin-bottom: 20px; color: var(--gray);">비즈니스 룰을 JSON 기반으로 관리하며, 검색 결과에 동적으로 적용됩니다.</p>
+
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #4CAF50;">
+                <h3>🏢 기관 우선순위</h3>
+                <p style="font-size: 13px; color: var(--gray); margin-bottom: 10px;">institution_priority.json</p>
+                <ul class="tech-list">
+                    <li><span class="tech-name">나노종합기술원</span><span class="tech-version">priority: 10</span></li>
+                    <li><span class="tech-name">한국나노기술원</span><span class="tech-version">priority: 20</span></li>
+                    <li><span class="tech-name">KIST</span><span class="tech-version">priority: 30</span></li>
+                    <li><span class="tech-name">사용자 소속기관</span><span class="tech-version">priority: 0 (최우선)</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid var(--primary);">
+                <h3>⚙️ 정책 설정</h3>
+                <p style="font-size: 13px; color: var(--gray); margin-bottom: 10px;">policy_settings.json</p>
+                <ul class="tech-list">
+                    <li><span class="tech-name">maintenance_exclude</span><span class="tech-version">true (점검중 제외)</span></li>
+                    <li><span class="tech-name">external_visible</span><span class="tech-version">true (외부기관 표시)</span></li>
+                    <li><span class="tech-name">max_recommendations</span><span class="tech-version">5 (최대 추천수)</span></li>
+                    <li><span class="tech-name">min_rag_score</span><span class="tech-version">0.3 (최소 유사도)</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #FF9800;">
+                <h3>🔄 공정↔장비 매핑</h3>
+                <p style="font-size: 13px; color: var(--gray); margin-bottom: 10px;">process_equipment_mapping.json</p>
+                <ul class="tech-list">
+                    <li><span class="tech-name">"에피 성장"</span><span class="tech-version">→ MOCVD, MBE</span></li>
+                    <li><span class="tech-name">"박막 증착"</span><span class="tech-version">→ Sputter, PECVD, ALD</span></li>
+                    <li><span class="tech-name">"열처리"</span><span class="tech-version">→ RTA, Furnace</span></li>
+                    <li><span class="tech-name">"식각"</span><span class="tech-version">→ ICP-RIE, RIE</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Policy DB 적용 시점 -->
+        <h3 style="margin: 25px 0 15px; font-size: 16px;">Policy DB 적용 시점</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>단계</th>
+                    <th>적용 내용</th>
+                    <th>목적</th>
+                    <th>구현 파일</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>STEP 2</strong></td>
+                    <td>공정↔장비 매핑</td>
+                    <td>검색 정확도 향상 (키워드→카테고리)</td>
+                    <td><code>query_parser.py</code></td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>STEP 4</strong></td>
+                    <td>정책 필터</td>
+                    <td>비즈니스 룰 적용 (점검중 제외 등)</td>
+                    <td><code>filters.py</code></td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>STEP 5</strong></td>
+                    <td>기관 우선순위</td>
+                    <td>기관별 장비 우선 표시</td>
+                    <td><code>filters.py</code></td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>STEP 7</strong></td>
+                    <td>결과 제한</td>
+                    <td>max_recommendations 적용</td>
+                    <td><code>filters.py</code></td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="text-align: right; font-size: 12px; color: var(--gray); margin-top: 10px;">
+            <a href="/static/policy-flowchart.html" style="color: var(--primary);">상세 순서도 보기 →</a>
+        </p>
 
         <!-- API 엔드포인트 -->
         <h2 class="section-title">API 엔드포인트</h2>
@@ -519,6 +687,24 @@
                     <td>헬스 체크</td>
                     <td>JSON</td>
                 </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><code>POST</code></td>
+                    <td><code>/policy/reload</code></td>
+                    <td>Policy DB 리로드</td>
+                    <td>JSON</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><code>GET</code></td>
+                    <td><code>/policy/status</code></td>
+                    <td>Policy DB 상태 조회</td>
+                    <td>JSON</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><code>GET</code></td>
+                    <td><code>/policy/test-mapping</code></td>
+                    <td>공정↔장비 매핑 테스트</td>
+                    <td>JSON</td>
+                </tr>
             </tbody>
         </table>
 
@@ -550,12 +736,111 @@
                 <ul class="tech-list">
                     <li><span class="tech-name">헬스 체크</span><span class="tech-version">/health API</span></li>
                     <li><span class="tech-name">LLM 상태</span><span class="tech-version">Ollama 연결</span></li>
-                    <li><span class="tech-name">벡터DB 상태</span><span class="tech-version">ChromaDB</span></li>
+                    <li><span class="tech-name">벡터DB 상태</span><span class="tech-version">Qdrant</span></li>
                     <li><span class="tech-name">에러 알림</span><span class="tech-version">Slack/Email (예정)</span></li>
                 </ul>
                 <p style="margin-top: 8px; font-size: 11px; color: #4CAF50;">✅ 기본 구현됨</p>
             </div>
         </div>
+
+        <!-- Improvement 알고리즘 -->
+        <h2 class="section-title">Improvement 알고리즘 (피드백 기반 개선)</h2>
+        <p style="margin-bottom: 20px; color: var(--gray);">사용자 피드백을 기반으로 검색 정확도를 지속적으로 개선하는 시스템입니다.</p>
+
+        <!-- Improvement Pipeline 다이어그램 -->
+        <div class="flow-compact" style="flex-direction: column; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                <span class="flow-item">👍👎 피드백 수집</span>
+                <span class="flow-sep">→</span>
+                <span class="flow-item" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);">📊 오답 분석</span>
+                <span class="flow-sep">→</span>
+                <span class="flow-item" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);">🔧 개선 적용</span>
+            </div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+                <span style="background: #E3F2FD; padding: 8px 16px; border-radius: 20px; font-size: 13px;">임베딩 튜닝</span>
+                <span style="background: #F3E5F5; padding: 8px 16px; border-radius: 20px; font-size: 13px;">룰 개선</span>
+                <span style="background: #FFF8E1; padding: 8px 16px; border-radius: 20px; font-size: 13px;">프롬프트 A/B</span>
+            </div>
+        </div>
+
+        <div class="tech-grid" style="margin-top: 25px;">
+            <div class="tech-card" style="border-left: 4px solid #9E9E9E; opacity: 0.85;">
+                <h3>🧠 임베딩 모델 개선 <span style="font-size: 11px; color: #9E9E9E;">(향후)</span></h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">Hard Negative Mining</span><span class="tech-version">오답에서 학습 데이터 추출</span></li>
+                    <li><span class="tech-name">Contrastive Learning</span><span class="tech-version">(query, positive, negative)</span></li>
+                    <li><span class="tech-name">트리거 조건</span><span class="tech-version">오답 500건+ 누적 후</span></li>
+                    <li><span class="tech-name">현실적 대안</span><span class="tech-version">더 나은 모델로 교체</span></li>
+                </ul>
+                <p style="margin-top: 8px; font-size: 11px; color: #9E9E9E;">※ LLM은 학습 안함 (RAG)</p>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #9C27B0;">
+                <h3>📋 룰 개선 알고리즘</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">오답 패턴 분석</span><span class="tech-version">쿼리 키워드 vs 정답 카테고리</span></li>
+                    <li><span class="tech-name">누락 매핑 발견</span><span class="tech-version">"박막 코팅" → Sputter</span></li>
+                    <li><span class="tech-name">신뢰도 계산</span><span class="tech-version">70% 이상 → 자동 제안</span></li>
+                    <li><span class="tech-name">관리자 승인</span><span class="tech-version">제안 → 검토 → 적용</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #FF9800;">
+                <h3>🧪 프롬프트 A/B 테스트</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">버전 관리</span><span class="tech-version">Control vs Test 프롬프트</span></li>
+                    <li><span class="tech-name">트래픽 분배</span><span class="tech-version">session_id 기반 50:50</span></li>
+                    <li><span class="tech-name">통계 검정</span><span class="tech-version">Chi-squared (p < 0.05)</span></li>
+                    <li><span class="tech-name">자동 롤아웃</span><span class="tech-version">우승 버전 자동 적용</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 구현 우선순위 -->
+        <h3 style="margin: 25px 0 15px; font-size: 16px;">Improvement 구현 우선순위</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Phase</th>
+                    <th>항목</th>
+                    <th>설명</th>
+                    <th>우선순위</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Phase 1</strong></td>
+                    <td>피드백 수집 API + DB</td>
+                    <td>feedback_logs 테이블, POST /feedback API</td>
+                    <td style="color: #F44336;">높음</td>
+                </tr>
+                <tr>
+                    <td><strong>Phase 1</strong></td>
+                    <td>피드백 대시보드</td>
+                    <td>오답 케이스, 긍정 비율 차트</td>
+                    <td style="color: #F44336;">높음</td>
+                </tr>
+                <tr>
+                    <td><strong>Phase 2</strong></td>
+                    <td>룰 제안 시스템</td>
+                    <td>오답 패턴 분석 → 관리자 제안</td>
+                    <td style="color: #FF9800;">중간</td>
+                </tr>
+                <tr>
+                    <td><strong>Phase 3</strong></td>
+                    <td>프롬프트 A/B 테스트</td>
+                    <td>버전 관리 + 통계 검정</td>
+                    <td style="color: #FF9800;">중간</td>
+                </tr>
+                <tr style="opacity: 0.7;">
+                    <td><strong>Phase 4</strong></td>
+                    <td>임베딩 모델 개선</td>
+                    <td>오답 500건+ 누적 및 ROI 검토 후 (향후)</td>
+                    <td style="color: #9E9E9E;">향후</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="text-align: right; font-size: 12px; color: var(--gray); margin-top: 10px;">
+            <a href="https://github.com/..." style="color: var(--primary);">상세 설계 문서 (docs/IMPROVEMENT_DESIGN.md) →</a>
+        </p>
 
     </div>
 

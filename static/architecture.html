@@ -269,12 +269,12 @@
             </a>
             <nav class="nav-links">
                 <a href="/">홈</a>
-                <a href="/architecture.html" class="active">아키텍처</a>
-                <a href="/techstack.html">기술스택</a>
-                <a href="/data-design.html">데이터설계</a>
-                <a href="/implementation.html">구현가이드</a>
-                <a href="/admin.html">관리자</a>
-                
+                <a href="/static/architecture.html" class="active">아키텍처</a>
+                <a href="/static/techstack.html">기술스택</a>
+                <a href="/static/data-design.html">데이터설계</a>
+                <a href="/static/implementation.html">구현가이드</a>
+                <a href="/static/admin.html">관리자</a>
+                <a href="/static/api-docs.html">API 문서</a>
             </nav>
         </div>
     </header>
@@ -298,6 +298,7 @@
                             <div class="mini-comp frontend">예약</div>
                             <div class="mini-comp frontend">Admin</div>
                         </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">챗봇 UI, KION 예약 연동</div>
                     </div>
                     <div class="arch-arrow">→</div>
                     <div class="arch-group">
@@ -305,16 +306,25 @@
                         <div class="group-items">
                             <div class="mini-comp api">FastAPI</div>
                             <div class="mini-comp api">SSE</div>
+                            <div class="mini-comp api" style="background: #C8E6C9; color: #2E7D32; border-color: #81C784;">Session</div>
                         </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">REST + 스트리밍 + 세션관리</div>
                     </div>
                     <div class="arch-arrow">→</div>
                     <div class="arch-group wide">
-                        <div class="group-label">Core Pipeline</div>
+                        <div class="group-label">Core Pipeline <span style="font-size: 10px; color: #4CAF50; font-weight: normal;">(Hybrid RAG + Intent)</span></div>
                         <div class="group-items">
                             <div class="mini-comp core">Parser</div>
-                            <div class="mini-comp core" style="background: linear-gradient(135deg, #1565C0, #4CAF50);">RAG + Filter</div>
+                            <div class="mini-comp core" style="background: #7E57C2;">Intent</div>
+                            <div class="mini-comp core" style="background: linear-gradient(135deg, #1565C0, #4CAF50);">Hybrid Search</div>
                             <div class="mini-comp core">Rerank</div>
                             <div class="mini-comp core">LLM</div>
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">쿼리파싱 → 의도파악 → 하이브리드검색 → 재정렬 → 응답생성</div>
+                        <div style="font-size: 10px; color: #888; margin-top: 6px; line-height: 1.5;">
+                            <div>• <span style="color: #7E57C2;">의도파악</span> = 부정문/복합질의 LLM 분석</div>
+                            <div>• <span style="color: #1565C0;">하이브리드</span> = BM25 + 벡터 검색 결합</div>
+                            <div>• 리랭킹 = 필터 점수 + 유사도 가중합</div>
                         </div>
                     </div>
                 </div>
@@ -327,13 +337,29 @@
                             <div class="mini-comp core">Embedding</div>
                             <div class="mini-comp core">VectorDB</div>
                         </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">Qwen 2.5 32B | BGE-M3 | Qdrant</div>
                     </div>
-                    <div class="arch-group">
+                    <div class="arch-group" style="min-width: 240px;">
                         <div class="group-label">Config</div>
                         <div class="group-items">
                             <div class="mini-comp data">Filter</div>
                             <div class="mini-comp data">Prompt</div>
                         </div>
+                        <div style="font-size: 10px; color: #666; margin-top: 8px; line-height: 1.6;">
+                            <div>• 웨이퍼 크기 • 재료 • 온도</div>
+                            <div>• 카테고리 • 기관</div>
+                            <div style="color: #7E57C2;">• 기관 우선순위 • 접근 권한</div>
+                            <div style="color: #FF9800;">• 장비 상태 • 예약 가능</div>
+                        </div>
+                    </div>
+                    <div class="arch-group">
+                        <div class="group-label">Monitoring</div>
+                        <div class="group-items">
+                            <div class="mini-comp" style="background: #CE93D8; color: #333;">📊 Logs</div>
+                            <div class="mini-comp" style="background: #CE93D8; color: #333;">👍👎 Feedback</div>
+                            <div class="mini-comp" style="background: #CE93D8; color: #333;">🗄️ PostgreSQL</div>
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">질의/추천 로그, 피드백 <span style="color: #FFB74D;">→ Improvement</span></div>
                     </div>
                 </div>
                 <!-- Row 3: Data Pipeline -->
@@ -362,6 +388,7 @@
                                 <div class="mini-comp data">VectorDB</div>
                             </div>
                         </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px;">PoC: 샘플 JSON 100개 | Prod: KION DB 연동 예정</div>
                     </div>
                     <div class="arch-group">
                         <div class="group-label">Sync 옵션</div>
@@ -369,7 +396,162 @@
                             <div class="mini-comp data" style="font-size: 12px;">관리자 수동</div>
                             <div class="mini-comp data" style="font-size: 12px;">Cron 배치 (일간)</div>
                         </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">데이터 동기화 방식</div>
                     </div>
+                </div>
+                <!-- Row 4: Policy DB + Improvement + Infra -->
+                <div class="arch-row sub">
+                    <div class="arch-group">
+                        <div class="group-label">Policy DB</div>
+                        <div class="group-items">
+                            <div class="mini-comp" style="background: #7E57C2; color: white; font-size: 11px;">기관 우선순위</div>
+                            <div class="mini-comp" style="background: #7E57C2; color: white; font-size: 11px;">정책 설정</div>
+                            <div class="mini-comp" style="background: #7E57C2; color: white; font-size: 11px;">공정↔장비 매핑</div>
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 8px; text-align: center;">비즈니스 룰 JSON 관리</div>
+                    </div>
+                    <div class="arch-group">
+                        <div class="group-label">Improvement</div>
+                        <div class="group-items">
+                            <div class="mini-comp" style="background: #FFB74D; color: #333; font-size: 11px;">🧠 임베딩 튜닝</div>
+                            <div class="mini-comp" style="background: #FFB74D; color: #333; font-size: 11px;">📋 룰 개선</div>
+                            <div class="mini-comp" style="background: #FFB74D; color: #333; font-size: 11px;">🧪 프롬프트 A/B</div>
+                        </div>
+                        <div style="font-size: 10px; color: #666; margin-top: 8px; line-height: 1.5;">
+                            <div>• 임베딩: 피드백으로 모델 미세조정</div>
+                            <div>• 룰: 필터 규칙/가중치 조정</div>
+                            <div>• 프롬프트: 응답 품질 A/B 테스트</div>
+                        </div>
+                    </div>
+                    <div class="arch-group">
+                        <div class="group-label">Infra</div>
+                        <div class="group-items">
+                            <div class="mini-comp" style="background: #90A4AE; color: #fff; font-size: 11px;">🔐 인증</div>
+                            <div class="mini-comp" style="background: #90A4AE; color: #fff; font-size: 11px;">💾 캐싱</div>
+                            <div class="mini-comp" style="background: #90A4AE; color: #fff; font-size: 11px;">⚠️ 폴백</div>
+                        </div>
+                        <div style="font-size: 10px; color: #666; margin-top: 8px; line-height: 1.5;">
+                            <div>• KION SSO 연동</div>
+                            <div>• 응답 캐시 (Redis)</div>
+                            <div>• 에러 시 기본 응답</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 구현된 핵심 기능 -->
+        <h2 class="section-title">구현된 핵심 기능 (PoC)</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px;">
+            <!-- 하이브리드 검색 -->
+            <div style="background: linear-gradient(135deg, #E3F2FD, #BBDEFB); border: 2px solid #1565C0; border-radius: 12px; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <div style="background: #1565C0; color: white; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;">🔍</div>
+                    <h4 style="font-size: 16px; color: #1565C0; margin: 0;">하이브리드 검색</h4>
+                </div>
+                <p style="font-size: 13px; color: #333; margin: 0 0 12px 0; line-height: 1.6;">
+                    BM25 키워드 검색 + 벡터 시멘틱 검색을 결합하여 검색 정확도 향상
+                </p>
+                <div style="background: white; border-radius: 8px; padding: 12px; font-size: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="background: #1565C0; color: white; padding: 2px 8px; border-radius: 4px;">BM25</span>
+                        <span style="color: #666;">기술 용어 정확 매칭</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <span style="background: #4CAF50; color: white; padding: 2px 8px; border-radius: 4px;">Vector</span>
+                        <span style="color: #666;">의미 기반 유사도</span>
+                    </div>
+                    <div style="color: #888; font-size: 11px; border-top: 1px solid #eee; padding-top: 8px; margin-top: 4px;">
+                        가중치 조절: vector_weight + bm25_weight = 1.0
+                    </div>
+                </div>
+                <div style="margin-top: 12px; font-size: 11px; color: #666;">
+                    <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">app/hybrid_search.py</code>
+                </div>
+            </div>
+
+            <!-- LLM 의도 파악 -->
+            <div style="background: linear-gradient(135deg, #F3E5F5, #E1BEE7); border: 2px solid #7E57C2; border-radius: 12px; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <div style="background: #7E57C2; color: white; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;">🧠</div>
+                    <h4 style="font-size: 16px; color: #7E57C2; margin: 0;">LLM 의도 파악</h4>
+                </div>
+                <p style="font-size: 13px; color: #333; margin: 0 0 12px 0; line-height: 1.6;">
+                    복잡한 질의를 LLM으로 분석하여 부정문/복합 조건 처리
+                </p>
+                <div style="background: white; border-radius: 8px; padding: 12px; font-size: 12px;">
+                    <div style="margin-bottom: 6px;"><span style="color: #7E57C2;">●</span> 부정문: "800도 이하로만"</div>
+                    <div style="margin-bottom: 6px;"><span style="color: #7E57C2;">●</span> 복합: "MOCVD랑 PECVD 둘 다"</div>
+                    <div style="margin-bottom: 6px;"><span style="color: #7E57C2;">●</span> 추상: "어떤 장비가 좋을까"</div>
+                    <div style="color: #888; font-size: 11px; border-top: 1px solid #eee; padding-top: 8px; margin-top: 4px;">
+                        quick_intent_check()로 LLM 호출 최소화
+                    </div>
+                </div>
+                <div style="margin-top: 12px; font-size: 11px; color: #666;">
+                    <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">app/intent_parser.py</code>
+                </div>
+            </div>
+
+            <!-- 연계 질의 (세션) -->
+            <div style="background: linear-gradient(135deg, #E8F5E9, #C8E6C9); border: 2px solid #4CAF50; border-radius: 12px; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <div style="background: #4CAF50; color: white; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px;">🔗</div>
+                    <h4 style="font-size: 16px; color: #2E7D32; margin: 0;">연계 질의 (세션)</h4>
+                </div>
+                <p style="font-size: 13px; color: #333; margin: 0 0 12px 0; line-height: 1.6;">
+                    대화 이력을 유지하여 후속 질문에서 이전 조건 활용
+                </p>
+                <div style="background: white; border-radius: 8px; padding: 12px; font-size: 12px;">
+                    <div style="margin-bottom: 6px;"><span style="color: #4CAF50;">1.</span> "6인치 MOCVD 장비" → session_id 발급</div>
+                    <div style="margin-bottom: 6px;"><span style="color: #4CAF50;">2.</span> "8인치로 바꿔줘" → 조건만 변경</div>
+                    <div style="margin-bottom: 6px;"><span style="color: #4CAF50;">3.</span> "비슷한 장비 더" → 카테고리 유지</div>
+                    <div style="color: #888; font-size: 11px; border-top: 1px solid #eee; padding-top: 8px; margin-top: 4px;">
+                        세션 TTL: 1시간, LRU 캐시 (1000개)
+                    </div>
+                </div>
+                <div style="margin-top: 12px; font-size: 11px; color: #666;">
+                    <code style="background: #f5f5f5; padding: 2px 6px; border-radius: 4px;">app/conversation.py</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- 처리 흐름 다이어그램 -->
+        <div style="background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+            <h3 style="font-size: 16px; color: #333; margin: 0 0 20px 0;">처리 흐름 (상세)</h3>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; font-size: 12px;">
+                <div style="background: #E3F2FD; padding: 10px 14px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 600; color: #1565C0;">사용자 질의</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 4px;">+ session_id</div>
+                </div>
+                <div style="color: #1565C0;">→</div>
+                <div style="background: #FFF3E0; padding: 10px 14px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 600; color: #E65100;">쿼리 파싱</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 4px;">웨이퍼/온도/재료</div>
+                </div>
+                <div style="color: #1565C0;">→</div>
+                <div style="background: #F3E5F5; padding: 10px 14px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 600; color: #7E57C2;">의도 파악</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 4px;">부정/복합/연계</div>
+                </div>
+                <div style="color: #1565C0;">→</div>
+                <div style="background: linear-gradient(135deg, #E3F2FD, #E8F5E9); padding: 10px 14px; border-radius: 8px; text-align: center; border: 2px solid #1565C0;">
+                    <div style="font-weight: 600; color: #1565C0;">하이브리드 검색</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 4px;">BM25 + Vector</div>
+                </div>
+                <div style="color: #1565C0;">→</div>
+                <div style="background: #E8F5E9; padding: 10px 14px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 600; color: #2E7D32;">필터 + 리랭킹</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 4px;">Hard/Soft 조건</div>
+                </div>
+                <div style="color: #1565C0;">→</div>
+                <div style="background: #1565C0; color: white; padding: 10px 14px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 600;">LLM 응답</div>
+                    <div style="font-size: 10px; opacity: 0.8; margin-top: 4px;">Qwen 2.5</div>
+                </div>
+                <div style="color: #1565C0;">→</div>
+                <div style="background: #E8F5E9; padding: 10px 14px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: 600; color: #2E7D32;">세션 저장</div>
+                    <div style="font-size: 10px; color: #666; margin-top: 4px;">조건/추천 기록</div>
                 </div>
             </div>
         </div>
@@ -422,7 +604,7 @@
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
                 <div style="background: #fff; border-radius: 8px; padding: 16px;">
                     <div style="font-size: 12px; color: #888; margin-bottom: 8px;">sLLM</div>
-                    <div style="font-size: 15px; font-weight: 600; color: #2E7D32;">Qwen 2.5 14B</div>
+                    <div style="font-size: 15px; font-weight: 600; color: #2E7D32;">Qwen 2.5 32B</div>
                     <div style="font-size: 11px; color: #888; margin-top: 6px;">대안: Llama 3 8B</div>
                 </div>
                 <div style="background: #fff; border-radius: 8px; padding: 16px;">
@@ -482,7 +664,7 @@
                     </div>
                     <div style="font-size: 20px; color: #7B1FA2;">→</div>
                     <div style="text-align: center;">
-                        <div style="background: #7B1FA2; color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;">Ollama + Llama 3<br><span style="font-size: 10px;">EC2 GPU (g5.xlarge)</span></div>
+                        <div style="background: #7B1FA2; color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 13px;">Ollama + Qwen 2.5<br><span style="font-size: 10px;">EC2 GPU (g5.xlarge)</span></div>
                     </div>
                 </div>
 
@@ -583,7 +765,7 @@
                     <h4 style="font-size: 14px; color: #333; margin: 0 0 8px 0;">sLLM (Small LLM)</h4>
                     <p style="font-size: 13px; color: #666; margin: 0; line-height: 1.6;">
                         GPT-4, Claude 같은 초대형 모델 대신, 직접 운영 가능한 <strong>작은 언어모델</strong>입니다.<br>
-                        예: Qwen 2.5, Llama 3 (7B~14B 파라미터)<br>
+                        예: Qwen 2.5, Llama 3 (7B~32B 파라미터)<br>
                         <span style="color: #4CAF50;">✓ 데이터가 외부로 나가지 않음</span>
                     </p>
                 </div>
@@ -680,7 +862,7 @@
                                     <div>→</div>
                                     <div style="background: #C8E6C9; padding: 8px 12px; border-radius: 6px;">FastAPI<br><span style="font-size: 10px;">:8000</span></div>
                                     <div>→</div>
-                                    <div style="background: #4CAF50; color: #fff; padding: 8px 12px; border-radius: 6px;">Ollama<br><span style="font-size: 10px;">:11434</span></div>
+                                    <div style="background: #4CAF50; color: #fff; padding: 8px 12px; border-radius: 6px;">Ollama<br><span style="font-size: 10px;">Qwen 2.5</span></div>
                                 </div>
                             </div>
                         </div>
@@ -693,7 +875,7 @@
 
             <!-- 클라우드 네트워크 -->
             <div style="background: #E3F2FD; border: 2px solid #1565C0; border-radius: 12px; padding: 20px;">
-                <h4 style="font-size: 16px; color: #1565C0; margin: 0 0 16px 0;">클라우드 네트워크</h4>
+                <h4 style="font-size: 16px; color: #1565C0; margin: 0 0 16px 0;">클라우드 네트워크 (EC2 GPU)</h4>
                 <div style="background: #fff; border-radius: 8px; padding: 16px; margin-bottom: 16px;">
                     <div style="text-align: center; font-size: 13px;">
                         <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
@@ -704,16 +886,16 @@
                                 <div style="display: flex; justify-content: center; gap: 8px; align-items: center; flex-wrap: wrap;">
                                     <div style="background: #BBDEFB; padding: 8px 12px; border-radius: 6px;">ALB<br><span style="font-size: 10px;">(LB)</span></div>
                                     <div>→</div>
-                                    <div style="background: #BBDEFB; padding: 8px 12px; border-radius: 6px;">EC2/Lambda<br><span style="font-size: 10px;">FastAPI</span></div>
+                                    <div style="background: #BBDEFB; padding: 8px 12px; border-radius: 6px;">EC2<br><span style="font-size: 10px;">FastAPI</span></div>
                                     <div>→</div>
-                                    <div style="background: #1565C0; color: #fff; padding: 8px 12px; border-radius: 6px;">Bedrock<br><span style="font-size: 10px;">Llama 3</span></div>
+                                    <div style="background: #1565C0; color: #fff; padding: 8px 12px; border-radius: 6px;">Ollama<br><span style="font-size: 10px;">Qwen 2.5</span></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div style="background: #BBDEFB; border-radius: 6px; padding: 12px; font-size: 12px;">
-                    <strong>핵심:</strong> 공인 IP/도메인으로 어디서든 접근 가능 → Bedrock 통해 AWS 내에서 LLM 처리
+                    <strong>핵심:</strong> 공인 IP/도메인으로 어디서든 접근 가능 → EC2 GPU에서 Ollama 직접 실행
                 </div>
             </div>
         </div>
@@ -742,7 +924,7 @@
                 </tr>
                 <tr style="background: #F3E5F5;">
                     <td><strong>B-1: EC2 GPU</strong></td>
-                    <td>Ollama + Llama 3</td>
+                    <td>Ollama + Qwen 2.5</td>
                     <td>BGE-M3 (로컬)</td>
                     <td>Qdrant (EC2)</td>
                     <td>없음</td>
@@ -797,15 +979,15 @@
         <div style="background: #E3F2FD; border-radius: 12px; padding: 24px; margin-top: 40px;">
             <h3 style="font-size: 16px; color: #1565C0; margin: 0 0 16px 0;">상세 문서 안내</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
-                <a href="/techstack.html" style="background: #fff; padding: 16px; border-radius: 8px; text-decoration: none; display: block;">
+                <a href="/static/techstack.html" style="background: #fff; padding: 16px; border-radius: 8px; text-decoration: none; display: block;">
                     <div style="font-weight: 600; color: #333; margin-bottom: 4px;">기술스택</div>
                     <div style="font-size: 12px; color: #666;">임베딩 모델, 벡터DB, sLLM 비교</div>
                 </a>
-                <a href="/data-design.html" style="background: #fff; padding: 16px; border-radius: 8px; text-decoration: none; display: block;">
+                <a href="/static/data-design.html" style="background: #fff; padding: 16px; border-radius: 8px; text-decoration: none; display: block;">
                     <div style="font-weight: 600; color: #333; margin-bottom: 4px;">데이터설계</div>
                     <div style="font-size: 12px; color: #666;">스키마, 동기화, RAG 지식베이스</div>
                 </a>
-                <a href="/implementation.html" style="background: #fff; padding: 16px; border-radius: 8px; text-decoration: none; display: block;">
+                <a href="/static/implementation.html" style="background: #fff; padding: 16px; border-radius: 8px; text-decoration: none; display: block;">
                     <div style="font-weight: 600; color: #333; margin-bottom: 4px;">구현가이드</div>
                     <div style="font-size: 12px; color: #666;">API, 프롬프트, 비즈니스 룰</div>
                 </a>

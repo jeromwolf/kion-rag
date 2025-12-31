@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy DB 처리 순서도 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #0066CC;
+            --secondary: #00A651;
+            --policy: #9C27B0;
+            --dark: #333333;
+            --gray: #666666;
+            --light-gray: #E5E5E5;
+            --bg-light: #F5F7FA;
+            --white: #FFFFFF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .logo-text span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 15px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 40px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Flowchart Styles */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .flow-step {
+            width: 100%;
+            max-width: 700px;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .flow-step.policy {
+            border-left: 5px solid var(--policy);
+            background: linear-gradient(90deg, #F3E5F5 0%, var(--white) 100%);
+        }
+
+        .flow-step.policy::before {
+            content: "★ Policy DB";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: var(--policy);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .flow-step.policy .step-number {
+            background: var(--policy);
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .step-file {
+            font-size: 12px;
+            color: var(--gray);
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: auto;
+        }
+
+        .step-content {
+            margin-left: 44px;
+        }
+
+        .step-io {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .io-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .io-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray);
+            margin-bottom: 6px;
+        }
+
+        .io-content {
+            font-size: 12px;
+            color: var(--dark);
+            font-family: 'Monaco', monospace;
+        }
+
+        .io-content code {
+            background: #e3f2fd;
+            padding: 1px 4px;
+            border-radius: 3px;
+            color: #1565C0;
+        }
+
+        .policy-action {
+            background: #EDE7F6;
+            border-radius: 6px;
+            padding: 10px 14px;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .policy-action strong {
+            color: var(--policy);
+        }
+
+        /* Arrow */
+        .flow-arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .flow-arrow .line {
+            width: 3px;
+            height: 20px;
+            background: var(--primary);
+        }
+
+        .flow-arrow .arrow {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid var(--primary);
+        }
+
+        /* Summary Table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .summary-table th, .summary-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .summary-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .summary-table td {
+            font-size: 14px;
+        }
+
+        .summary-table tr.policy-row {
+            background: #F3E5F5;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-policy {
+            background: var(--policy);
+            color: white;
+        }
+
+        .badge-normal {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Input Box */
+        .input-box {
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .input-box .label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .input-box .query {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .output-box {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <div class="logo-icon">K</div>
+                <div class="logo-text"><span>KION</span> RAG</div>
+            </a>
+            <nav class="nav-links">
+                <a href="/">홈</a>
+                <a href="/static/architecture.html">아키텍처</a>
+                <a href="/static/techstack.html">기술스택</a>
+                <a href="/static/data-design.html">데이터설계</a>
+                <a href="/static/implementation.html">구현가이드</a>
+                <a href="/static/policy-flowchart.html" class="active">Policy순서도</a>
+                <a href="/static/admin.html">관리자</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>Policy DB 처리 순서도</h1>
+            <p>사용자 쿼리 입력부터 응답까지 Policy DB가 적용되는 시점</p>
+        </div>
+
+        <!-- 순서도 -->
+        <div class="flowchart">
+            <!-- 입력 -->
+            <div class="input-box" style="width: 100%; max-width: 700px;">
+                <div class="label">사용자 입력</div>
+                <div class="query">"6인치 GaN 에피 성장 장비 추천해줘"</div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 1 -->
+            <div class="flow-step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">쿼리 파싱</div>
+                    <div class="step-file">query_parser.py</div>
+                </div>
+                <div class="step-content">
+                    <p style="font-size: 13px; color: #666;">웨이퍼 사이즈, 재료, 온도 등 하드 조건 추출</p>
+                    <div class="step-io">
+                        <div class="io-box">
+                            <div class="io-label">입력</div>
+                            <div class="io-content">"6인치 GaN 에피 성장..."</div>
+                        </div>
+                        <div class="io-box">
+                            <div class="io-label">출력</div>
+                            <div class="io-content">
+                                <code>wafer_size</code>: "6 inch"<br>
+                                <code>material</code>: "GaN"
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 2 - Policy -->
+            <div class="flow-step policy">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">공정↔장비 매핑</div>
+                    <div class="step-file">policy.py</div>
+                </div>
+                <div class="step-content">
+                    <div class="policy-action">
+                        <strong>process_equipment_mapping.json</strong> 조회<br>
+                        "에피 성장" 키워드 → <code>["MOCVD", "MBE"]</code> 카테고리 추가
+                    </div>
+                    <div class="step-io">
+                        <div class="io-box">
+                            <div class="io-label">매핑 전</div>
+                            <div class="io-content">
+                                <code>wafer_size</code>: "6 inch"<br>
+                                <code>material</code>: "GaN"
+                            </div>
+                        </div>
+                        <div class="io-box" style="background: #EDE7F6;">
+                            <div class="io-label">매핑 후</div>
+                            <div class="io-content">
+                                <code>mapped_categories</code>:<br>
+                                ["MOCVD", "MBE"]
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 3 -->
+            <div class="flow-step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">RAG 벡터 검색</div>
+                    <div class="step-file">rag.py</div>
+                </div>
+                <div class="step-content">
+                    <p style="font-size: 13px; color: #666;">임베딩 생성 → ChromaDB 검색 → 메타필터 → 카테고리 부스팅</p>
+                    <div class="step-io">
+                        <div class="io-box">
+                            <div class="io-label">검색 조건</div>
+                            <div class="io-content">
+                                wafer = "6 inch"<br>
+                                material = "GaN"<br>
+                                boost: MOCVD, MBE
+                            </div>
+                        </div>
+                        <div class="io-box">
+                            <div class="io-label">출력</div>
+                            <div class="io-content">
+                                [장비1, 장비2, ...]<br>
+                                (Top 20, rag_score 포함)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 4 - Policy -->
+            <div class="flow-step policy">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">정책 필터 적용</div>
+                    <div class="step-file">policy.py</div>
+                </div>
+                <div class="step-content">
+                    <div class="policy-action">
+                        <strong>policy_settings.json</strong> 조회<br>
+                        • <code>maintenance_exclude</code> = true → 점검중 장비 제거<br>
+                        • <code>external_visible</code> = true → 외부 기관 포함<br>
+                        • <code>min_rag_score</code> = 0.3 → 낮은 점수 제거
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 5 - Policy -->
+            <div class="flow-step policy">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">기관 우선순위 적용</div>
+                    <div class="step-file">policy.py</div>
+                </div>
+                <div class="step-content">
+                    <div class="policy-action">
+                        <strong>institution_priority.json</strong> 조회<br>
+                        • 사용자 소속 기관 → priority = 0 (최우선)<br>
+                        • 나노종합기술원: 10 | 한국나노기술원: 20 | KIST: 30
+                    </div>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                        정렬: priority ASC → rag_score DESC
+                    </p>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 6 -->
+            <div class="flow-step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div class="step-title">리랭킹</div>
+                    <div class="step-file">filters.py</div>
+                </div>
+                <div class="step-content">
+                    <p style="font-size: 13px; color: #666;">최종 점수 계산</p>
+                    <div style="background: #f5f5f5; padding: 12px; border-radius: 6px; margin-top: 10px; font-family: monospace; font-size: 13px;">
+                        final_score = rag_score × 0.7 + priority_score × 0.3
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 7 - Policy -->
+            <div class="flow-step policy">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <div class="step-title">결과 제한</div>
+                    <div class="step-file">policy.py</div>
+                </div>
+                <div class="step-content">
+                    <div class="policy-action">
+                        <strong>max_recommendations</strong> = 5<br>
+                        → 상위 5개 장비만 LLM에 전달
+                    </div>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- STEP 8 -->
+            <div class="flow-step">
+                <div class="step-header">
+                    <div class="step-number">8</div>
+                    <div class="step-title">LLM 응답 생성</div>
+                    <div class="step-file">llm.py</div>
+                </div>
+                <div class="step-content">
+                    <p style="font-size: 13px; color: #666;">시스템 프롬프트 + Top 5 장비 → 추천 이유 설명 생성</p>
+                </div>
+            </div>
+
+            <div class="flow-arrow"><div class="line"></div><div class="arrow"></div></div>
+
+            <!-- 출력 -->
+            <div class="output-box" style="width: 100%; max-width: 700px;">
+                <div class="label">응답 반환</div>
+                <div class="query" style="font-size: 14px;">"GaN 에피 성장에는 MOCVD 장비를 추천드립니다..."</div>
+            </div>
+        </div>
+
+        <!-- 요약 테이블 -->
+        <h2 class="section-title">Policy DB 적용 시점 요약</h2>
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>단계</th>
+                    <th>구분</th>
+                    <th>적용 내용</th>
+                    <th>목적</th>
+                    <th>데이터 소스</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge badge-normal">STEP 1</span></td>
+                    <td>쿼리 파싱</td>
+                    <td>하드 조건 추출</td>
+                    <td>웨이퍼, 재료, 온도 파싱</td>
+                    <td>-</td>
+                </tr>
+                <tr class="policy-row">
+                    <td><span class="badge badge-policy">STEP 2</span></td>
+                    <td>공정↔장비 매핑</td>
+                    <td>키워드 → 카테고리 변환</td>
+                    <td>검색 정확도 향상</td>
+                    <td>process_equipment_mapping.json</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-normal">STEP 3</span></td>
+                    <td>RAG 검색</td>
+                    <td>벡터 검색 + 메타필터</td>
+                    <td>후보 장비 추출</td>
+                    <td>ChromaDB</td>
+                </tr>
+                <tr class="policy-row">
+                    <td><span class="badge badge-policy">STEP 4</span></td>
+                    <td>정책 필터</td>
+                    <td>비즈니스 룰 적용</td>
+                    <td>점검중 제외, 최소점수 등</td>
+                    <td>policy_settings.json</td>
+                </tr>
+                <tr class="policy-row">
+                    <td><span class="badge badge-policy">STEP 5</span></td>
+                    <td>기관 우선순위</td>
+                    <td>기관별 정렬</td>
+                    <td>소속 기관 우선 표시</td>
+                    <td>institution_priority.json</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-normal">STEP 6</span></td>
+                    <td>리랭킹</td>
+                    <td>최종 점수 계산</td>
+                    <td>RAG + 우선순위 조합</td>
+                    <td>-</td>
+                </tr>
+                <tr class="policy-row">
+                    <td><span class="badge badge-policy">STEP 7</span></td>
+                    <td>결과 제한</td>
+                    <td>Top N 추출</td>
+                    <td>LLM 입력 최적화</td>
+                    <td>policy_settings.json</td>
+                </tr>
+                <tr>
+                    <td><span class="badge badge-normal">STEP 8</span></td>
+                    <td>LLM 생성</td>
+                    <td>추천 설명 생성</td>
+                    <td>자연어 응답</td>
+                    <td>prompts/</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Policy DB 데이터 파일 -->
+        <h2 class="section-title">Policy DB 데이터 파일</h2>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+            <div style="background: #F3E5F5; border-radius: 12px; padding: 20px;">
+                <h4 style="color: #7B1FA2; margin-bottom: 10px;">institution_priority.json</h4>
+                <p style="font-size: 13px; color: #666;">기관별 우선순위 설정</p>
+                <ul style="font-size: 12px; margin-top: 10px; padding-left: 16px;">
+                    <li>나노종합기술원: 10</li>
+                    <li>한국나노기술원: 20</li>
+                    <li>KIST: 30</li>
+                </ul>
+            </div>
+            <div style="background: #E8F5E9; border-radius: 12px; padding: 20px;">
+                <h4 style="color: #2E7D32; margin-bottom: 10px;">policy_settings.json</h4>
+                <p style="font-size: 13px; color: #666;">시스템 정책 ON/OFF</p>
+                <ul style="font-size: 12px; margin-top: 10px; padding-left: 16px;">
+                    <li>maintenance_exclude: ON</li>
+                    <li>max_recommendations: 5</li>
+                    <li>min_rag_score: 0.3</li>
+                </ul>
+            </div>
+            <div style="background: #FFF3E0; border-radius: 12px; padding: 20px;">
+                <h4 style="color: #E65100; margin-bottom: 10px;">process_equipment_mapping.json</h4>
+                <p style="font-size: 13px; color: #666;">공정 키워드 → 장비 매핑</p>
+                <ul style="font-size: 12px; margin-top: 10px; padding-left: 16px;">
+                    <li>에피 성장 → MOCVD, MBE</li>
+                    <li>박막 증착 → Sputter, PECVD</li>
+                    <li>열처리 → RTA, Furnace</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="no-print">
+        <button onclick="savePDF()" style="background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; margin-bottom: 20px;">
+            PDF 저장
+        </button>
+        <p>KION RAG PoC - AI 반도체 장비 추천 시스템</p>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        function savePDF() {
+            const element = document.querySelector('.container');
+            const opt = {
+                margin: 10,
+                filename: 'KION_RAG_Policy순서도.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+    <style>
+        @media print {
+            .header, .no-print { display: none !important; }
+            .container { padding-top: 0 !important; }
+            body { background: white; }
+        }
+    </style>
+</body>
+</html>

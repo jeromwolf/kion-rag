@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG 파이프라인 순서도 - KION RAG</title>
+    <style>
+        :root {
+            --primary: #1565C0;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --purple: #7B1FA2;
+            --teal: #00897B;
+            --dark: #333;
+            --gray: #666;
+            --light: #f5f5f5;
+            --white: #fff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 50%, #dfe6ed 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--dark);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .header p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge-blue { background: #E3F2FD; color: var(--primary); border: 1px solid var(--primary); }
+        .badge-green { background: #E8F5E9; color: var(--success); border: 1px solid var(--success); }
+        .badge-purple { background: #F3E5F5; color: var(--purple); border: 1px solid var(--purple); }
+
+        /* Query Box */
+        .query-box {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 24px 32px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(21, 101, 192, 0.15);
+        }
+
+        .query-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .query-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Flowchart */
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .step {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .step-number {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .step-number.blue { background: linear-gradient(135deg, #1565C0, #1976D2); }
+        .step-number.green { background: linear-gradient(135deg, #388E3C, #4CAF50); }
+        .step-number.orange { background: linear-gradient(135deg, #F57C00, #FF9800); }
+        .step-number.purple { background: linear-gradient(135deg, #7B1FA2, #9C27B0); }
+        .step-number.teal { background: linear-gradient(135deg, #00695C, #00897B); }
+
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .step-subtitle {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .step-content {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        /* Arrow */
+        .arrow {
+            width: 4px;
+            height: 30px;
+            background: var(--primary);
+            position: relative;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 12px solid var(--primary);
+        }
+
+        /* Tags */
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .tag-blue { background: #E3F2FD; color: var(--primary); }
+        .tag-green { background: #E8F5E9; color: var(--success); }
+        .tag-orange { background: #FFF3E0; color: var(--warning); }
+        .tag-purple { background: #F3E5F5; color: var(--purple); }
+        .tag-teal { background: #E0F2F1; color: var(--teal); }
+        .tag-gray { background: #ECEFF1; color: var(--gray); }
+
+        /* Two Column Layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .col-box {
+            background: white;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .col-box h4 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Filter Grid */
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .filter-item {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+
+        .filter-item.active {
+            border-color: var(--success);
+            background: #E8F5E9;
+        }
+
+        .filter-item .label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-bottom: 4px;
+        }
+
+        .filter-item .value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .filter-item.active .value {
+            color: var(--success);
+        }
+
+        /* Policy Items */
+        .policy-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .policy-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .policy-item .icon {
+            font-size: 16px;
+        }
+
+        .policy-item .text {
+            flex: 1;
+            color: var(--dark);
+        }
+
+        .policy-item .status {
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .policy-item .status.pass { background: #E8F5E9; color: var(--success); }
+        .policy-item .status.info { background: #E3F2FD; color: var(--primary); }
+
+        /* Result Box */
+        .result-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .result-box {
+            background: white;
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .result-rank {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-name {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .result-meta {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 2px;
+        }
+
+        .result-score {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        /* Process Flow */
+        .process-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .process-item {
+            text-align: center;
+            padding: 10px 14px;
+            background: white;
+            border-radius: 8px;
+            min-width: 80px;
+        }
+
+        .process-item .icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .process-item .text {
+            font-size: 11px;
+            color: var(--gray);
+        }
+
+        .process-arrow {
+            font-size: 16px;
+            color: var(--gray);
+        }
+
+        /* LLM Response */
+        .llm-response {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid var(--purple);
+        }
+
+        .llm-response p {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--dark);
+        }
+
+        .llm-response strong {
+            color: var(--purple);
+        }
+
+        /* Parallel Box */
+        .parallel-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .parallel-step {
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+
+        .parallel-step .step-number {
+            width: 36px;
+            height: 36px;
+            font-size: 14px;
+        }
+
+        .parallel-step .step-title {
+            font-size: 15px;
+        }
+
+        /* Code block */
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 12px;
+        }
+
+        .code-block .keyword { color: #569CD6; }
+        .code-block .string { color: #CE9178; }
+        .code-block .number { color: #B5CEA8; }
+
+        /* Stats row */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        /* Back link */
+        .back-link {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+        }
+
+        .back-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 10px 20px;
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            margin: 0 8px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .back-link a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .two-col, .parallel-container {
+                grid-template-columns: 1fr;
+            }
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>KION RAG 파이프라인</h1>
+            <p>Hybrid RAG: BM25 + 벡터 검색 + 의도 파악 + 세션 관리</p>
+            <div class="badge-row">
+                <span class="badge badge-blue">BM25 + Vector</span>
+                <span class="badge badge-purple">Intent Parser</span>
+                <span class="badge badge-green">Session</span>
+            </div>
+            <div class="badge-row" style="margin-top: 8px;">
+                <span class="badge" style="background: #ECEFF1; color: #666; border: 1px solid #B0BEC5;">BGE-M3</span>
+                <span class="badge" style="background: #ECEFF1; color: #666; border: 1px solid #B0BEC5;">ChromaDB</span>
+                <span class="badge" style="background: #ECEFF1; color: #666; border: 1px solid #B0BEC5;">Qwen 2.5 32B</span>
+            </div>
+        </div>
+
+        <!-- Query -->
+        <div class="query-box">
+            <div class="query-label">사용자 질의 (User Query)</div>
+            <div class="query-text">"6 inch Si 웨이퍼, 게이트 산화막 5nm, RTA 필요, 400℃ 이상"</div>
+        </div>
+
+        <div class="flowchart">
+
+            <!-- Step 1: Query Analysis -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number blue">1</div>
+                    <div>
+                        <div class="step-title">질의 분석 (Query Analysis)</div>
+                        <div class="step-subtitle">자연어에서 의도와 조건 추출</div>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="two-col">
+                        <div class="col-box">
+                            <h4>🔍 키워드 추출</h4>
+                            <div class="tag-group">
+                                <span class="tag tag-blue">6 inch</span>
+                                <span class="tag tag-blue">Si</span>
+                                <span class="tag tag-green">게이트 산화막</span>
+                                <span class="tag tag-orange">RTA</span>
+                                <span class="tag tag-purple">400℃</span>
+                                <span class="tag tag-teal">5nm</span>
+                            </div>
+                        </div>
+                        <div class="col-box">
+                            <h4>🏷️ 메타데이터 매핑</h4>
+                            <div class="policy-list">
+                                <div class="policy-item">
+                                    <span class="text">웨이퍼 사이즈 → 6 inch</span>
+                                    <span class="status pass">매핑됨</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">재료 → Si (Silicon)</span>
+                                    <span class="status pass">매핑됨</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">공정 카테고리 → 열처리</span>
+                                    <span class="status pass">매핑됨</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow"></div>
+
+            <!-- Step 1.5: Intent Parsing (NEW) -->
+            <div class="step" style="border: 2px solid #7B1FA2;">
+                <div class="step-header">
+                    <div class="step-number purple">1.5</div>
+                    <div>
+                        <div class="step-title">의도 파악 (Intent Parsing) <span style="background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px;">NEW</span></div>
+                        <div class="step-subtitle">복잡한 질의 분석 (부정문, 복합, 연계 질의)</div>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="two-col">
+                        <div class="col-box">
+                            <h4>🧠 빠른 의도 체크</h4>
+                            <div class="policy-list">
+                                <div class="policy-item">
+                                    <span class="icon">❌</span>
+                                    <span class="text">부정문: "800도 이하로만"</span>
+                                    <span class="status" style="background: #F3E5F5; color: #7B1FA2;">감지</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">➕</span>
+                                    <span class="text">복합: "MOCVD랑 PECVD 둘 다"</span>
+                                    <span class="status" style="background: #F3E5F5; color: #7B1FA2;">감지</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">🔗</span>
+                                    <span class="text">연계: "8인치로 바꿔줘"</span>
+                                    <span class="status" style="background: #E8F5E9; color: #4CAF50;">세션</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-box">
+                            <h4>🎯 LLM 의도 분석 (복잡한 경우만)</h4>
+                            <div class="code-block">
+<span class="keyword">// quick_intent_check() → needs_llm_parsing</span>
+{
+  query_type: <span class="string">"negative"</span>,
+  exclude_temp_min: <span class="number">800</span>,
+  search_query: <span class="string">"800도 이하 열처리"</span>
+}
+                            </div>
+                            <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                                <code>app/intent_parser.py</code> | <code>app/conversation.py</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow"></div>
+
+            <!-- Step 2: Parallel - Embedding & Policy -->
+            <div class="parallel-container">
+                <!-- 2A: Embedding -->
+                <div class="parallel-step">
+                    <div class="step-header">
+                        <div class="step-number blue">2A</div>
+                        <div>
+                            <div class="step-title">임베딩 생성</div>
+                            <div class="step-subtitle">BGE-M3 → 1024차원 벡터</div>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="process-flow">
+                            <div class="process-item">
+                                <div class="icon">💬</div>
+                                <div class="text">질의</div>
+                            </div>
+                            <div class="process-arrow">→</div>
+                            <div class="process-item">
+                                <div class="icon">🤖</div>
+                                <div class="text">BGE-M3</div>
+                            </div>
+                            <div class="process-arrow">→</div>
+                            <div class="process-item">
+                                <div class="icon">📐</div>
+                                <div class="text">Vector</div>
+                            </div>
+                        </div>
+                        <div class="code-block">
+                            [<span class="number">0.0234</span>, <span class="number">-0.0891</span>, <span class="number">0.1523</span>, ...] <span class="keyword">// 1024 dim</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2B: Policy DB -->
+                <div class="parallel-step">
+                    <div class="step-header">
+                        <div class="step-number teal">2B</div>
+                        <div>
+                            <div class="step-title">Policy DB 조회</div>
+                            <div class="step-subtitle">공정-장비 매핑, 기관 정책</div>
+                        </div>
+                    </div>
+                    <div class="step-content">
+                        <div class="policy-list">
+                            <div class="policy-item">
+                                <span class="icon">🏭</span>
+                                <span class="text">RTA → 열처리 카테고리</span>
+                                <span class="status info">매핑</span>
+                            </div>
+                            <div class="policy-item">
+                                <span class="icon">📋</span>
+                                <span class="text">게이트 산화막 → Oxidation</span>
+                                <span class="status info">매핑</span>
+                            </div>
+                            <div class="policy-item">
+                                <span class="icon">🏢</span>
+                                <span class="text">기관 우선순위 적용</span>
+                                <span class="status pass">적용</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow"></div>
+
+            <!-- Step 3: Hybrid Search (BM25 + Vector) -->
+            <div class="step" style="border: 2px solid #1565C0;">
+                <div class="step-header">
+                    <div class="step-number blue">3</div>
+                    <div>
+                        <div class="step-title">하이브리드 검색 (Hybrid Search) <span style="background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px;">NEW</span></div>
+                        <div class="step-subtitle">BM25 키워드 검색 + 벡터 시멘틱 검색 결합</div>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="two-col">
+                        <div class="col-box" style="border-left: 4px solid #1565C0;">
+                            <h4>🔤 BM25 (키워드)</h4>
+                            <div class="policy-list">
+                                <div class="policy-item">
+                                    <span class="text">기술 용어 정확 매칭</span>
+                                    <span class="status info">MOCVD</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">스펙 매칭</span>
+                                    <span class="status info">6inch</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">온도 단위</span>
+                                    <span class="status info">400℃</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-box" style="border-left: 4px solid #4CAF50;">
+                            <h4>📐 Vector (시멘틱)</h4>
+                            <div class="policy-list">
+                                <div class="policy-item">
+                                    <span class="text">의미 기반 유사도</span>
+                                    <span class="status pass">Cosine</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">동의어 처리</span>
+                                    <span class="status pass">✓</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">문맥 이해</span>
+                                    <span class="status pass">✓</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-block" style="margin-top: 16px;">
+<span class="keyword">// hybrid_search()</span>
+hybrid_score = vector_score × <span class="number">0.5</span> + bm25_score × <span class="number">0.5</span>
+<span class="keyword">// app/hybrid_search.py</span>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="value">102</div>
+                            <div class="label">전체 장비</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value" style="color: var(--primary);">→</div>
+                            <div class="label"></div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value" style="color: var(--success);">20</div>
+                            <div class="label">하이브리드 Top-K</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow"></div>
+
+            <!-- Step 4: Post-filtering (Hard 조건만) -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number orange">4</div>
+                    <div>
+                        <div class="step-title">메타데이터 필터링 (Post-filtering)</div>
+                        <div class="step-subtitle">벡터 검색 결과에서 Hard 조건 필터</div>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="two-col">
+                        <div class="col-box">
+                            <h4>🔴 Hard 조건 (필수)</h4>
+                            <div class="filter-grid">
+                                <div class="filter-item active">
+                                    <div class="label">웨이퍼</div>
+                                    <div class="value">6 inch ✓</div>
+                                </div>
+                                <div class="filter-item active">
+                                    <div class="label">온도</div>
+                                    <div class="value">≥400℃ ✓</div>
+                                </div>
+                            </div>
+                            <h4 style="margin-top: 16px;">🟡 Soft 조건 (유연)</h4>
+                            <div class="filter-grid">
+                                <div class="filter-item" style="border-color: #FFB74D;">
+                                    <div class="label">재료</div>
+                                    <div class="value" style="color: #F57C00;">Si (가중치)</div>
+                                </div>
+                                <div class="filter-item" style="border-color: #FFB74D;">
+                                    <div class="label">카테고리</div>
+                                    <div class="value" style="color: #F57C00;">열처리 (가중치)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-box">
+                            <h4>📊 필터링 결과</h4>
+                            <div class="stats-row" style="border: none; padding: 0; margin: 0;">
+                                <div class="stat-item">
+                                    <div class="value">20</div>
+                                    <div class="label">벡터 검색 결과</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="value" style="color: var(--success);">→</div>
+                                    <div class="label"></div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="value" style="color: var(--success);">8</div>
+                                    <div class="label">Hard 조건 통과</div>
+                                </div>
+                            </div>
+                            <div class="code-block" style="margin-top: 12px;">
+<span class="keyword">// Hard 조건만 필터</span>
+results.filter(eq =>
+  eq.wafer_size == <span class="string">'6 inch'</span> &&
+  eq.max_temp >= <span class="number">400</span>
+)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow"></div>
+
+            <!-- Step 5: Reranking -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number purple">5</div>
+                    <div>
+                        <div class="step-title">리랭킹 (Reranking)</div>
+                        <div class="step-subtitle">유사도 + Soft 조건 가중치로 최종 순위 결정</div>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="result-list">
+                        <div class="result-box">
+                            <div class="result-rank">1</div>
+                            <div class="result-info">
+                                <div class="result-name">RTA (6인치) - KION-102</div>
+                                <div class="result-meta">한국나노기술원 | 열처리 | Si, SiO2 | 400~1200℃</div>
+                            </div>
+                            <div class="result-score">98%</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-rank">2</div>
+                            <div class="result-info">
+                                <div class="result-name">Rapid Thermal Processor - KION-045</div>
+                                <div class="result-meta">나노종합기술원 | 열처리 | Si | 300~1100℃</div>
+                            </div>
+                            <div class="result-score">92%</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-rank">3</div>
+                            <div class="result-info">
+                                <div class="result-name">Tube Furnace (6인치) - KION-078</div>
+                                <div class="result-meta">광주나노기술집적센터 | 열처리 | Si, GaN | 500~1200℃</div>
+                            </div>
+                            <div class="result-score">85%</div>
+                        </div>
+                    </div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="value">0.98</div>
+                            <div class="label">최고 유사도</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value">1.2s</div>
+                            <div class="label">검색 시간</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="value">3</div>
+                            <div class="label">추천 장비</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow"></div>
+
+            <!-- Step 6: LLM Response -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number purple">6</div>
+                    <div>
+                        <div class="step-title">LLM 응답 생성 (Response Generation)</div>
+                        <div class="step-subtitle">Qwen 2.5 32B로 자연어 응답 생성</div>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="two-col">
+                        <div class="col-box">
+                            <h4>📥 프롬프트 구성</h4>
+                            <div class="policy-list">
+                                <div class="policy-item">
+                                    <span class="icon">📋</span>
+                                    <span class="text">시스템 프롬프트</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">💬</span>
+                                    <span class="text">사용자 질의</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">🔧</span>
+                                    <span class="text">검색된 장비 컨텍스트</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-box">
+                            <h4>📤 생성 파라미터</h4>
+                            <div class="policy-list">
+                                <div class="policy-item">
+                                    <span class="text">Temperature: 0.7</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">Max Tokens: 2048</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="text">Streaming: ON</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="llm-response" style="margin-top: 16px;">
+                        <p>
+                            요청하신 조건에 맞는 장비를 찾았습니다.<br><br>
+                            <strong>RTA (6인치) [KION-102]</strong>를 추천드립니다.<br>
+                            - 위치: 한국나노기술원<br>
+                            - 웨이퍼: 6인치 Si 지원<br>
+                            - 온도: 400~1200℃ (RTA 공정)<br>
+                            - 용도: 게이트 산화막 형성에 적합<br><br>
+                            <strong style="color: var(--success);">매칭률: 98%</strong> | 예약 가능 | <a href="#" style="color: var(--primary);">예약하기 →</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow"></div>
+
+            <!-- Step 7: Session Save (NEW) -->
+            <div class="step" style="border: 2px solid #4CAF50;">
+                <div class="step-header">
+                    <div class="step-number green">7</div>
+                    <div>
+                        <div class="step-title">세션 저장 (Session Save) <span style="background: #4CAF50; color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px;">NEW</span></div>
+                        <div class="step-subtitle">대화 이력 저장으로 연계 질의 지원</div>
+                    </div>
+                </div>
+                <div class="step-content">
+                    <div class="two-col">
+                        <div class="col-box">
+                            <h4>💾 저장 정보</h4>
+                            <div class="policy-list">
+                                <div class="policy-item">
+                                    <span class="icon">🔑</span>
+                                    <span class="text">session_id: abc12345</span>
+                                    <span class="status pass">발급</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">📋</span>
+                                    <span class="text">추출 조건 (웨이퍼, 온도, 재료)</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">🔧</span>
+                                    <span class="text">추천 장비 ID 목록</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">💬</span>
+                                    <span class="text">응답 요약</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-box">
+                            <h4>🔗 다음 질의 활용</h4>
+                            <div class="policy-list">
+                                <div class="policy-item" style="background: #E8F5E9;">
+                                    <span class="icon">👤</span>
+                                    <span class="text">"8인치로 바꿔줘"</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">→</span>
+                                    <span class="text">이전 조건 + 웨이퍼=8인치</span>
+                                    <span class="status pass">병합</span>
+                                </div>
+                                <div class="policy-item" style="background: #E8F5E9;">
+                                    <span class="icon">👤</span>
+                                    <span class="text">"비슷한 다른 장비는?"</span>
+                                </div>
+                                <div class="policy-item">
+                                    <span class="icon">→</span>
+                                    <span class="text">이전 카테고리 유지</span>
+                                    <span class="status pass">참조</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-block" style="margin-top: 16px;">
+<span class="keyword">// conversation_manager.add_turn()</span>
+{
+  session_id: <span class="string">"abc12345"</span>,
+  turn: <span class="number">1</span>,
+  conditions: { wafer: <span class="string">"6 inch"</span>, temp_min: <span class="number">400</span> }
+}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="back-link">
+            <a href="/">← 홈으로</a>
+            <a href="/static/architecture.html">아키텍처</a>
+            <a href="/static/checklist.html">체크리스트</a>
+        </div>
+    </div>
+</body>
+</html>

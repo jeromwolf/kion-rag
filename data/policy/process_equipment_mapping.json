@@ -1,0 +1,120 @@
+{
+  "mappings": [
+    {
+      "keyword": "에피 성장",
+      "keyword_en": "epitaxy",
+      "categories": ["MOCVD", "MBE"],
+      "description": "에피택셜 성장 공정"
+    },
+    {
+      "keyword": "epitaxy",
+      "categories": ["MOCVD", "MBE"]
+    },
+    {
+      "keyword": "박막 증착",
+      "keyword_en": "thin film deposition",
+      "categories": ["Sputter", "PECVD", "ALD", "E-beam Evaporator"],
+      "description": "박막 증착 공정"
+    },
+    {
+      "keyword": "CVD",
+      "categories": ["PECVD", "MOCVD", "LPCVD", "APCVD"],
+      "description": "화학기상증착"
+    },
+    {
+      "keyword": "PVD",
+      "categories": ["Sputter", "E-beam Evaporator", "Thermal Evaporator"],
+      "description": "물리기상증착"
+    },
+    {
+      "keyword": "열처리",
+      "keyword_en": "annealing",
+      "categories": ["RTA", "Furnace"],
+      "description": "열처리 공정"
+    },
+    {
+      "keyword": "annealing",
+      "categories": ["RTA", "Furnace"]
+    },
+    {
+      "keyword": "어닐링",
+      "categories": ["RTA", "Furnace"]
+    },
+    {
+      "keyword": "식각",
+      "keyword_en": "etching",
+      "categories": ["ICP-RIE", "RIE", "Dry Etcher"],
+      "description": "식각 공정"
+    },
+    {
+      "keyword": "etching",
+      "categories": ["ICP-RIE", "RIE", "Dry Etcher"]
+    },
+    {
+      "keyword": "드라이 식각",
+      "categories": ["ICP-RIE", "RIE", "Dry Etcher"]
+    },
+    {
+      "keyword": "웻 식각",
+      "keyword_en": "wet etching",
+      "categories": ["Wet Station", "Wet Etcher"]
+    },
+    {
+      "keyword": "표면 분석",
+      "keyword_en": "surface analysis",
+      "categories": ["SEM", "AFM", "XPS", "AES"],
+      "description": "표면 분석 장비"
+    },
+    {
+      "keyword": "형상 분석",
+      "categories": ["SEM", "TEM", "AFM", "FIB"]
+    },
+    {
+      "keyword": "성분 분석",
+      "categories": ["XPS", "AES", "SIMS", "EDS"]
+    },
+    {
+      "keyword": "리소그래피",
+      "keyword_en": "lithography",
+      "categories": ["Stepper", "Aligner", "E-beam Lithography"],
+      "description": "패터닝 공정"
+    },
+    {
+      "keyword": "노광",
+      "categories": ["Stepper", "Aligner", "E-beam Lithography"]
+    },
+    {
+      "keyword": "이온주입",
+      "keyword_en": "ion implantation",
+      "categories": ["Ion Implanter"],
+      "description": "이온주입 공정"
+    },
+    {
+      "keyword": "세정",
+      "keyword_en": "cleaning",
+      "categories": ["Wet Station", "Asher", "Plasma Cleaner"],
+      "description": "세정 공정"
+    },
+    {
+      "keyword": "산화",
+      "keyword_en": "oxidation",
+      "categories": ["Furnace", "RTO"],
+      "description": "산화막 형성"
+    },
+    {
+      "keyword": "측정",
+      "keyword_en": "measurement",
+      "categories": ["Ellipsometer", "4-point Probe", "Profiler"],
+      "description": "두께/저항 측정"
+    }
+  ],
+  "exact_matches": [
+    "SEM", "TEM", "AFM", "XPS", "AES", "SIMS",
+    "MOCVD", "MBE", "PECVD", "LPCVD", "ALD",
+    "RTA", "Furnace",
+    "ICP-RIE", "RIE",
+    "Sputter", "E-beam"
+  ],
+  "updated_at": "2025-12-29T00:00:00Z",
+  "description": "공정 키워드를 장비 카테고리로 매핑. exact_matches는 키워드 자체가 장비명인 경우."
+}

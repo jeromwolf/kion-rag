@@ -250,7 +250,7 @@
             <div class="tech-card">
                 <h3>🗄️ Database</h3>
                 <ul class="tech-list">
-                    <li><span class="tech-name">ChromaDB</span><span class="tech-version">Vector DB (PoC)</span></li>
+                    <li><span class="tech-name">Qdrant</span><span class="tech-version">Vector DB</span></li>
                     <li><span class="tech-name">JSON</span><span class="tech-version">Config Storage</span></li>
                     <li><span class="tech-name">In-Memory Cache</span><span class="tech-version">5분 TTL</span></li>
                 </ul>
@@ -259,8 +259,8 @@
                 <h3>🤖 AI/ML</h3>
                 <ul class="tech-list">
                     <li><span class="tech-name">Ollama</span><span class="tech-version">LLM Runtime</span></li>
-                    <li><span class="tech-name">Qwen2.5:7b</span><span class="tech-version">Language Model</span></li>
-                    <li><span class="tech-name">multilingual-e5-large</span><span class="tech-version">Embedding</span></li>
+                    <li><span class="tech-name">Qwen 2.5 32B</span><span class="tech-version">Language Model</span></li>
+                    <li><span class="tech-name">BGE-M3</span><span class="tech-version">Embedding</span></li>
                 </ul>
             </div>
             <div class="tech-card">
@@ -292,19 +292,19 @@
             <tbody>
                 <tr style="background: #E8F5E9;">
                     <td><strong>온프레미스</strong></td>
-                    <td>Qwen 2.5 14B (Ollama)</td>
+                    <td>Qwen 2.5 32B (Ollama)</td>
                     <td>BGE-M3 (로컬)</td>
                     <td>Qdrant (Docker)</td>
                     <td>Cron + 증분</td>
                     <td>~50만원 (운영비)</td>
                 </tr>
                 <tr style="background: #FFF8E1;">
-                    <td><strong>클라우드 sLLM ★</strong></td>
-                    <td>AWS Bedrock Llama 3 8B</td>
-                    <td>Bedrock Titan / BGE-M3</td>
-                    <td>Qdrant Cloud</td>
-                    <td>Lambda + 증분</td>
-                    <td>~40만원</td>
+                    <td><strong>클라우드 EC2 GPU ★</strong></td>
+                    <td>Qwen 2.5 32B (Ollama)</td>
+                    <td>BGE-M3 (로컬)</td>
+                    <td>Qdrant (EC2)</td>
+                    <td>Cron + 증분</td>
+                    <td>~30만원 (g5.xlarge)</td>
                 </tr>
                 <tr style="background: #E3F2FD;">
                     <td><strong>클라우드 (저비용)</strong></td>
@@ -341,19 +341,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="background: #E8F5E9;">
-                    <td><strong>intfloat/multilingual-e5-large</strong></td>
-                    <td><strong>76.00%</strong></td>
-                    <td><strong>82.67%</strong></td>
+                <tr>
+                    <td>intfloat/multilingual-e5-large</td>
+                    <td>76.00%</td>
+                    <td>82.67%</td>
                     <td>85.68ms</td>
                     <td>PoC 사용 중</td>
                 </tr>
-                <tr>
-                    <td>BAAI/bge-m3</td>
-                    <td>72.00%</td>
-                    <td>80.00%</td>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>BAAI/bge-m3</strong></td>
+                    <td><strong>72.00%</strong></td>
+                    <td><strong>80.00%</strong></td>
                     <td>82.67ms</td>
-                    <td>Production 권장</td>
+                    <td><strong>Production 권장</strong></td>
                 </tr>
                 <tr>
                     <td>jhgan/ko-sroberta-multitask</td>
@@ -383,7 +383,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="background: #E8F5E9;">
+                <tr>
                     <td><strong>ChromaDB</strong></td>
                     <td style="color: #4CAF50;">✅</td>
                     <td style="color: #4CAF50;">✅</td>
@@ -391,13 +391,13 @@
                     <td>설치 간편, Python 네이티브</td>
                     <td>PoC 사용 중</td>
                 </tr>
-                <tr>
+                <tr style="background: #E8F5E9;">
                     <td><strong>Qdrant</strong></td>
                     <td style="color: #4CAF50;">✅</td>
                     <td style="color: #4CAF50;">✅</td>
                     <td>대규모</td>
                     <td>고성능, 분산 지원, REST/gRPC</td>
-                    <td>Prod 권장</td>
+                    <td><strong>Prod 권장</strong></td>
                 </tr>
                 <tr>
                     <td><strong>Milvus</strong></td>
@@ -418,13 +418,108 @@
             </tbody>
         </table>
 
+        <!-- RAG 아키텍처 종류 -->
+        <h2 class="section-title">RAG 아키텍처 종류</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>종류</th>
+                    <th>설명</th>
+                    <th>장점</th>
+                    <th>단점</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Naive RAG</strong></td>
+                    <td>단순 벡터 검색 → LLM</td>
+                    <td>구현 간단, 빠름</td>
+                    <td>정확도 한계</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>Advanced RAG ✅</strong></td>
+                    <td>쿼리 최적화 + 리랭킹</td>
+                    <td>정확도 향상</td>
+                    <td>복잡도 증가</td>
+                </tr>
+                <tr style="background: #E8F5E9;">
+                    <td><strong>Hybrid RAG ✅</strong></td>
+                    <td>벡터 + 키워드 + 메타데이터</td>
+                    <td>균형잡힌 검색</td>
+                    <td>튜닝 필요</td>
+                </tr>
+                <tr>
+                    <td><strong>Modular RAG</strong></td>
+                    <td>모듈별 조합 (검색/필터/리랭킹)</td>
+                    <td>유연한 커스터마이징</td>
+                    <td>설계 복잡</td>
+                </tr>
+                <tr>
+                    <td><strong>Graph RAG</strong></td>
+                    <td>지식그래프 + 벡터검색</td>
+                    <td>관계 추론 가능</td>
+                    <td>그래프 구축 비용</td>
+                </tr>
+                <tr>
+                    <td><strong>Self-RAG</strong></td>
+                    <td>LLM이 검색 필요성 판단</td>
+                    <td>불필요한 검색 감소</td>
+                    <td>LLM 호출 증가</td>
+                </tr>
+                <tr>
+                    <td><strong>Corrective RAG (CRAG)</strong></td>
+                    <td>검색 결과 품질 평가 후 보정</td>
+                    <td>오답 감소</td>
+                    <td>지연 시간 증가</td>
+                </tr>
+                <tr>
+                    <td><strong>Agentic RAG</strong></td>
+                    <td>에이전트가 다단계 검색</td>
+                    <td>복잡한 질문 처리</td>
+                    <td>비용/시간 증가</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="color: #4CAF50; font-size: 13px; margin-top: 15px;">
+            <strong>✅ 현재 KION RAG:</strong> Advanced RAG + Hybrid 방식 채택 (쿼리 파싱 + 메타필터 + 리랭킹)
+        </p>
+
+        <!-- RAG 선택 이유 -->
+        <h3 style="margin: 25px 0 15px; font-size: 16px;">현재 RAG 방식 선택 이유</h3>
+        <div class="tech-grid">
+            <div class="tech-card" style="border-left: 4px solid #4CAF50;">
+                <h3>🎯 도메인 특성</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">정확한 스펙 매칭</span><span class="tech-version">6인치 → 6인치만</span></li>
+                    <li><span class="tech-name">구조화된 장비 DB</span><span class="tech-version">메타필터 효과적</span></li>
+                    <li><span class="tech-name">비즈니스 룰 필수</span><span class="tech-version">기관 우선순위</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid var(--primary);">
+                <h3>⚡ PoC 단계 고려</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">빠른 검증 목표</span><span class="tech-version">복잡한 구조 지양</span></li>
+                    <li><span class="tech-name">sLLM 사용</span><span class="tech-version">다중 호출 부담</span></li>
+                    <li><span class="tech-name">Graph/Agentic</span><span class="tech-version">오버엔지니어링</span></li>
+                </ul>
+            </div>
+            <div class="tech-card" style="border-left: 4px solid #FF9800;">
+                <h3>🚀 향후 확장</h3>
+                <ul class="tech-list">
+                    <li><span class="tech-name">+ Corrective RAG</span><span class="tech-version">품질 검증 추가</span></li>
+                    <li><span class="tech-name">+ Graph RAG</span><span class="tech-version">장비 간 관계</span></li>
+                    <li><span class="tech-name">+ Agentic RAG</span><span class="tech-version">다단계 질문</span></li>
+                </ul>
+            </div>
+        </div>
+
         <!-- sLLM 선택 전략 -->
         <h2 class="section-title">sLLM 선택 전략</h2>
         <div class="tech-grid">
             <div class="tech-card" style="border-left: 4px solid #4CAF50;">
                 <h3>🏢 온프레미스 / 프라이빗</h3>
                 <ul class="tech-list">
-                    <li><span class="tech-name">Qwen 2.5</span><span class="tech-version">7B~14B (현재 사용)</span></li>
+                    <li><span class="tech-name">Qwen 2.5</span><span class="tech-version">7B~32B (현재 사용)</span></li>
                     <li><span class="tech-name">Llama 3</span><span class="tech-version">8B~70B</span></li>
                     <li><span class="tech-name">DeepSeek</span><span class="tech-version">7B~67B</span></li>
                     <li><span class="tech-name">Ollama</span><span class="tech-version">로컬 인퍼런스 서버</span></li>

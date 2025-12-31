@@ -2,6 +2,7 @@
 KION RAG PoC - Query Parser
 정규식 기반 파라미터 추출 및 용어 정규화
 필터 룰은 외부 JSON 파일에서 로드
+Policy DB의 공정-장비 매핑 통합
 """
 
 import re
@@ -23,6 +24,8 @@ class ParsedQuery:
     categories: List[str] = field(default_factory=list)
     institutions: List[str] = field(default_factory=list)
     keywords: List[str] = field(default_factory=list)
+    # Policy DB: 공정-장비 매핑된 카테고리
+    mapped_categories: List[str] = field(default_factory=list)
 
 
 # === 필터 룰 로드 ===
@@ -179,6 +182,19 @@ def extract_institutions(text: str) -> List[str]:
     return list(institutions)
 
 
+# === Policy DB 공정-장비 매핑 ===
+def get_mapped_categories_from_policy(query: str) -> List[str]:
+    """Policy DB에서 공정 키워드 → 장비 카테고리 매핑"""
+    try:
+        from .policy import get_policy_manager
+        pm = get_policy_manager()
+        categories = pm.mapper.get_categories(query)
+        return [c["category"] for c in categories[:5]]  # 상위 5개
+    except Exception as e:
+        print(f"[QueryParser] Policy mapping error: {e}")
+        return []
+
+
 # === 메인 파서 ===
 def parse_query(query: str) -> ParsedQuery:
     """
@@ -203,6 +219,9 @@ def parse_query(query: str) -> ParsedQuery:
     # 주요 키워드 추출 (간단한 토큰화)
     keywords = [w for w in query.split() if len(w) >= 2]
 
+    # Policy DB: 공정-장비 매핑 적용 (STEP 2)
+    mapped_categories = get_mapped_categories_from_policy(query)
+
     return ParsedQuery(
         original=query,
         normalized=normalized,
@@ -212,7 +231,8 @@ def parse_query(query: str) -> ParsedQuery:
         materials=materials,
         categories=categories,
         institutions=institutions,
-        keywords=keywords
+        keywords=keywords,
+        mapped_categories=mapped_categories
     )
 
 
@@ -223,8 +243,12 @@ def parsed_to_filters(parsed: ParsedQuery) -> Dict[str, Any]:
     if parsed.wafer_sizes:
         filters["wafer_sizes"] = parsed.wafer_sizes
 
+    # 카테고리: 명시적 카테고리 > Policy DB 매핑 카테고리
     if parsed.categories:
-        filters["category"] = parsed.categories[0]  # 첫 번째 카테고리 사용
+        filters["category"] = parsed.categories[0]
+    elif parsed.mapped_categories:
+        # Policy DB에서 매핑된 카테고리 사용 (STEP 4)
+        filters["category"] = parsed.mapped_categories[0]
 
     if parsed.institutions:
         filters["institution"] = parsed.institutions[0]

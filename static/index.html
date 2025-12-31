@@ -771,6 +771,18 @@
             line-height: 2;
         }
 
+        /* Streaming cursor animation */
+        .streaming-text::after {
+            content: '▌';
+            animation: blink 0.7s infinite;
+            color: var(--primary);
+            font-weight: normal;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .nav { display: none; }
@@ -799,8 +811,9 @@
                 <a href="/static/techstack.html">기술스택</a>
                 <a href="/static/data-design.html">데이터설계</a>
                 <a href="/static/implementation.html">구현가이드</a>
+                <a href="/static/flowchart-demo.html">RAG 파이프라인</a>
                 <a href="/static/admin.html">관리자</a>
-                <a href="/static/api-docs.html">API 문서</a>
+                <a href="/static/checklist.html">체크리스트</a>
             </nav>
             <div class="header-actions">
                 <button class="btn btn-primary" onclick="toggleChat()">AI 상담</button>
@@ -812,6 +825,9 @@
     <section class="hero">
         <div class="hero-content">
             <div class="hero-badge">PoC Demo v1.0</div>
+            <div style="background: rgba(255,200,0,0.3); padding: 8px 16px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+                ※ 현재 PoC는 <strong>로컬 환경</strong>에서만 실행됩니다 (Ollama + ChromaDB)
+            </div>
             <h1>AI 기반 팹서비스<br>장비 추천 시스템</h1>
             <p>반도체/디스플레이 공정에 최적화된 장비를 AI가 추천해드립니다.<br>웨이퍼 사이즈, 공정 온도, 재료 등 조건에 맞는 장비를 빠르게 찾아보세요.</p>
             <button class="btn btn-primary" style="padding: 14px 32px; font-size: 16px;" onclick="toggleChat()">
@@ -863,7 +879,7 @@
     <!-- Architecture Section -->
     <section class="section" id="architecture">
         <h2 class="section-title">시스템 <span>아키텍처</span></h2>
-        <div class="arch-grid" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="arch-grid" style="grid-template-columns: repeat(5, 1fr);">
             <a href="architecture.html" class="arch-card">
                 <div class="arch-card-header">ARCHITECTURE</div>
                 <div class="arch-card-body">
@@ -885,6 +901,14 @@
                 <div class="arch-card-body">
                     <h3>데이터 설계</h3>
                     <p>MS-SQL 스키마, 동기화 전략, RAG 지식베이스 설계.</p>
+                    <span class="arch-link">자세히 보기 →</span>
+                </div>
+            </a>
+            <a href="flowchart-demo.html" class="arch-card">
+                <div class="arch-card-header" style="background: linear-gradient(135deg, #FF6B35, #F7931E);">RAG PIPELINE</div>
+                <div class="arch-card-body">
+                    <h3>RAG 파이프라인</h3>
+                    <p>벡터 검색 + 메타데이터 필터링 + Policy DB 순서도.</p>
                     <span class="arch-link">자세히 보기 →</span>
                 </div>
             </a>
@@ -942,10 +966,10 @@
             <div class="chat-header-icon">🤖</div>
             <div class="chat-header-text">
                 <h3>KION AI 장비추천</h3>
-                <p>무엇이든 물어보세요</p>
+                <p id="sessionStatus">새 대화</p>
             </div>
             <div class="chat-header-actions">
-                <button class="chat-header-btn" onclick="resetChat()" title="대화 초기화">
+                <button class="chat-header-btn" onclick="resetChat()" title="새 대화 시작 (세션 초기화)">
                     <svg viewBox="0 0 24 24">
                         <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
                     </svg>
@@ -970,16 +994,16 @@
             </div>
         </div>
         <div class="quick-suggestions" id="quickSuggestions">
-            <button class="suggestion-btn" onclick="sendQuickQuery('MOCVD 장비 추천해줘')">MOCVD</button>
-            <button class="suggestion-btn" onclick="sendQuickQuery('6인치 Si 열처리 장비')">6인치 열처리</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('6인치 MOCVD 장비 추천해줘')">6인치 MOCVD</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('8인치로 바꿔줘')" title="연계 질의 예시">🔗 8인치로 변경</button>
             <button class="suggestion-btn" onclick="sendQuickQuery('GaN 에피 성장')">GaN 에피</button>
-            <button class="suggestion-btn" onclick="sendQuickQuery('8인치 PECVD 증착')">8인치 PECVD</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('800도 이하 열처리 장비')">800℃ 이하</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('MOCVD랑 PECVD 둘 다 추천해줘')">MOCVD+PECVD</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('비슷한 다른 장비 더 보여줘')" title="연계 질의 예시">🔗 비슷한 장비</button>
             <button class="suggestion-btn" onclick="sendQuickQuery('1000도 이상 고온 장비')">고온(1000℃+)</button>
             <button class="suggestion-btn" onclick="sendQuickQuery('SEM 분석 장비')">SEM 분석</button>
-            <button class="suggestion-btn" onclick="sendQuickQuery('스퍼터 금속 증착')">스퍼터</button>
-            <button class="suggestion-btn" onclick="sendQuickQuery('나노종합기술원 장비')">나노종합기술원</button>
             <button class="suggestion-btn" onclick="sendQuickQuery('ICP 식각 장비')">ICP 식각</button>
-            <button class="suggestion-btn" onclick="sendQuickQuery('sapphire 기판 장비')">사파이어 기판</button>
+            <button class="suggestion-btn" onclick="sendQuickQuery('나노종합기술원 장비')">나노종합기술원</button>
         </div>
         <div class="chat-input-area">
             <div class="chat-input-wrapper">
@@ -999,6 +1023,20 @@
         let isStreaming = false;
         let isMaximized = false;
         let lastQuery = '';  // 마지막 쿼리 저장
+        let sessionId = null;  // 대화 세션 ID
+        let turnCount = 0;  // 대화 턴 수
+
+        // === 세션 상태 표시 업데이트 ===
+        function updateSessionStatus() {
+            const statusEl = document.getElementById('sessionStatus');
+            if (sessionId && turnCount > 0) {
+                statusEl.innerHTML = `세션: <strong>${sessionId}</strong> (${turnCount}턴)`;
+                statusEl.style.color = '#90EE90';  // 연결 상태 표시
+            } else {
+                statusEl.textContent = '새 대화';
+                statusEl.style.color = 'rgba(255,255,255,0.8)';
+            }
+        }
 
         // === 채팅 상태 저장/복원 ===
         function saveChatState() {
@@ -1006,6 +1044,8 @@
             const state = {
                 messages: messagesDiv.innerHTML,
                 lastQuery: lastQuery,
+                sessionId: sessionId,
+                turnCount: turnCount,
                 isOpen: document.getElementById('chatWindow').classList.contains('open'),
                 isMaximized: isMaximized,
                 timestamp: Date.now()
@@ -1028,6 +1068,8 @@
                 const messagesDiv = document.getElementById('chatMessages');
                 messagesDiv.innerHTML = state.messages;
                 lastQuery = state.lastQuery || '';
+                sessionId = state.sessionId || null;
+                turnCount = state.turnCount || 0;
 
                 if (state.isOpen) {
                     document.getElementById('chatWindow').classList.add('open');
@@ -1040,6 +1082,7 @@
 
                 // 스크롤 맨 아래로
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                updateSessionStatus();
                 return true;
             } catch (e) {
                 console.error('채팅 상태 복원 실패:', e);
@@ -1060,6 +1103,9 @@
             const messagesDiv = document.getElementById('chatMessages');
             messagesDiv.innerHTML = `<div class="message bot">${INITIAL_MESSAGE}</div>`;
             lastQuery = '';
+            sessionId = null;  // 세션 초기화
+            turnCount = 0;
+            updateSessionStatus();
             sessionStorage.removeItem(CHAT_STORAGE_KEY);
         }
 
@@ -1202,24 +1248,43 @@
             // Add typing indicator
             addTypingIndicator();
 
+            const startTime = Date.now();
+
             try {
+                // 세션 ID를 포함한 요청 (연계 질의 지원)
+                const requestBody = {
+                    query: query,
+                    top_k: 3
+                };
+                if (sessionId) {
+                    requestBody.session_id = sessionId;
+                }
+
+                // 스트리밍 API 호출
                 const response = await fetch(`${API_URL}/chat/stream`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: query, top_k: 3 })
+                    body: JSON.stringify(requestBody)
                 });
+
+                if (!response.ok) {
+                    throw new Error('API 요청 실패');
+                }
 
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
-                let equipmentData = [];  // 장비 데이터 저장
-                let explanationDiv = null;
-                let explanationText = '';
+
+                let equipmentData = [];
+                let streamedText = '';
+                let textMessageDiv = null;
+
+                removeTypingIndicator();
 
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
 
-                    const chunk = decoder.decode(value);
+                    const chunk = decoder.decode(value, { stream: true });
                     const lines = chunk.split('\n');
 
                     for (const line of lines) {
@@ -1228,43 +1293,71 @@
                                 const data = JSON.parse(line.slice(6));
 
                                 if (data.type === 'equipment') {
-                                    removeTypingIndicator();
-                                    // 장비 데이터 저장 (나중에 표시)
+                                    // 장비 정보 즉시 표시
                                     equipmentData = data.data;
-                                    // 설명 컨테이너 먼저 생성
-                                    explanationDiv = addMessage('', 'bot', true);  // skipSave
-                                    explanationText = '';
-                                } else if (data.type === 'token' && explanationDiv) {
-                                    explanationText += data.data;
-                                    explanationDiv.innerHTML = formatExplanation(explanationText);
-                                    document.getElementById('chatMessages').scrollTop =
-                                        document.getElementById('chatMessages').scrollHeight;
-                                } else if (data.type === 'done') {
-                                    // 설명 최종 포맷팅
-                                    if (explanationDiv && explanationText) {
-                                        explanationDiv.innerHTML = formatExplanation(explanationText);
-                                    }
-                                    // 설명 아래에 장비 카드 추가
-                                    if (equipmentData.length > 0) {
+                                    if (equipmentData && equipmentData.length > 0) {
                                         let equipmentHtml = '';
                                         for (const eq of equipmentData) {
                                             equipmentHtml += createEquipmentCard(eq);
                                         }
-                                        addMessage(equipmentHtml, 'bot', true);  // skipSave
+                                        addMessage(equipmentHtml, 'bot', true);
                                     }
+                                    // 세션 업데이트
+                                    turnCount++;
+                                    updateSessionStatus();
+
+                                } else if (data.type === 'token') {
+                                    // 스트리밍 텍스트 표시
+                                    streamedText += data.data;
+                                    if (!textMessageDiv) {
+                                        // 첫 토큰: 새 메시지 div 생성
+                                        const chatMessages = document.getElementById('chatMessages');
+                                        textMessageDiv = document.createElement('div');
+                                        textMessageDiv.className = 'message bot';
+                                        textMessageDiv.innerHTML = `<div class="message-content streaming-text">${formatExplanation(streamedText)}</div>`;
+                                        chatMessages.appendChild(textMessageDiv);
+                                    } else {
+                                        // 후속 토큰: 기존 div 업데이트
+                                        textMessageDiv.querySelector('.message-content').innerHTML = formatExplanation(streamedText);
+                                    }
+                                    scrollToBottom();
+
+                                } else if (data.type === 'done') {
+                                    // 스트리밍 완료 - 커서 제거
+                                    if (textMessageDiv) {
+                                        const content = textMessageDiv.querySelector('.message-content');
+                                        content.classList.remove('streaming-text');
+                                    }
+                                    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+                                    const followupHint = turnCount > 1 ?
+                                        '<br><em style="font-size:11px;color:#888;">💡 "8인치로 바꿔줘" 같은 후속 질문도 가능해요!</em>' : '';
+                                    addMessage(
+                                        `<span style="font-size:12px;color:#999;">⏱️ 처리 시간: ${elapsed}초 (스트리밍)${followupHint}</span>`,
+                                        'bot',
+                                        true
+                                    );
                                 }
-                            } catch (e) {}
+                            } catch (e) {
+                                // JSON 파싱 오류 무시
+                            }
                         }
                     }
                 }
+
+                // 장비가 없는 경우
+                if (equipmentData.length === 0 && !streamedText) {
+                    addMessage('조건에 맞는 장비를 찾지 못했습니다. 다른 조건으로 검색해보세요.', 'bot', true);
+                }
+
             } catch (error) {
                 removeTypingIndicator();
                 addMessage('죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.', 'system');
+                console.error('Chat error:', error);
             }
 
             isStreaming = false;
             document.getElementById('sendBtn').disabled = false;
-            // 스트리밍 완료 후 상태 저장
+            // 완료 후 상태 저장
             saveChatState();
         }
     </script>

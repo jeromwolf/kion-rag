@@ -1,0 +1,13 @@
+{
+  "institutions": [
+    {"id": "NNFC", "name": "나노종합기술원", "name_short": "나노종합", "priority": 10, "is_active": true},
+    {"id": "KANC", "name": "한국나노기술원", "name_short": "한국나노", "priority": 20, "is_active": true},
+    {"id": "KIST", "name": "한국과학기술연구원", "name_short": "KIST", "priority": 30, "is_active": true},
+    {"id": "ETRI", "name": "한국전자통신연구원", "name_short": "ETRI", "priority": 30, "is_active": true},
+    {"id": "KAIST", "name": "한국과학기술원", "name_short": "KAIST", "priority": 40, "is_active": true},
+    {"id": "SNU", "name": "서울대학교", "name_short": "서울대", "priority": 50, "is_active": true},
+    {"id": "POSTECH", "name": "포항공과대학교", "name_short": "포스텍", "priority": 50, "is_active": true}
+  ],
+  "updated_at": "2025-12-29T00:00:00Z",
+  "description": "기관별 검색 결과 우선순위. priority 값이 낮을수록 먼저 표시됨."
+}

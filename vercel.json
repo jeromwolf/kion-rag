@@ -1,0 +1,9 @@
+{
+  "buildCommand": null,
+  "outputDirectory": "static",
+  "framework": null,
+  "rewrites": [
+    { "source": "/static/(.*)", "destination": "/$1" },
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
+}
