@@ -179,7 +179,8 @@ kion-rag/
 │   ├── index.html            # 메인 UI (스트리밍)
 │   ├── architecture.html     # 시스템 아키텍처
 │   ├── flowchart-demo.html   # 처리 흐름도
-│   └── checklist.html        # 구현 체크리스트
+│   ├── checklist.html        # 구현 체크리스트
+│   └── budget.html           # GPU 인프라 예산 계획서
 └── README.md
 ```
 

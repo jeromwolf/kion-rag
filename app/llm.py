@@ -234,25 +234,38 @@ def generate_recommendation_stream(query: str, equipments: List[Dict[str, Any]])
 
 
 def filter_chinese(text: str) -> str:
-    """중국어 문자를 필터링 (모든 CJK 문자 제거)"""
+    """중국어 문자를 필터링 (모든 CJK 문자 제거, 띄어쓰기 보존)"""
     import re
 
-    # 모든 CJK 문자 제거 (중국어/한자)
+    # 중국어 특유의 문장 부호를 먼저 변환 (공백 포함)
+    chinese_punct = {
+        '：': ': ', '，': ', ', '。': '. ', '！': '! ', '？': '? ',
+        '；': '; ', '"': '"', '"': '"', ''': "'", ''': "'",
+        '【': '[', '】': ']', '（': '(', '）': ')',
+        '、': ', ', '…': '...', '～': '~', '·': ' ',
+    }
+    result = text
+    for ch, repl in chinese_punct.items():
+        result = result.replace(ch, repl)
+
+    # 모든 CJK 문자를 공백으로 대체 (띄어쓰기 보존)
     # U+4E00-U+9FFF: CJK Unified Ideographs
     # U+3400-U+4DBF: CJK Unified Ideographs Extension A
-    result = re.sub(r'[\u4e00-\u9fff\u3400-\u4dbf]+', '', text)
+    # U+F900-U+FAFF: CJK Compatibility Ideographs
+    result = re.sub(r'[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]+', ' ', result)
 
-    # 중국어 특유의 문장 부호 제거
-    result = result.replace('：', ':')
-    result = result.replace('，', ', ')
-    result = result.replace('。', '. ')
-    result = result.replace('！', '!')
-    result = result.replace('？', '?')
-
-    # 빈 괄호나 콜론만 남은 경우 정리
-    result = re.sub(r'\s*:\s*$', '', result)
-    result = re.sub(r'\(\s*\)', '', result)
-    result = re.sub(r'\s{2,}', ' ', result)  # 다중 공백 정리
+    # 빈 구두점 패턴 정리 (중국어 제거 후 남은 잔여물)
+    result = re.sub(r',\s*,', ',', result)  # ,, → ,
+    result = re.sub(r'\.\s*\.', '.', result)  # .. → .
+    result = re.sub(r',\s*\.', '.', result)  # ,. → .
+    result = re.sub(r'\s*,\s*$', '', result)  # 끝의 쉼표 제거
+    result = re.sub(r'^\s*,\s*', '', result)  # 시작의 쉼표 제거
+    result = re.sub(r'\(\s*\)', '', result)  # 빈 괄호 제거
+    result = re.sub(r'\[\s*\]', '', result)  # 빈 대괄호 제거
+    result = re.sub(r':\s*$', '', result)  # 끝의 콜론 제거
+    result = re.sub(r'-\s*\.', '.', result)  # -. → .
+    result = re.sub(r'\s{2,}', ' ', result)  # 다중 공백 → 단일 공백
+    result = re.sub(r'\s+([,.\!\?])', r'\1', result)  # 구두점 앞 공백 제거
 
     return result
 

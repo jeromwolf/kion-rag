@@ -91,9 +91,10 @@ GaN이나 SiC 에피 성장 장비
 
 - `/` → 메인 페이지 (챗봇 위젯 + 스트리밍)
 - `/static/architecture.html` → 시스템 아키텍처
-- `/static/flowchart-demo.html` → 처리 흐름도 (NEW)
+- `/static/flowchart-demo.html` → 처리 흐름도
 - `/static/checklist.html` → 구현 체크리스트
 - `/static/deployment.html` → 배포 아키텍처
+- `/static/budget.html` → GPU 인프라 예산 계획서 (NEW)
 - `/docs` → Swagger API 문서
 
 ## 성능 지표 (M4 Pro 48GB 기준)
